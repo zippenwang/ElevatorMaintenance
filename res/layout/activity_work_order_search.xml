@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/linear_workOrderState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:id="@+id/relative_unfinished"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/title_bg"
+            android:paddingTop="5dp" >
+            
+            <TextView 
+                android:id="@+id/tv_unfinished"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_centerHorizontal="true"
+                android:text="未完成"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:src="@drawable/ic_launcher"/>
+
+            <TextView
+                android:id="@+id/tv_unfinished_hidden"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_below="@id/tv_unfinished"
+                android:layout_marginTop="5dp"
+                android:background="#FF0000" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relative_finished"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/title_bg"
+            android:paddingTop="5dp" >
+            
+            <!-- <ImageView
+                android:id="@+id/centerImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_launcher" /> -->
+                
+            <TextView 
+                android:id="@+id/tv_finished"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_centerHorizontal="true"
+                android:text="已完成"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:src="@drawable/ic_launcher"/>
+
+            <TextView
+                android:layout_width="0.5dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/tv_finished"
+                android:layout_alignParentLeft="true"
+                android:layout_alignTop="@id/tv_finished"
+                android:background="@color/whiteColor" />
+
+            <TextView
+                android:layout_width="0.5dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/tv_finished"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@id/tv_finished"
+                android:background="@color/whiteColor" />
+
+            <TextView
+                android:id="@+id/tv_finished_hidden"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_below="@id/tv_finished"
+                android:layout_marginTop="5dp"
+                android:background="#FF0000"
+                android:visibility="invisible" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relative_overdue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/title_bg"
+            android:paddingTop="5dp" >
+
+            <!-- <ImageView
+                android:id="@+id/rightImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_launcher" /> -->
+                
+            <TextView 
+                android:id="@+id/tv_overdue"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_centerHorizontal="true"
+                android:text="超期"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:src="@drawable/ic_launcher"/>
+
+            <TextView
+                android:id="@+id/tv_overdue_hidden"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_below="@id/tv_overdue"
+                android:layout_marginTop="5dp"
+                android:background="#FF0000"
+                android:visibility="invisible" />
+        </RelativeLayout>
+    </LinearLayout>
+    
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_workOrder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/linear_workOrderState" >
+    </android.support.v4.view.ViewPager>
+</RelativeLayout>

@@ -28,7 +28,9 @@
             android:name="wzp.project.android.elvtmtn.activity.impl.MainActivity">
         </activity>
         
-        
+        <activity 
+            android:name="wzp.project.android.elvtmtn.activity.impl.WorkOrderSearchActivity">
+        </activity>
     </application>
 
 </manifest>

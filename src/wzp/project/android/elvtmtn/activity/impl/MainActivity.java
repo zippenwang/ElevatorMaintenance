@@ -1,5 +1,6 @@
 package wzp.project.android.elvtmtn.activity.impl;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,6 +37,8 @@ public class MainActivity extends BaseActivity {
 			@Override
 			public void onClick(View v) {
 				Toast.makeText(MainActivity.this, "工单查询被点击", Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(MainActivity.this, WorkOrderSearchActivity.class);
+				startActivity(intent);
 			}
 		});
 		
