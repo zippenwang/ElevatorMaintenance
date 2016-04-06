@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+	android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin">
+    
+    <TableLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_centerInParent="true"
+	    android:stretchColumns="*" >
+
+	    <TableRow>
+	        <Button 
+	            android:id="@+id/btn_workOrderSearch"
+	            android:layout_height="wrap_content"
+	            android:background="@drawable/search"
+	            android:text="工单查询"
+	            android:gravity="bottom|center" />
+
+            <Button 
+	            android:id="@+id/btn_signIn"
+	            android:layout_height="wrap_content"
+	            android:background="@drawable/sign_in"
+	            android:text="一键签到"
+	            android:gravity="bottom|center" />
+	    </TableRow>
+	    
+	    <TableRow>
+	        <Button 
+	            android:id="@+id/btn_workOrderFeedback"
+	            android:layout_height="wrap_content"
+	            android:background="@drawable/feedback"
+	            android:text="工单反馈"
+	            android:gravity="bottom|center" />
+	        <Button 
+	            android:id="@+id/btn_takePhotos"
+	            android:layout_height="wrap_content"
+	            android:background="@drawable/photo"
+	            android:text="拍照上传"
+	            android:gravity="bottom|center" />
+	    </TableRow>
+	    
+	    <TableRow>
+	        <Button 
+	            android:id="@+id/btn_userInfo"
+	            android:layout_height="wrap_content"
+	            android:background="@drawable/user_info"
+	            android:text="员工信息"
+	            android:gravity="bottom|center" />
+	    </TableRow>
+    </TableLayout>
+</RelativeLayout>
