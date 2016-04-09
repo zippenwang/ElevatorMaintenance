@@ -1,6 +1,8 @@
 package wzp.project.android.elvtmtn.biz.impl;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.util.Log;
 
@@ -20,15 +22,22 @@ public class UserBizImpl implements IUserBiz {
 	private static final String tag = "UserBizImpl";
 
 	@Override
-	public void login(User user, final IUserLoginListener listener) {
+	public void login(final User user, final IUserLoginListener listener) {
 		/*
-		 * 用于测试的代码
+		 * 用于测试的代码，模拟访问服务器费时的操作
 		 */
-		/*if (user.getId().equals("wzp") && user.getPassword().equals("1234")) {
-			return true;
-		}*/
+		new Timer().schedule(new TimerTask() {		
+			@Override
+			public void run() {
+				if (user.getId().equals("wzp") && user.getPassword().equals("1234")) {
+					listener.onLoginSuccess();
+				} else {
+					listener.onLoginFailure();
+				}
+			}
+		}, 3000);
 		
-		String strUrl = "http://localhost:8080/WebServlet";		// 服务器url
+		/*String strUrl = "http://localhost:8080/WebServlet";		// 服务器url
 		
 		// 创建请求体
 		RequestBody requestBody = new FormEncodingBuilder()
@@ -53,7 +62,7 @@ public class UserBizImpl implements IUserBiz {
 				Log.e(tag, Log.getStackTraceString(exception));
 				listener.onServerException();
 			}
-		});
+		});*/
 		
 	}
 

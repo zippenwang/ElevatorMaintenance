@@ -24,6 +24,7 @@
                 android:layout_centerHorizontal="true"
                 android:text="未完成"
                 android:textSize="20sp"
+                android:textColor="#FF0000"
                 android:gravity="center"
                 android:src="@drawable/ic_launcher"/>
 

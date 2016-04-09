@@ -81,7 +81,9 @@ public class UserLoginActivity extends BaseActivity implements IUserLoginActivit
 		/*
 		 * 若登录成功，则跳转至主界面
 		 */
-		Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show();
+//		Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show();
+		Intent intent = new Intent(UserLoginActivity.this, MainActivity.class);
+		startActivity(intent);
 	}
 
 	@Override

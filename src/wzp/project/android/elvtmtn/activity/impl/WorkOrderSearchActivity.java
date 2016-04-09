@@ -1,5 +1,6 @@
 package wzp.project.android.elvtmtn.activity.impl;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -27,8 +28,12 @@ public class WorkOrderSearchActivity extends FragmentActivity {
 	private TextView tvUnfinishedHidden;
 	private TextView tvFinishedHidden;
 	private TextView tvOverdueHidden;
+	private TextView tvUnfinished;
+	private TextView tvFinished;
+	private TextView tvOverdue;
 	private ViewPager vpWorkOrder;
 	private int[] selectedStateArray;
+	private TextView[] tvHiddenArray;
 	private TextView[] tvArray;
 	private int currentSelectedId = 0;
 	
@@ -53,6 +58,9 @@ public class WorkOrderSearchActivity extends FragmentActivity {
 		tvUnfinishedHidden = (TextView) findViewById(R.id.tv_unfinished_hidden);
 		tvFinishedHidden = (TextView) findViewById(R.id.tv_finished_hidden);
 		tvOverdueHidden = (TextView) findViewById(R.id.tv_overdue_hidden);
+		tvUnfinished = (TextView) findViewById(R.id.tv_unfinished);
+		tvFinished = (TextView) findViewById(R.id.tv_finished);
+		tvOverdue = (TextView) findViewById(R.id.tv_overdue);
 	
 		vpWorkOrder = (ViewPager) findViewById(R.id.vp_workOrder);
 	}
@@ -60,8 +68,9 @@ public class WorkOrderSearchActivity extends FragmentActivity {
 	private void initParam() {
 		// 0表示选中，1表示未选中(默认第一个选中)
 		selectedStateArray = new int[] {0, 1, 1};
-		tvArray = new TextView[] {tvUnfinishedHidden, tvFinishedHidden, tvOverdueHidden};
-
+		tvHiddenArray = new TextView[] {tvUnfinishedHidden, tvFinishedHidden, tvOverdueHidden};
+		tvArray = new TextView[] {tvUnfinished, tvFinished, tvOverdue};
+		
 		relativeUnfinished.setOnClickListener(listener);	
 		relativeOverdue.setOnClickListener(listener);
 		relativeFinished.setOnClickListener(listener);
@@ -95,7 +104,7 @@ public class WorkOrderSearchActivity extends FragmentActivity {
 		
 		vpWorkOrder.setOnPageChangeListener(new SimpleOnPageChangeListener(){
 			public void onPageSelected(int position) {
-				Toast.makeText(WorkOrderSearchActivity.this, "页面更改", 0).show();
+//				Toast.makeText(WorkOrderSearchActivity.this, "页面更改", 0).show();
 				setSelectedTitle(position);
 			}
 		});		
@@ -105,11 +114,17 @@ public class WorkOrderSearchActivity extends FragmentActivity {
 		for (int i = 0; i < selectedStateArray.length; i++) {
 			if (selectedStateArray[i] == 0) {
 				selectedStateArray[i] = 1;
-				tvArray[i].setVisibility(View.INVISIBLE);
+				tvHiddenArray[i].setVisibility(View.INVISIBLE);
+			}
+
+			if (i == position) {
+				tvArray[position].setTextColor(Color.RED);
+			} else {
+				tvArray[i].setTextColor(Color.BLACK);
 			}
 		}
 		selectedStateArray[position] = 0;
-		tvArray[position].setVisibility(View.VISIBLE);
+		tvHiddenArray[position].setVisibility(View.VISIBLE);
 		currentSelectedId = position;
 	}
 	
