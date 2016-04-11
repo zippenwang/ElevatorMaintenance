@@ -1,27 +1,27 @@
 package wzp.project.android.elvtmtn.presenter;
 
-import wzp.project.android.elvtmtn.activity.IUserLoginActivity;
-import wzp.project.android.elvtmtn.biz.IUserBiz;
-import wzp.project.android.elvtmtn.biz.IUserLoginListener;
+import wzp.project.android.elvtmtn.activity.IEmployeeLoginActivity;
+import wzp.project.android.elvtmtn.biz.IEmployeeBiz;
+import wzp.project.android.elvtmtn.biz.IEmployeeLoginListener;
 import wzp.project.android.elvtmtn.biz.impl.UserBizImpl;
-import wzp.project.android.elvtmtn.entity.User;
+import wzp.project.android.elvtmtn.entity.Employee;
 
 public class UserLoginPresenter {
 
-	private static IUserBiz userBiz = new UserBizImpl();
-	private IUserLoginActivity userLoginActivity;
+	private static IEmployeeBiz userBiz = new UserBizImpl();
+	private IEmployeeLoginActivity userLoginActivity;
 	
 	
-	public UserLoginPresenter(IUserLoginActivity userLoginActivity) {
+	public UserLoginPresenter(IEmployeeLoginActivity userLoginActivity) {
 		this.userLoginActivity = userLoginActivity;
 	}
 	
-	public void login(String userId, String password) {
-		User user = new User(userId, password);
+	public void login(String username, String password) {
+		Employee employee = new Employee(username, password);
 
 		userLoginActivity.showProgressDialog();
 		
-		userBiz.login(user, new IUserLoginListener() {
+		userBiz.login(employee, new IEmployeeLoginListener() {
 			@Override
 			public void onLoginSuccess() {
 				userLoginActivity.closeProgressDialog();

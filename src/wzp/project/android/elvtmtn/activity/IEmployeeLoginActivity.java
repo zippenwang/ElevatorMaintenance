@@ -1,6 +1,6 @@
 package wzp.project.android.elvtmtn.activity;
 
-public interface IUserLoginActivity {
+public interface IEmployeeLoginActivity {
 
 	void loginSuccess();
 	

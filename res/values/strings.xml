@@ -10,4 +10,12 @@
 	<string name="userId">员工号</string>
 	<string name="userPassword">密码</string>
 	
+	<!-- 工单详情 -->
+	<string name="workOrderId">工单号</string>
+	<string name="workOrderState">工单状态</string>
+	<string name="received">已接单</string>
+	<string name="unreceived">未接单</string>
+	<string name="elevatorId">电梯编号</string>
+	<string name="elevatorType">电梯类型</string>
+	<string name=":">:</string>
 </resources>

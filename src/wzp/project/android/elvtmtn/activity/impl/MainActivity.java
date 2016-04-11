@@ -1,5 +1,7 @@
 package wzp.project.android.elvtmtn.activity.impl;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -15,7 +17,11 @@ public class MainActivity extends BaseActivity {
 	private Button btnSignIn;
 	private Button btnWorkOrderFeedback;
 	private Button btnTakePhotos;
+	private Button btnElevatorRecord;
 	private Button btnUserInfo;
+	private AlertDialog.Builder altDlgBuilder;
+	
+	private String[] items = new String[] {"保养工单", "故障工单"};
 	
 	
 	@Override
@@ -31,28 +37,57 @@ public class MainActivity extends BaseActivity {
 		btnSignIn = (Button) findViewById(R.id.btn_signIn);
 		btnWorkOrderFeedback = (Button) findViewById(R.id.btn_workOrderFeedback);
 		btnTakePhotos = (Button) findViewById(R.id.btn_takePhotos);
+		btnElevatorRecord = (Button) findViewById(R.id.btn_elevatorRecord);
 		btnUserInfo = (Button) findViewById(R.id.btn_userInfo);
+		altDlgBuilder = new AlertDialog.Builder(this);
 		
 		btnWorkOrderSearch.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(MainActivity.this, "工单查询被点击", Toast.LENGTH_SHORT).show();
-				Intent intent = new Intent(MainActivity.this, WorkOrderSearchActivity.class);
-				startActivity(intent);
+//				Toast.makeText(MainActivity.this, "工单查询被点击", Toast.LENGTH_SHORT).show();
+				altDlgBuilder.setTitle("请选择工单类型 ");
+				altDlgBuilder.setCancelable(true);
+				altDlgBuilder.setItems(items, new DialogInterface.OnClickListener() {			
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+//						Toast.makeText(MainActivity.this, items[which], Toast.LENGTH_SHORT).show();
+						WorkOrderSearchActivity.myStartActivity(MainActivity.this, which);
+					}
+				});
+				altDlgBuilder.show();
 			}
 		});
 		
 		btnSignIn.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(MainActivity.this, "一键签到被点击", Toast.LENGTH_SHORT).show();
+//				Toast.makeText(MainActivity.this, "一键签到被点击", Toast.LENGTH_SHORT).show();
+				altDlgBuilder.setTitle("请选择工单类型 ");
+				altDlgBuilder.setCancelable(true);
+				altDlgBuilder.setItems(items, new DialogInterface.OnClickListener() {			
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+//						WorkOrderSearchActivity.myStartActivity(MainActivity.this, which);
+						EmployeeSignInActivity.myStartActivity(MainActivity.this, which);
+					}
+				});
+				altDlgBuilder.show();
 			}
 		});
 		
 		btnWorkOrderFeedback.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(MainActivity.this, "工单反馈被点击", Toast.LENGTH_SHORT).show();
+//				Toast.makeText(MainActivity.this, "工单反馈被点击", Toast.LENGTH_SHORT).show();
+				altDlgBuilder.setTitle("请选择工单类型 ");
+				altDlgBuilder.setCancelable(true);
+				altDlgBuilder.setItems(items, new DialogInterface.OnClickListener() {			
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Toast.makeText(MainActivity.this, items[which], Toast.LENGTH_SHORT).show();
+					}
+				});
+				altDlgBuilder.show();
 			}
 		});
 		
@@ -60,6 +95,13 @@ public class MainActivity extends BaseActivity {
 			@Override
 			public void onClick(View v) {
 				Toast.makeText(MainActivity.this, "拍照上传被点击", Toast.LENGTH_SHORT).show();
+			}
+		});
+		
+		btnElevatorRecord.setOnClickListener(new OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(MainActivity.this, "电梯档案被点击", Toast.LENGTH_SHORT).show();
 			}
 		});
 		

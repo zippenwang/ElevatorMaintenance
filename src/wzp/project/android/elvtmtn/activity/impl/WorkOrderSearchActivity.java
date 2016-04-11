@@ -1,5 +1,7 @@
 package wzp.project.android.elvtmtn.activity.impl;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,9 +21,11 @@ import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.fragment.FinishedWorkOrderFragment;
 import wzp.project.android.elvtmtn.fragment.OverdueWorkOrderFragment;
 import wzp.project.android.elvtmtn.fragment.UnfinishedWorkOrderFragment;
+import wzp.project.android.elvtmtn.util.WorkOrderType;
 
 public class WorkOrderSearchActivity extends FragmentActivity {
 
+	private TextView tvWorkOrderType;
 	private RelativeLayout relativeUnfinished;
 	private RelativeLayout relativeFinished;
 	private RelativeLayout relativeOverdue;
@@ -51,6 +55,14 @@ public class WorkOrderSearchActivity extends FragmentActivity {
 	}
 	
 	private void initWidget() {
+		tvWorkOrderType = (TextView) findViewById(R.id.tv_workOrderType);
+		int workOrderType = getIntent().getIntExtra("workOrderType", WorkOrderType.MAINTAIN_ORDER);
+		if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
+			tvWorkOrderType.setText("保养工单");
+		} else {
+			tvWorkOrderType.setText("故障工单");
+		}
+		
 		relativeUnfinished = (RelativeLayout) findViewById(R.id.relative_unfinished);
 		relativeFinished = (RelativeLayout) findViewById(R.id.relative_finished);
 		relativeOverdue = (RelativeLayout) findViewById(R.id.relative_overdue);
@@ -159,4 +171,10 @@ public class WorkOrderSearchActivity extends FragmentActivity {
 			}
 		}
 	};
+	
+	public static void myStartActivity(Context context, int workOrderType) {
+		Intent actIntent = new Intent(context, WorkOrderSearchActivity.class);
+		actIntent.putExtra("workOrderType", workOrderType);
+		context.startActivity(actIntent);
+	}
 }

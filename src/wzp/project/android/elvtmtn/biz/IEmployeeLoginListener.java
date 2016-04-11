@@ -1,6 +1,6 @@
 package wzp.project.android.elvtmtn.biz;
 
-public interface IUserLoginListener {
+public interface IEmployeeLoginListener {
 
 	void onLoginSuccess();
 	

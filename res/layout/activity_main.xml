@@ -46,6 +46,12 @@
 	    
 	    <TableRow>
 	        <Button 
+	            android:id="@+id/btn_elevatorRecord"
+	            android:layout_height="wrap_content"
+	            android:background="@drawable/elevator_record"
+	            android:text="电梯档案"
+	            android:gravity="bottom|center" />
+	        <Button 
 	            android:id="@+id/btn_userInfo"
 	            android:layout_height="wrap_content"
 	            android:background="@drawable/user_info"

@@ -1,7 +1,7 @@
 package wzp.project.android.elvtmtn.activity.impl;
 
 import wzp.project.android.elvtmtn.R;
-import wzp.project.android.elvtmtn.activity.IUserLoginActivity;
+import wzp.project.android.elvtmtn.activity.IEmployeeLoginActivity;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
 import wzp.project.android.elvtmtn.presenter.UserLoginPresenter;
 import android.app.ProgressDialog;
@@ -14,9 +14,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class UserLoginActivity extends BaseActivity implements IUserLoginActivity {
+public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLoginActivity {
 
-	private EditText edtUserId;
+	private EditText edtUsername;
 	private EditText edtPassword;
 	private Button btnLogin;
 	private Button btnExit;
@@ -40,7 +40,7 @@ public class UserLoginActivity extends BaseActivity implements IUserLoginActivit
 	 * UI控件初始化
 	 */
 	private void initWidget() {
-		edtUserId = (EditText) findViewById(R.id.edt_userId);
+		edtUsername = (EditText) findViewById(R.id.edt_username);
 		edtPassword = (EditText) findViewById(R.id.edt_password);
 		btnLogin = (Button) findViewById(R.id.btn_login);
 		btnExit = (Button) findViewById(R.id.btn_exit);
@@ -50,12 +50,12 @@ public class UserLoginActivity extends BaseActivity implements IUserLoginActivit
 		btnLogin.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-				String userId = edtUserId.getText().toString();
+				String username = edtUsername.getText().toString();
 				String password = edtPassword.getText().toString();
 				
 				// 可以在此处对输入的内容进行正则表达式判断
 				
-				userLoginPresenter.login(userId, password);
+				userLoginPresenter.login(username, password);
 			}
 		});
 		
@@ -70,7 +70,7 @@ public class UserLoginActivity extends BaseActivity implements IUserLoginActivit
 		btnIntoNext.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(UserLoginActivity.this, MainActivity.class);
+				Intent intent = new Intent(EmployeeLoginActivity.this, MainActivity.class);
 				startActivity(intent);
 			}
 		});
@@ -82,7 +82,7 @@ public class UserLoginActivity extends BaseActivity implements IUserLoginActivit
 		 * 若登录成功，则跳转至主界面
 		 */
 //		Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show();
-		Intent intent = new Intent(UserLoginActivity.this, MainActivity.class);
+		Intent intent = new Intent(EmployeeLoginActivity.this, MainActivity.class);
 		startActivity(intent);
 	}
 
@@ -123,7 +123,7 @@ public class UserLoginActivity extends BaseActivity implements IUserLoginActivit
 		runOnUiThread(new Runnable() {		
 			@Override
 			public void run() {
-				Toast.makeText(UserLoginActivity.this, text, Toast.LENGTH_SHORT).show();
+				Toast.makeText(EmployeeLoginActivity.this, text, Toast.LENGTH_SHORT).show();
 			}
 		});		
 	}

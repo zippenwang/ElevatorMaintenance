@@ -27,7 +27,7 @@
 	            android:textSize="20sp"
 	            android:text="账号" />
 	        <EditText
-	            android:id="@+id/edt_userId"
+	            android:id="@+id/edt_username"
 	            android:layout_height="wrap_content"
 	            android:hint="请输入员工号..." />
 	    </TableRow>

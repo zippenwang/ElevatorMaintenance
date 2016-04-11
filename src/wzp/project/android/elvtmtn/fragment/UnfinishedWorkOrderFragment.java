@@ -11,8 +11,10 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 
 import wzp.project.android.elvtmtn.R;
+import wzp.project.android.elvtmtn.activity.impl.WorkOrderDetailActivity;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,6 +23,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -77,6 +81,15 @@ public class UnfinishedWorkOrderFragment extends Fragment {
                 new GetDataTask().execute();
 			}
 		});
+		
+		ptrlvUnfinished.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				Intent actIntent = new Intent(activity, WorkOrderDetailActivity.class);
+				startActivity(actIntent);
+			}
+		});
 	}
 	
 	private class GetDataTask extends AsyncTask<Void, Void, List<String>> {
@@ -100,7 +113,7 @@ public class UnfinishedWorkOrderFragment extends Fragment {
         protected void onPostExecute(List<String> result) {
         	dataList.addAll(result);
               
-            //通知程序数据集已经改变，如果不做通知，那么将不会刷新ListView的集合  
+            // 通知程序数据集已经改变，如果不做通知，那么将不会刷新ListView的集合  
             adapter.notifyDataSetChanged();
             
             // 当下拉更新完成后，一定要调用该方法，否则更新进度条会一直存在！！

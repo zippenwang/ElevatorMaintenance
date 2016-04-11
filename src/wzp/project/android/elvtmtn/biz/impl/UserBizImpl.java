@@ -12,24 +12,24 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
-import wzp.project.android.elvtmtn.biz.IUserBiz;
-import wzp.project.android.elvtmtn.biz.IUserLoginListener;
-import wzp.project.android.elvtmtn.entity.User;
+import wzp.project.android.elvtmtn.biz.IEmployeeBiz;
+import wzp.project.android.elvtmtn.biz.IEmployeeLoginListener;
+import wzp.project.android.elvtmtn.entity.Employee;
 import wzp.project.android.elvtmtn.util.OkHttpUtils;
 
-public class UserBizImpl implements IUserBiz {
+public class UserBizImpl implements IEmployeeBiz {
 	
 	private static final String tag = "UserBizImpl";
 
 	@Override
-	public void login(final User user, final IUserLoginListener listener) {
+	public void login(final Employee employee, final IEmployeeLoginListener listener) {
 		/*
 		 * 用于测试的代码，模拟访问服务器费时的操作
 		 */
 		new Timer().schedule(new TimerTask() {		
 			@Override
 			public void run() {
-				if (user.getId().equals("wzp") && user.getPassword().equals("1234")) {
+				if (employee.getUsername().equals("wzp") && employee.getPassword().equals("1234")) {
 					listener.onLoginSuccess();
 				} else {
 					listener.onLoginFailure();
