@@ -6,5 +6,5 @@ public interface IEmployeeLoginListener {
 	
 	void onLoginFailure();
 	
-	void onServerException();
+	void onServerException(String tipInfo);
 }

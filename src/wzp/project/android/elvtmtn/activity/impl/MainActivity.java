@@ -44,13 +44,11 @@ public class MainActivity extends BaseActivity {
 		btnWorkOrderSearch.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-//				Toast.makeText(MainActivity.this, "工单查询被点击", Toast.LENGTH_SHORT).show();
 				altDlgBuilder.setTitle("请选择工单类型 ");
 				altDlgBuilder.setCancelable(true);
 				altDlgBuilder.setItems(items, new DialogInterface.OnClickListener() {			
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-//						Toast.makeText(MainActivity.this, items[which], Toast.LENGTH_SHORT).show();
 						WorkOrderSearchActivity.myStartActivity(MainActivity.this, which);
 					}
 				});
@@ -61,13 +59,11 @@ public class MainActivity extends BaseActivity {
 		btnSignIn.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-//				Toast.makeText(MainActivity.this, "一键签到被点击", Toast.LENGTH_SHORT).show();
 				altDlgBuilder.setTitle("请选择工单类型 ");
 				altDlgBuilder.setCancelable(true);
 				altDlgBuilder.setItems(items, new DialogInterface.OnClickListener() {			
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-//						WorkOrderSearchActivity.myStartActivity(MainActivity.this, which);
 						EmployeeSignInActivity.myStartActivity(MainActivity.this, which);
 					}
 				});
@@ -78,13 +74,12 @@ public class MainActivity extends BaseActivity {
 		btnWorkOrderFeedback.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-//				Toast.makeText(MainActivity.this, "工单反馈被点击", Toast.LENGTH_SHORT).show();
 				altDlgBuilder.setTitle("请选择工单类型 ");
 				altDlgBuilder.setCancelable(true);
 				altDlgBuilder.setItems(items, new DialogInterface.OnClickListener() {			
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						Toast.makeText(MainActivity.this, items[which], Toast.LENGTH_SHORT).show();
+						WorkOrderFeedbackActivity.myStartActivity(MainActivity.this, which);
 					}
 				});
 				altDlgBuilder.show();

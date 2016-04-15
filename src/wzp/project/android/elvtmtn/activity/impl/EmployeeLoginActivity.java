@@ -3,7 +3,7 @@ package wzp.project.android.elvtmtn.activity.impl;
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.activity.IEmployeeLoginActivity;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
-import wzp.project.android.elvtmtn.presenter.UserLoginPresenter;
+import wzp.project.android.elvtmtn.presenter.EmployeeLoginPresenter;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,7 +25,7 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 	
 	private ProgressDialog progressDialog;
 	
-	private UserLoginPresenter userLoginPresenter = new UserLoginPresenter(this);
+	private EmployeeLoginPresenter userLoginPresenter = new EmployeeLoginPresenter(this);
 	
 	
 	@Override
@@ -81,14 +81,12 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 		/*
 		 * 若登录成功，则跳转至主界面
 		 */
-//		Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show();
 		Intent intent = new Intent(EmployeeLoginActivity.this, MainActivity.class);
 		startActivity(intent);
 	}
 
 	@Override
 	public void loginFail() {
-//		Toast.makeText(this, "用户名或密码错误！", Toast.LENGTH_SHORT).show();
 		showToast("用户名或密码错误！");
 	}
 

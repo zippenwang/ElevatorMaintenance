@@ -22,11 +22,10 @@ import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 
-public class EmployeeSignInActivity extends BaseActivity {
-	
+public class WorkOrderFeedbackActivity extends BaseActivity {
+
 	private TextView tvWorkOrderType;
-//	private ListView lvReceived;
-	private PullToRefreshListView ptrlvReceived;
+	private PullToRefreshListView ptrlvSignedIn;
 	
 	private ArrayAdapter<String> adapter;						// 先暂时简单地定义成String类型的适配器
 	private List<String> dataList = new ArrayList<String>();	// 先暂时简单地定义成String类型的集合
@@ -34,14 +33,14 @@ public class EmployeeSignInActivity extends BaseActivity {
 	private int workOrderType;
 	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日 HH:mm:ss");
-	private static final String tag = "EmployeeSignInActivity";
+	private static final String tag = "WorkOrderFeedbackActivity";
 	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_sign_in);
-	
+		setContentView(R.layout.activity_work_order_feedback);
+		
 		initData();
 		initWidget();
 	}
@@ -59,7 +58,7 @@ public class EmployeeSignInActivity extends BaseActivity {
 	
 	private void initWidget() {
 		tvWorkOrderType = (TextView) findViewById(R.id.tv_workOrderType);
-		ptrlvReceived = (PullToRefreshListView) findViewById(R.id.ptrlv_received);
+		ptrlvSignedIn = (PullToRefreshListView) findViewById(R.id.ptrlv_signedIn);
 			
 		if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
 			tvWorkOrderType.setText("保养工单");
@@ -68,9 +67,9 @@ public class EmployeeSignInActivity extends BaseActivity {
 		}
 		
 		adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dataList);
-		ptrlvReceived.setAdapter(adapter);
+		ptrlvSignedIn.setAdapter(adapter);
 		
-		ptrlvReceived.setOnRefreshListener(new OnRefreshListener<ListView>() {
+		ptrlvSignedIn.setOnRefreshListener(new OnRefreshListener<ListView>() {
 			@Override
 			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
 				/*
@@ -109,13 +108,14 @@ public class EmployeeSignInActivity extends BaseActivity {
             adapter.notifyDataSetChanged();
             
             // 当下拉更新完成后，一定要调用该方法，否则更新进度条会一直存在！！
-            ptrlvReceived.onRefreshComplete();
+            ptrlvSignedIn.onRefreshComplete();
         }	
 	}
-
+	
 	public static void myStartActivity(Context context, int workOrderType) {
-		Intent actIntent = new Intent(context, EmployeeSignInActivity.class);
+		Intent actIntent = new Intent(context, WorkOrderFeedbackActivity.class);
 		actIntent.putExtra("workOrderType", workOrderType);
 		context.startActivity(actIntent);
 	}
+
 }

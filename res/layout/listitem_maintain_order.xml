@@ -20,30 +20,28 @@
             android:text="hahahah" />
         
         <TextView 
-            android:id="@+id/tv_workOrderState"
+            android:id="@+id/tv_isWorkOrderReceived"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:text="aaaaaaa" />
+            android:text="已接单" />
         
         <TextView 
             android:id="@+id/tv_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentBottom="true"
-            android:text="bbbbbbbb" />
+			android:layout_centerVertical="true"
+            android:text="福建省厦门市思明区***" />
         
         <TextView 
             android:id="@+id/tv_finalTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-			android:layout_centerHorizontal="true"
+			android:layout_alignParentLeft="true"
             android:layout_alignParentBottom="true"
             android:text="cccccccccc" />
-        
-        
     </RelativeLayout>
 
 </LinearLayout>

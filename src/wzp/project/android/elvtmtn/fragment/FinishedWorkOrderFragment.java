@@ -59,7 +59,7 @@ public class FinishedWorkOrderFragment extends Fragment {
 	}
 
 	private void initWidget(View view) {
-		ptrlvFinished = (PullToRefreshListView) view.findViewById(R.id.ptrlv_overdue);
+		ptrlvFinished = (PullToRefreshListView) view.findViewById(R.id.ptrlv_finished);
 		ptrlvFinished.setAdapter(adapter);
 //		ptrlvOverdue.getLoadingLayoutProxy().setLastUpdatedLabel("你好");
 		

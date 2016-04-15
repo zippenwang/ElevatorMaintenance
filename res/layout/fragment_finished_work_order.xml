@@ -12,7 +12,7 @@
         android:gravity="center"/> -->
         
     <com.handmark.pulltorefresh.library.PullToRefreshListView  
-        android:id="@+id/ptrlv_overdue"  
+        android:id="@+id/ptrlv_finished"  
         android:layout_width="match_parent"  
         android:layout_height="match_parent" />
     

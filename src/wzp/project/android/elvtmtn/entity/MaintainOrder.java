@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class MaintainOrder {
 
+	private long id;							// 工单id
 	private Date finalTime;						// 截止日期
 	private Date receivingTime;					// 接单时间
 	private Date signInTime;					// 签到时间
@@ -17,6 +18,12 @@ public class MaintainOrder {
 	private ElevatorRecord elevatorRecord;		// 电梯档案
 	
 	
+	public long getId() {
+		return id;
+	}
+	public void setId(long id) {
+		this.id = id;
+	}
 	public Date getFinalTime() {
 		return finalTime;
 	}

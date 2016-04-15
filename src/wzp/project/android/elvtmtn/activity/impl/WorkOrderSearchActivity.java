@@ -21,8 +21,13 @@ import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.fragment.FinishedWorkOrderFragment;
 import wzp.project.android.elvtmtn.fragment.OverdueWorkOrderFragment;
 import wzp.project.android.elvtmtn.fragment.UnfinishedWorkOrderFragment;
-import wzp.project.android.elvtmtn.util.WorkOrderType;
+import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 
+/**
+ * 主控界面
+ * @author Zippen
+ *
+ */
 public class WorkOrderSearchActivity extends FragmentActivity {
 
 	private TextView tvWorkOrderType;
@@ -37,10 +42,11 @@ public class WorkOrderSearchActivity extends FragmentActivity {
 	private TextView tvOverdue;
 	private ViewPager vpWorkOrder;
 	private int[] selectedStateArray;
-	private TextView[] tvHiddenArray;
-	private TextView[] tvArray;
+	private TextView[] tvHiddenArray;					// 用于标注当前所在的选项卡
+	private TextView[] tvArray;							// 用于标注当前所在的选项卡的标题
 	private int currentSelectedId = 0;
 	
+	private int workOrderType = 0;						// 工单类型
 	private static final String tag = "WorkOrderSearchActivity";
 	
 	
@@ -56,10 +62,11 @@ public class WorkOrderSearchActivity extends FragmentActivity {
 	
 	private void initWidget() {
 		tvWorkOrderType = (TextView) findViewById(R.id.tv_workOrderType);
-		int workOrderType = getIntent().getIntExtra("workOrderType", WorkOrderType.MAINTAIN_ORDER);
+		// 保存工单类型
+		workOrderType = getIntent().getIntExtra("workOrderType", WorkOrderType.MAINTAIN_ORDER);
 		if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
 			tvWorkOrderType.setText("保养工单");
-		} else {
+		} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
 			tvWorkOrderType.setText("故障工单");
 		}
 		
@@ -129,6 +136,7 @@ public class WorkOrderSearchActivity extends FragmentActivity {
 				tvHiddenArray[i].setVisibility(View.INVISIBLE);
 			}
 
+			// 被选中的标题为红色字体，未被选中的标题为黑色字体
 			if (i == position) {
 				tvArray[position].setTextColor(Color.RED);
 			} else {
@@ -176,5 +184,9 @@ public class WorkOrderSearchActivity extends FragmentActivity {
 		Intent actIntent = new Intent(context, WorkOrderSearchActivity.class);
 		actIntent.putExtra("workOrderType", workOrderType);
 		context.startActivity(actIntent);
+	}
+
+	public int getWorkOrderType() {
+		return workOrderType;
 	}
 }

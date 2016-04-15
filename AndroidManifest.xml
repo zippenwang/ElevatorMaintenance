@@ -8,6 +8,9 @@
         android:minSdkVersion="14"
         android:targetSdkVersion="21" />
 
+    <!-- 访问网络一定要记得加该条权限 -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    
     <application
         android:name="wzp.project.android.elvtmtn.util.MyApplication"
         android:allowBackup="true"
@@ -38,6 +41,10 @@
         
         <activity 
             android:name="wzp.project.android.elvtmtn.activity.impl.EmployeeSignInActivity">
+        </activity>
+        
+        <activity 
+            android:name="wzp.project.android.elvtmtn.activity.impl.WorkOrderFeedbackActivity">
         </activity>
     </application>
 

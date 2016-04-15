@@ -1,4 +1,4 @@
-package wzp.project.android.elvtmtn.util;
+package wzp.project.android.elvtmtn.helper.adapter;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -34,7 +34,7 @@ public class MaintainOrderAdapter extends ArrayAdapter<MaintainOrder> {
 			view = LayoutInflater.from(getContext()).inflate(resourceId, null);
 			subViewHolder = new SubViewHolder();
 			subViewHolder.tvWorkOrderId = (TextView) view.findViewById(R.id.tv_workOrderId);
-			subViewHolder.tvWorkOrderState = (TextView) view.findViewById(R.id.tv_workOrderState);
+			subViewHolder.tvIsWorkOrderReceived = (TextView) view.findViewById(R.id.tv_isWorkOrderReceived);
 			subViewHolder.tvAddress = (TextView) view.findViewById(R.id.tv_address);
 			subViewHolder.tvFinalTime = (TextView) view.findViewById(R.id.tv_finalTime);
 			view.setTag(subViewHolder);
@@ -43,19 +43,26 @@ public class MaintainOrderAdapter extends ArrayAdapter<MaintainOrder> {
 			subViewHolder = (SubViewHolder) view.getTag();
 		}
 		
-//		subViewHolder.tvWorkOrderId.setText(maintainOrder.get)
+		subViewHolder.tvWorkOrderId.setText(maintainOrder.getId() + "");
 		subViewHolder.tvAddress.setText(maintainOrder.getElevatorRecord().getAddress());
 		subViewHolder.tvFinalTime.setText(sdf.format(maintainOrder.getFinalTime()));
-		// 工单状态
-		
-		// 工单号
+		if (maintainOrder.getReceivingTime() != null) {
+			subViewHolder.tvIsWorkOrderReceived.setText("已接单");
+		} else {
+			subViewHolder.tvIsWorkOrderReceived.setText("未接单");
+		}
 			
 		return view;
 	}
 	
+	/**
+	 * 子控件
+	 * @author Zippen
+	 *
+	 */
 	private class SubViewHolder {
 		TextView tvWorkOrderId;
-		TextView tvWorkOrderState;
+		TextView tvIsWorkOrderReceived;
 		TextView tvAddress;
 		TextView tvFinalTime;
 	}

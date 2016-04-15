@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
     
     <!-- <TextView 
         android:layout_width="match_parent"
@@ -11,9 +12,25 @@
         android:gravity="center"/> -->
    
     <com.handmark.pulltorefresh.library.PullToRefreshListView  
-        android:id="@+id/ptrlv_overdue"  
+        android:id="@+id/ptrlv_unfinished"  
         android:layout_width="match_parent"  
         android:layout_height="match_parent" />
     
+    <LinearLayout 
+        android:id="@+id/linear_tipException"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:orientation="vertical">
+        <TextView 
+	        android:id="@+id/tv_dataIsNull"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" />
+        <Button 
+            android:id="@+id/btn_refreshAgain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="刷新"/>
+    </LinearLayout>
 
 </LinearLayout>

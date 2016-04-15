@@ -3,16 +3,16 @@ package wzp.project.android.elvtmtn.presenter;
 import wzp.project.android.elvtmtn.activity.IEmployeeLoginActivity;
 import wzp.project.android.elvtmtn.biz.IEmployeeBiz;
 import wzp.project.android.elvtmtn.biz.IEmployeeLoginListener;
-import wzp.project.android.elvtmtn.biz.impl.UserBizImpl;
+import wzp.project.android.elvtmtn.biz.impl.EmployeeBizImpl;
 import wzp.project.android.elvtmtn.entity.Employee;
 
-public class UserLoginPresenter {
+public class EmployeeLoginPresenter {
 
-	private static IEmployeeBiz userBiz = new UserBizImpl();
+	private static IEmployeeBiz userBiz = new EmployeeBizImpl();
 	private IEmployeeLoginActivity userLoginActivity;
 	
 	
-	public UserLoginPresenter(IEmployeeLoginActivity userLoginActivity) {
+	public EmployeeLoginPresenter(IEmployeeLoginActivity userLoginActivity) {
 		this.userLoginActivity = userLoginActivity;
 	}
 	
@@ -35,9 +35,9 @@ public class UserLoginPresenter {
 			}
 
 			@Override
-			public void onServerException() {
+			public void onServerException(String tipInfo) {
 				userLoginActivity.closeProgressDialog();
-				userLoginActivity.showToast("访问服务器失败\n请检查网络连接后重试");
+				userLoginActivity.showToast(tipInfo);
 			}
 		});
 	}
