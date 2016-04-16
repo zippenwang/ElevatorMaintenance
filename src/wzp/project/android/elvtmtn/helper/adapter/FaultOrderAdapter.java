@@ -7,6 +7,8 @@ import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
 import android.content.Context;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +18,9 @@ import android.widget.TextView;
 public class FaultOrderAdapter extends ArrayAdapter<FaultOrder> {
 
 	private int resourceId;
-	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+	
+	private static final String tag = "FaultOrderAdapter";
 	
 	public FaultOrderAdapter(Context context, int textViewResourceId,
 			List<FaultOrder> objects) {
@@ -32,7 +36,8 @@ public class FaultOrderAdapter extends ArrayAdapter<FaultOrder> {
 		SubViewHolder subViewHolder = null;
 		
 		if (convertView == null) {
-			view = LayoutInflater.from(getContext()).inflate(resourceId, null);
+//			view = LayoutInflater.from(getContext()).inflate(resourceId, null);
+			view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
 			subViewHolder = new SubViewHolder();
 			subViewHolder.tvWorkOrderId = (TextView) view.findViewById(R.id.tv_workOrderId);
 			subViewHolder.tvIsWorkOrderReceived = (TextView) view.findViewById(R.id.tv_isWorkOrderReceived);
@@ -46,11 +51,17 @@ public class FaultOrderAdapter extends ArrayAdapter<FaultOrder> {
 		
 		subViewHolder.tvWorkOrderId.setText(faultOrder.getId() + "");
 		subViewHolder.tvAddress.setText(faultOrder.getElevatorRecord().getAddress());
-		subViewHolder.tvOccuredTime.setText(sdf.format(faultOrder.getOccuredTime()));
+		if (faultOrder.getOccuredTime() != null) {
+			subViewHolder.tvOccuredTime.setText(FaultOrderAdapter.sdf.format(faultOrder.getOccuredTime()));
+		} else {
+			subViewHolder.tvOccuredTime.setText("无");
+		}
+		
 		if (faultOrder.getReceivingTime() != null) {
 			subViewHolder.tvIsWorkOrderReceived.setText("已接单");
 		} else {
 			subViewHolder.tvIsWorkOrderReceived.setText("未接单");
+			subViewHolder.tvIsWorkOrderReceived.setTextColor(Color.RED);
 		}
 			
 		return view;

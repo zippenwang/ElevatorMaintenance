@@ -14,9 +14,13 @@ public interface IWorkOrderSearchFragment {
 	
 	void closePullUpToRefresh();
 	
+	void openPullUpToRefresh();
+	
 //	void remindExceptionInfo();
 	
 	void hidePtrlvAndShowLinearLayout(String info);				// 隐藏PullToRefreshListView控件，显示LinearLayout控件
 	
 	void hideLinearLayoutAndShowPtrlv();
+	
+	void setIsPtrlvHidden(boolean isPtrlvHidden);
 }

@@ -28,9 +28,9 @@ public class OkHttpUtils {
 		/*
 		 * 设置OkHttpClient的一些初始化参数，包括连接超时、读取超时、写超时等
 		 */
-		mOkHttpClient.setConnectTimeout(30, TimeUnit.SECONDS);
-		mOkHttpClient.setReadTimeout(10, TimeUnit.SECONDS);
-		mOkHttpClient.setWriteTimeout(10, TimeUnit.SECONDS);
+		mOkHttpClient.setConnectTimeout(10, TimeUnit.SECONDS);
+		mOkHttpClient.setReadTimeout(5, TimeUnit.SECONDS);
+		mOkHttpClient.setWriteTimeout(5, TimeUnit.SECONDS);
 	}
 	
 	/**

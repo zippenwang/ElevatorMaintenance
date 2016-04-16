@@ -17,20 +17,20 @@
         android:layout_height="match_parent" />
     
     <LinearLayout 
-        android:id="@+id/linear_tipException"
+        android:id="@+id/linear_tipInfo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
         android:orientation="vertical">
         <TextView 
-	        android:id="@+id/tv_dataIsNull"
+	        android:id="@+id/tv_tipInfo"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content" />
         <Button 
             android:id="@+id/btn_refreshAgain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="刷新"/>
+            android:text="重试"/>
     </LinearLayout>
 
 </LinearLayout>
