@@ -407,11 +407,11 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 		});
 	}
 
-	@Override
+/*	@Override
 	public void hideLinearLayoutAndShowPtrlv() {
 		ptrlvUnfinished.setVisibility(View.VISIBLE);
 		linearTipInfo.setVisibility(View.GONE);
-	}
+	}*/
 
 	@Override
 	public void setIsPtrlvHidden(boolean isPtrlvHidden) {

@@ -85,14 +85,7 @@
             android:layout_weight="1"
             android:background="@drawable/title_bg"
             android:paddingTop="5dp" >
-            
-            <!-- <ImageView
-                android:id="@+id/centerImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_launcher" /> -->
-                
+                        
             <TextView 
                 android:id="@+id/tv_finished"
                 android:layout_width="wrap_content"

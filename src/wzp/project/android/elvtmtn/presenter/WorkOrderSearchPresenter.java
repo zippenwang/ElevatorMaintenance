@@ -153,7 +153,7 @@ public class WorkOrderSearchPresenter implements IWorkOrderSearchListener {
 			workOrderSearchFragment.openPullUpToRefresh();		// 打开上拉加载功能，此时包含上拉和下拉两种功能
 		} else if (successType == ProjectContants.ORDER_IS_NULL) {
 			// 该条件下的工单不存在
-			workOrderSearchFragment.hidePtrlvAndShowLinearLayout("当前不存在未完成的工单");
+			workOrderSearchFragment.hidePtrlvAndShowLinearLayout("符合条件的工单不存在");
 			return;
 		}
 		

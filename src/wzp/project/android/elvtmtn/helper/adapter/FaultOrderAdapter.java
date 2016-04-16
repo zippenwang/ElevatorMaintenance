@@ -18,7 +18,7 @@ import android.widget.TextView;
 public class FaultOrderAdapter extends ArrayAdapter<FaultOrder> {
 
 	private int resourceId;
-	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	private static final String tag = "FaultOrderAdapter";
 	
@@ -50,7 +50,16 @@ public class FaultOrderAdapter extends ArrayAdapter<FaultOrder> {
 		}
 		
 		subViewHolder.tvWorkOrderId.setText(faultOrder.getId() + "");
-		subViewHolder.tvAddress.setText(faultOrder.getElevatorRecord().getAddress());
+//		subViewHolder.tvAddress.setText(faultOrder.getElevatorRecord().getAddress());
+		if (faultOrder.getElevatorRecord() != null) {
+			if (faultOrder.getElevatorRecord().getAddress() == null) {
+				subViewHolder.tvAddress.setText("暂无地址信息");
+			} else {
+				subViewHolder.tvAddress.setText(faultOrder.getElevatorRecord().getAddress());
+			}
+		} else {
+			subViewHolder.tvAddress.setText("电梯档案为空");
+		}
 		if (faultOrder.getOccuredTime() != null) {
 			subViewHolder.tvOccuredTime.setText(FaultOrderAdapter.sdf.format(faultOrder.getOccuredTime()));
 		} else {
