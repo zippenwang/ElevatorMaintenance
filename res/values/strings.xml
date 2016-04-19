@@ -18,4 +18,9 @@
 	<string name="elevatorId">电梯编号</string>
 	<string name="elevatorType">电梯类型</string>
 	<string name=":">:</string>
+	<string name="elevatorAddress">电梯地址</string>
+	<string name="faultOccuredTime">故障发生时间</string>
+	<string name="faultDescription">故障描述</string>
+	<string name="receiveState">接单状态</string>
+	<string name="receiveTime">接单时间</string>
 </resources>

@@ -1,9 +1,12 @@
 package wzp.project.android.elvtmtn.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class MaintainOrder {
+public class MaintainOrder implements Serializable {
 
+	private static final long serialVersionUID = -2296104832254941753L;
+	
 	private long id;							// 工单id
 	private Date finalTime;						// 截止日期
 	private Date receivingTime;					// 接单时间

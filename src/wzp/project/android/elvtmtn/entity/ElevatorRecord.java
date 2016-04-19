@@ -1,9 +1,10 @@
 package wzp.project.android.elvtmtn.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 public class ElevatorRecord {
-
+	
 	private String address;					// 设备地址
 	private String unit;					// 使用单位
 	private String buildingNumber;			// 所在楼号

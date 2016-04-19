@@ -1,7 +1,9 @@
 package wzp.project.android.elvtmtn.entity;
 
-public class Employee {
+import java.io.Serializable;
 
+public class Employee {
+	
 	private String username;		// 登录用户名
 	private String name;			// 姓名
 	private String password;		// 登录密码

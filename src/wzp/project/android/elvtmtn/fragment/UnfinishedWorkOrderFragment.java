@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -144,6 +145,7 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 		btnRefreshAgain.setOnClickListener(new OnClickListener() {		
 			@Override
 			public void onClick(View v) {
+				tvTipInfo.setText("尝试访问服务器");
 				new RefreshDataTask().execute();
 			}
 		});
@@ -234,8 +236,18 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				Intent actIntent = new Intent(workOrderSearchActivity, WorkOrderDetailActivity.class);
-				startActivity(actIntent);
+//				Intent actIntent = new Intent(workOrderSearchActivity, WorkOrderDetailActivity.class);
+//				startActivity(actIntent);
+				
+//				showToast("" + position);
+				
+				if (workOrderType == WorkOrderType.FAULT_ORDER) {
+					WorkOrderDetailActivity.myStartActivity(workOrderSearchActivity, 
+							workOrderType, JSON.toJSONString(faultOrderList.get(position - 1)));
+				} else if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
+					WorkOrderDetailActivity.myStartActivity(workOrderSearchActivity, 
+							workOrderType, JSON.toJSONString(maintainOrderList.get(position - 1)));
+				}
 			}
 		});
 		

@@ -1,5 +1,6 @@
 package wzp.project.android.elvtmtn.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 public class FaultOrder {
