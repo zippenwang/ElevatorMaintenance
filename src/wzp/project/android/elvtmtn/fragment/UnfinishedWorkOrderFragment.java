@@ -327,7 +327,7 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 	
 	@Override
 	public void showProgressDialog() {
-		workOrderSearchActivity.runOnUiThread(new Runnable() {		
+		/*workOrderSearchActivity.runOnUiThread(new Runnable() {		
 			@Override
 			public void run() {
 				progressDialog.setTitle("正在访问服务器，请稍后...");
@@ -336,19 +336,27 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 				
 				progressDialog.show();
 			}
-		});
+		});*/
+		progressDialog.setTitle("正在访问服务器，请稍后...");
+		progressDialog.setMessage("Loading...");
+		progressDialog.setCancelable(true);
+		
+		progressDialog.show();
 	}
 
 	@Override
 	public void closeProgressDialog() {
-		workOrderSearchActivity.runOnUiThread(new Runnable() {			
+		/*workOrderSearchActivity.runOnUiThread(new Runnable() {			
 			@Override
 			public void run() {
 				if (progressDialog != null) {
 					progressDialog.dismiss();
 				}
 			}
-		});
+		});*/
+		if (progressDialog != null) {
+			progressDialog.dismiss();
+		}
 	}
 	
 	@Override

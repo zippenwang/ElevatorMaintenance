@@ -19,25 +19,35 @@ public class EmployeeLoginPresenter {
 	public void login(String username, String password) {
 		Employee employee = new Employee(username, password);
 
-		userLoginActivity.showProgressDialog();
+//		userLoginActivity.showProgressDialog();
 		
 		userBiz.login(employee, new IEmployeeLoginListener() {
 			@Override
 			public void onLoginSuccess() {
-				userLoginActivity.closeProgressDialog();
+//				userLoginActivity.closeProgressDialog();
 				userLoginActivity.loginSuccess();
 			}
 
 			@Override
 			public void onLoginFailure() {
-				userLoginActivity.closeProgressDialog();
+//				userLoginActivity.closeProgressDialog();
 				userLoginActivity.loginFail();
 			}
 
 			@Override
 			public void onServerException(String tipInfo) {
-				userLoginActivity.closeProgressDialog();
+//				userLoginActivity.closeProgressDialog();
 				userLoginActivity.showToast(tipInfo);
+			}
+
+			@Override
+			public void onBefore() {
+				userLoginActivity.showProgressDialog();
+			}
+
+			@Override
+			public void onAfter() {
+				userLoginActivity.closeProgressDialog();
 			}
 		});
 	}

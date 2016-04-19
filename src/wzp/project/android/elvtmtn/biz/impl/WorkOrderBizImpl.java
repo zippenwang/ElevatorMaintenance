@@ -3,17 +3,17 @@ package wzp.project.android.elvtmtn.biz.impl;
 import java.io.IOException;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Request;
+
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import wzp.project.android.elvtmtn.biz.IWorkOrderBiz;
 import wzp.project.android.elvtmtn.biz.IWorkOrderSearchListener;
@@ -21,7 +21,6 @@ import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
-import wzp.project.android.elvtmtn.util.OkHttpUtils;
 
 public class WorkOrderBizImpl implements IWorkOrderBiz {
 	
@@ -31,7 +30,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 	@Override
 	public <T> void getWorkOrdersByCondition(int workOrderType, int workOrderState, 
 			final int pageNumber, int pageSize, final List<T> dataList, final IWorkOrderSearchListener listener) {
-		StringBuilder strUrl = new StringBuilder(ProjectContants.basePath);
+		/*StringBuilder strUrl = new StringBuilder(ProjectContants.basePath);
 
 		switch (workOrderType) {
 			case WorkOrderType.MAINTAIN_ORDER:
@@ -46,22 +45,15 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 		
 		strUrl.append("?pageNumber=" + pageNumber + "&pageSize=" + pageSize + "&type=" + workOrderState);
 		
-		// 创建请求体
-		/*RequestBody requestBody = new FormEncodingBuilder()
-			.add("pageNumber", String.valueOf(pageNumber))
-			.add("pageSize", String.valueOf(pageSize))
-			.add("type", String.valueOf(workOrderState))
-			.build();
-		Request request = OkHttpUtils.newRequestInstance(strUrl.toString(), null, requestBody);*/
 		Request request = OkHttpUtils.newRequestInstance(strUrl.toString(), null, null);
 		OkHttpUtils.enqueue(request, new Callback() {	
 			@Override
 			public void onResponse(Response response) throws IOException {
 //				Log.i(tag, response.body().string());
 				if (response.isSuccessful()) {
-					/*
+					
 					 * 响应成功
-					 */
+					 
 					String strResponse = response.body().string();
 					
 					Log.i(tag, strResponse);
@@ -71,18 +63,18 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 						List<T> respDataList = JSON.parseObject(strResponse, new TypeReference<List<T>>() {});
 						Log.i(tag, "JSON转换结束");
 						if (respDataList != null && respDataList.size() > 0) {
-							/*dataList.clear();
+							dataList.clear();
 							for (int i=0; i<respDataList.size(); i++) {
 								dataList.add(respDataList.get(i));
-							}*/
+							}
 							
 							if (1 == pageNumber) {
 								dataList.clear();
 								for (int i=0; i<respDataList.size(); i++) {
-									/* 此处显示的类型为JSONObject，因此会导致Adapter中出现
+									 此处显示的类型为JSONObject，因此会导致Adapter中出现
 									 * ClassCastException异常，无法将JSONObject转化为FaultOrder或MaintainOrder,
 									 * 原因暂时不清楚。
-									 */
+									 
 									Log.d(tag, respDataList.get(i).getClass().getSimpleName());
 									dataList.add(respDataList.get(i));
 								}
@@ -97,17 +89,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 								listener.onSearchSuccess(ProjectContants.ORDER_SHOW_COMPLETE);
 							}
 						} else {
-							/*
-							 * 响应数据为空，表示当前请求的数据不存在，有两种可能的情况
-							 * 1、压根就没有数据；
-							 * 2、表示当前pageNumber下，没有数据，即1~pageNumber-1之间的页面，就已经把数据完全显示出来了；
-							 * 
-							 * 解决方案：
-							 * 1、如果pageNumber等于1，属于上述第一种情况，此时应该提示“当前没有符合要求的工单”；
-							 * 2、如果pageNumber大于1，属于上述第二种情况，此时应该利用Toast提示已经显示出所有工单，并关闭上拉加载的功能；
-							 * 
-							 * 提供一个标志位，根据不同的情况，执行不同的操作；
-							 */
 							if (1 == pageNumber) {
 								listener.onSearchSuccess(ProjectContants.ORDER_IS_NULL);
 							} else if (pageNumber > 1) {
@@ -130,7 +111,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				Log.e(tag, Log.getStackTraceString(exception));
 				listener.onSearchFailure("访问服务器失败\n请检查网络连接后重试");
 			}
-		});
+		});*/
 	}
 
 	/**
@@ -142,22 +123,28 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 		StringBuilder strUrl = new StringBuilder(ProjectContants.basePath);
 		strUrl.append("/maintainOrder/list");
 		
-		strUrl.append("?pageNumber=" + pageNumber + "&pageSize=" + pageSize + "&type=" + workOrderState);
-		
-		Request request = OkHttpUtils.newRequestInstance(strUrl.toString(), null, null);
-		OkHttpUtils.enqueue(request, new Callback() {	
-			@Override
-			public void onResponse(Response response) throws IOException {
-				if (response.isSuccessful()) {
-					/*
-					 * 响应成功
-					 */
-					String strResponse = response.body().string();
+		OkHttpUtils.get().url(strUrl.toString())
+			.addParams("pageNumber", String.valueOf(pageNumber))
+			.addParams("pageSize", String.valueOf(pageSize))
+			.addParams("type", String.valueOf(workOrderState))
+			.build()
+			.execute(new StringCallback() {
+				@Override
+				public void onBefore(Request request) {
+					listener.onBefore();
+				}
+
+				@Override
+				public void onAfter() {
+					listener.onAfter();
+				}
+
+				@Override
+				public void onResponse(String response) {					
+					Log.i(tag, response);
 					
-					Log.i(tag, strResponse);
-					
-					if (!TextUtils.isEmpty(strResponse)) {
-						List<MaintainOrder> respDataList = JSON.parseObject(strResponse, 
+					if (!TextUtils.isEmpty(response)) {
+						List<MaintainOrder> respDataList = JSON.parseObject(response, 
 								new TypeReference<List<MaintainOrder>>() {});
 						if (respDataList != null && respDataList.size() > 0) {							
 							if (1 == pageNumber) {
@@ -170,7 +157,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 								dataList.addAll(respDataList);
 							}
 							
-//							listener.onSearchSuccess();
 							if (respDataList.size() % ProjectContants.PAGE_SIZE == 0) {
 								listener.onSearchSuccess(ProjectContants.ORDER_SHOW_UNCOMPLETE);
 							} else {
@@ -195,23 +181,16 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 							}
 						}
 					} else {
-//						listener.onServerException("服务器故障，响应数据有误！");
 						listener.onSearchFailure("服务器故障，响应数据有误！");
 					}
-				} else {
-					// 响应失败
-//					listener.onServerException("服务器故障，响应失败！");
-					listener.onSearchFailure("服务器故障，响应失败！");
 				}
-			}
-			
-			@Override
-			public void onFailure(Request request, IOException exception) {
-				Log.e(tag, Log.getStackTraceString(exception));
-				listener.onSearchFailure("访问服务器失败\n请检查网络连接后重试");
-			}
-		});
-		
+				
+				@Override
+				public void onError(Call call, Exception e) {
+					Log.e(tag, Log.getStackTraceString(e));
+					listener.onSearchFailure("服务器正在打盹\n请检查网络连接后重试");
+				}
+			});		
 	}
 
 	/**
@@ -223,23 +202,28 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 		StringBuilder strUrl = new StringBuilder(ProjectContants.basePath);
 		strUrl.append("/faultOrder/list");
 		
-		strUrl.append("?pageNumber=" + pageNumber + "&pageSize=" + pageSize + "&type=" + workOrderState);
-		Log.i(tag, "pageNumber=" + pageNumber + ";pageSize=" + pageSize);
-		
-		Request request = OkHttpUtils.newRequestInstance(strUrl.toString(), null, null);
-		OkHttpUtils.enqueue(request, new Callback() {	
-			@Override
-			public void onResponse(Response response) throws IOException {
-				if (response.isSuccessful()) {
-					/*
-					 * 响应成功
-					 */
-					String strResponse = response.body().string();
+		OkHttpUtils.get().url(strUrl.toString())
+			.addParams("pageNumber", String.valueOf(pageNumber))
+			.addParams("pageSize", String.valueOf(pageSize))
+			.addParams("type", String.valueOf(workOrderState))
+			.build()
+			.execute(new StringCallback() {
+				@Override
+				public void onBefore(Request request) {
+					listener.onBefore();
+				}
+
+				@Override
+				public void onAfter() {
+					listener.onAfter();
+				}
+
+				@Override
+				public void onResponse(String response) {					
+					Log.i(tag, response);
 					
-					Log.i(tag, strResponse);
-					
-					if (!TextUtils.isEmpty(strResponse)) {
-						List<FaultOrder> respDataList = JSON.parseObject(strResponse, 
+					if (!TextUtils.isEmpty(response)) {
+						List<FaultOrder> respDataList = JSON.parseObject(response, 
 								new TypeReference<List<FaultOrder>>() {});
 						if (respDataList != null && respDataList.size() > 0) {							
 							if (1 == pageNumber) {
@@ -276,22 +260,16 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 							}
 						}
 					} else {
-//						listener.onServerException("服务器故障，响应数据有误！");
 						listener.onSearchFailure("服务器故障，响应数据有误！");
 					}
-				} else {
-					// 响应失败
-//					listener.onServerException("服务器故障，响应失败！");
-					listener.onSearchFailure("服务器故障，响应失败！");
 				}
-			}
-			
-			@Override
-			public void onFailure(Request request, IOException exception) {
-				Log.e(tag, Log.getStackTraceString(exception));
-				listener.onSearchFailure("访问服务器失败\n请检查网络连接后重试");
-			}
-		});
+				
+				@Override
+				public void onError(Call call, Exception e) {
+					Log.e(tag, Log.getStackTraceString(e));
+					listener.onSearchFailure("服务器正在打盹\n请检查网络连接后重试");	
+				}
+			});
 	}
 
 }

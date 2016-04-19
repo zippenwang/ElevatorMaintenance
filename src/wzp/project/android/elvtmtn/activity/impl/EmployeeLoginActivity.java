@@ -92,7 +92,7 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 
 	@Override
 	public void showProgressDialog() {
-		runOnUiThread(new Runnable() {		
+		/*runOnUiThread(new Runnable() {		
 			@Override
 			public void run() {
 				progressDialog.setTitle("正在验证用户名和密码，请稍后...");
@@ -101,19 +101,27 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 				
 				progressDialog.show();
 			}
-		});
+		});*/
+		progressDialog.setTitle("正在验证用户名和密码，请稍后...");
+		progressDialog.setMessage("Loading...");
+		progressDialog.setCancelable(true);
+		
+		progressDialog.show();
 	}
 
 	@Override
 	public void closeProgressDialog() {
-		runOnUiThread(new Runnable() {			
+		/*runOnUiThread(new Runnable() {			
 			@Override
 			public void run() {
 				if (progressDialog != null) {
 					progressDialog.dismiss();
 				}
 			}
-		});
+		});*/
+		if (progressDialog != null) {
+			progressDialog.dismiss();
+		}
 	}
 	
 	@Override
