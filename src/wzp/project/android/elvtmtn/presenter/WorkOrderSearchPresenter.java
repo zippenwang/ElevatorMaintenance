@@ -76,7 +76,7 @@ public class WorkOrderSearchPresenter implements IWorkOrderSearchListener {
 	}*/
 	
 	public void searchMaintainOrder(int workOrderState, int pageNumber, int pageSize, List<MaintainOrder> dataList) {
-//		workOrderSearchFragment.showProgressDialog();
+		workOrderSearchFragment.showProgressDialog();
 		workOrderBiz.getMaintainOrdersByCondition(workOrderState, pageNumber, pageSize, dataList, this);
 		/*workOrderBiz.getMaintainOrdersByCondition(workOrderState, page, 
 				pageSize, dataList, new IWorkOrderSearchListener() {			
@@ -108,7 +108,7 @@ public class WorkOrderSearchPresenter implements IWorkOrderSearchListener {
 	}
 	
 	public void searchFaultOrder(int workOrderState, int pageNumber, int pageSize, List<FaultOrder> dataList) {
-//		workOrderSearchFragment.showProgressDialog();
+		workOrderSearchFragment.showProgressDialog();
 		
 		/*workOrderBiz.getFaultOrdersByCondition(workOrderState, page, 
 				pageSize, dataList, new IWorkOrderSearchListener() {			
@@ -165,11 +165,6 @@ public class WorkOrderSearchPresenter implements IWorkOrderSearchListener {
 //		workOrderSearchFragment.closeProgressDialog();
 		workOrderSearchFragment.showToast(tipInfo);
 		workOrderSearchFragment.hidePtrlvAndShowLinearLayout("服务器正在打盹，请检查网络后重试...");
-	}
-
-	@Override
-	public void onBefore() {
-		workOrderSearchFragment.showProgressDialog();		
 	}
 
 	@Override

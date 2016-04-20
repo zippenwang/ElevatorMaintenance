@@ -5,6 +5,7 @@ import java.util.Date;
 
 public class ElevatorRecord {
 	
+	private long id;						// 电梯编号
 	private String address;					// 设备地址
 	private String unit;					// 使用单位
 	private String buildingNumber;			// 所在楼号
@@ -18,6 +19,12 @@ public class ElevatorRecord {
 	private Group group;					// 维保小组
 	
 	
+	public long getId() {
+		return id;
+	}
+	public void setId(long id) {
+		this.id = id;
+	}
 	public String getAddress() {
 		return address;
 	}

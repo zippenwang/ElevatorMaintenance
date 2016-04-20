@@ -10,13 +10,16 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import wzp.project.android.elvtmtn.biz.IWorkOrderBiz;
+import wzp.project.android.elvtmtn.biz.IWorkOrderReceiveListener;
 import wzp.project.android.elvtmtn.biz.IWorkOrderSearchListener;
+import wzp.project.android.elvtmtn.entity.Employee;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
@@ -130,11 +133,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 			.build()
 			.execute(new StringCallback() {
 				@Override
-				public void onBefore(Request request) {
-					listener.onBefore();
-				}
-
-				@Override
 				public void onAfter() {
 					listener.onAfter();
 				}
@@ -209,11 +207,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 			.build()
 			.execute(new StringCallback() {
 				@Override
-				public void onBefore(Request request) {
-					listener.onBefore();
-				}
-
-				@Override
 				public void onAfter() {
 					listener.onAfter();
 				}
@@ -270,6 +263,43 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 					listener.onSearchFailure("服务器正在打盹\n请检查网络连接后重试");	
 				}
 			});
+	}
+
+	@Override
+	public void receiveOrder(Long workOrderId, Long employeeId, 
+			final IWorkOrderReceiveListener listener) {		
+		OkHttpUtils.post().url(ProjectContants.basePath + "/faultOrder/accept")
+			.addParams("id", String.valueOf(workOrderId))
+			.addParams("employeeId", String.valueOf(employeeId))
+			.build()
+			.execute(new StringCallback() {		
+				@Override
+				public void onResponse(String response) {
+					JSONObject jo = JSON.parseObject(response);
+					String result = jo.getString("result");
+					
+					if (!TextUtils.isEmpty(result)) {
+						if (result.equals("success")) {
+							listener.onReceiveSuccess();
+						} else if (result.equals("repeat")) {
+							
+						} else if (result.equals("employeeNotExist")) {
+							
+						} else if (response.equals("faultOrderNotExist")) {
+							
+						}						
+					} else {
+						listener.onReceiveFailure("服务器故障，响应数据有误！");
+					}
+				}
+				
+				@Override
+				public void onError(Call call, Exception e) {
+					Log.e(tag, Log.getStackTraceString(e));
+					listener.onReceiveFailure("服务器正在打盹\n请检查网络连接后重试");					
+				}
+			});
+		
 	}
 
 }

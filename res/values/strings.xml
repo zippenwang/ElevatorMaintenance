@@ -16,11 +16,22 @@
 	<string name="received">已接单</string>
 	<string name="unreceived">未接单</string>
 	<string name="elevatorId">电梯编号</string>
-	<string name="elevatorType">电梯类型</string>
 	<string name=":">:</string>
 	<string name="elevatorAddress">电梯地址</string>
 	<string name="faultOccuredTime">故障发生时间</string>
 	<string name="faultDescription">故障描述</string>
 	<string name="receiveState">接单状态</string>
 	<string name="receiveTime">接单时间</string>
+	
+	<!-- 电梯数据库 -->
+	<string name="elevatorNumber">电梯编码</string>
+	<string name="modelNumber">电梯型号</string>
+	<string name="elevatorType">电梯类型</string>
+	<string name="maxWeight">载重</string>
+	<string name="speed">速度</string>
+	<string name="manufacturingDate">生产日期</string>
+	<string name="lastMaintainTime">最近保养时间</string>
+	<string name="buildingNumber">楼号</string>
+	<string name="userUnit">使用单位</string>
+	<string name="phone">联系电话</string>
 </resources>

@@ -1,8 +1,10 @@
 package wzp.project.android.elvtmtn.activity;
 
+import wzp.project.android.elvtmtn.entity.Employee;
+
 public interface IEmployeeLoginActivity {
 
-	void loginSuccess();
+	void loginSuccess(Employee employee);
 	
 	void loginFail();
 	

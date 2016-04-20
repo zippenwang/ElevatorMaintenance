@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <RelativeLayout 
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#484E61">
+        <Button 
+            android:id="@+id/btn_back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/back"
+            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"/>               
+		<TextView 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="24sp"
+	        android:textColor="#FFFFFF"
+	        android:text="电梯档案"
+	        android:gravity="center"
+	        android:layout_alignParentRight="true"
+	        android:layout_centerVertical="true"
+	        android:layout_marginRight="10dp"/>        
+    </RelativeLayout>
+    
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+	    <LinearLayout 
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical">
+	        
+	        <!-- 电梯编号 -->
+		    <LinearLayout 
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">        
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/elevatorNumber"
+		            android:textSize="@dimen/work_order_detail"/>
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:textSize="@dimen/work_order_detail"
+		            android:layout_marginRight="5dp" />
+		        <TextView 
+		            android:id="@+id/tv_elevatorNumber"
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="001"
+		            android:textSize="@dimen/work_order_detail" />        
+		    </LinearLayout>
+		    
+		    <!-- 电梯型号 -->
+		    <LinearLayout 
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">        
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/modelNumber"
+		            android:textSize="@dimen/work_order_detail"/>
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:textSize="@dimen/work_order_detail"
+		            android:layout_marginRight="5dp" />
+		        <TextView 
+		            android:id="@+id/tv_modelNumber"
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="001"
+		            android:textSize="@dimen/work_order_detail" />        
+		    </LinearLayout>
+		    
+		    <!-- 电梯类型 -->
+		    <LinearLayout 
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">        
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/elevatorType"
+		            android:textSize="@dimen/work_order_detail"/>
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:textSize="@dimen/work_order_detail"
+		            android:layout_marginRight="5dp" />
+		        <TextView 
+		            android:id="@+id/tv_elevatorType"
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="001"
+		            android:textSize="@dimen/work_order_detail" />        
+		    </LinearLayout>
+		
+		    <!-- 载重 -->
+		    <LinearLayout 
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">        
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/maxWeight"
+		            android:textSize="@dimen/work_order_detail"/>
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:textSize="@dimen/work_order_detail"
+		            android:layout_marginRight="5dp" />
+		        <TextView 
+		            android:id="@+id/tv_maxWeight"
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="001"
+		            android:textSize="@dimen/work_order_detail" />        
+		    </LinearLayout>
+		    
+		    <!-- 速度 -->
+		    <LinearLayout 
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">        
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/speed"
+		            android:textSize="@dimen/work_order_detail"/>
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:textSize="@dimen/work_order_detail"
+		            android:layout_marginRight="5dp" />
+		        <TextView 
+		            android:id="@+id/tv_speed"
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="001"
+		            android:textSize="@dimen/work_order_detail" />        
+		    </LinearLayout>
+		    
+		    <!-- 生产日期 -->
+		    <LinearLayout 
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">        
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/manufacturingDate"
+		            android:textSize="@dimen/work_order_detail"/>
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:textSize="@dimen/work_order_detail"
+		            android:layout_marginRight="5dp" />
+		        <TextView 
+		            android:id="@+id/tv_manufacturingDate"
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="001"
+		            android:textSize="@dimen/work_order_detail" />        
+		    </LinearLayout>
+		    
+		    <!-- 最近保养时间 -->
+		    <LinearLayout 
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">        
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/lastMaintainTime"
+		            android:textSize="@dimen/work_order_detail"/>
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:textSize="@dimen/work_order_detail"
+		            android:layout_marginRight="5dp" />
+		        <TextView 
+		            android:id="@+id/tv_lastMaintainTime"
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="001"
+		            android:textSize="@dimen/work_order_detail" />        
+		    </LinearLayout>
+		    
+		    <!-- 设备地址 -->
+		    <LinearLayout 
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">        
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/elevatorAddress"
+		            android:textSize="@dimen/work_order_detail"/>
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:textSize="@dimen/work_order_detail"
+		            android:layout_marginRight="5dp" />
+		        <TextView 
+		            android:id="@+id/tv_elevatorAddress"
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="001"
+		            android:textSize="@dimen/work_order_detail" />        
+		    </LinearLayout>
+		    
+		    <!-- 楼号 -->
+		    <LinearLayout 
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">        
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/buildingNumber"
+		            android:textSize="@dimen/work_order_detail"/>
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:textSize="@dimen/work_order_detail"
+		            android:layout_marginRight="5dp" />
+		        <TextView 
+		            android:id="@+id/tv_buildingNumber"
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="001"
+		            android:textSize="@dimen/work_order_detail" />        
+		    </LinearLayout>
+		    
+		    <!-- 使用单位 -->
+		    <LinearLayout 
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">        
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/userUnit"
+		            android:textSize="@dimen/work_order_detail"/>
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:textSize="@dimen/work_order_detail"
+		            android:layout_marginRight="5dp" />
+		        <TextView 
+		            android:id="@+id/tv_userUnit"
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="001"
+		            android:textSize="@dimen/work_order_detail" />        
+		    </LinearLayout>
+		    
+		    <!-- 联系电话 -->
+		    <LinearLayout 
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">        
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/phone"
+		            android:textSize="@dimen/work_order_detail"/>
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:textSize="@dimen/work_order_detail"
+		            android:layout_marginRight="5dp" />
+		        <TextView 
+		            android:id="@+id/tv_phone"
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="001"
+		            android:textSize="@dimen/work_order_detail" />        
+		    </LinearLayout>
+    	</LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

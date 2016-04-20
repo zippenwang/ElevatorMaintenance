@@ -1,8 +1,6 @@
 package wzp.project.android.elvtmtn.biz;
 
 public interface IWorkOrderSearchListener {
-
-	void onBefore();							// 查询工单前执行的UI操作
 	
 	void onAfter();								// 查询工单结束执行的UI操作
 	

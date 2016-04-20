@@ -49,12 +49,6 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 			.addParams("password", employee.getPassword())
 			.build()
 			.execute(new StringCallback() {
-				
-				@Override
-				public void onBefore(Request request) {
-					listener.onBefore();
-				}
-
 				@Override
 				public void onAfter() {
 					listener.onAfter();
@@ -67,7 +61,7 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 					
 					if (!TextUtils.isEmpty(result)) {
 						if (result.equals("success")) {
-							listener.onLoginSuccess();
+							listener.onLoginSuccess((Employee) jo.get("employee"));
 						} else if (result.equals("failed")) {
 							listener.onLoginFailure();
 						}

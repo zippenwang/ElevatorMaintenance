@@ -33,4 +33,7 @@ public interface IWorkOrderBiz {
 	 */
 	void getFaultOrdersByCondition(int workOrderState, int pageNumber, 
 			int pageSize, List<FaultOrder> dataList, IWorkOrderSearchListener listener);
+	
+	
+	void receiveOrder(Long workOrderId, Long employeeId, IWorkOrderReceiveListener listener);
 }

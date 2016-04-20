@@ -19,13 +19,13 @@ public class EmployeeLoginPresenter {
 	public void login(String username, String password) {
 		Employee employee = new Employee(username, password);
 
-//		userLoginActivity.showProgressDialog();
+		userLoginActivity.showProgressDialog();
 		
 		userBiz.login(employee, new IEmployeeLoginListener() {
 			@Override
-			public void onLoginSuccess() {
+			public void onLoginSuccess(Employee employee) {
 //				userLoginActivity.closeProgressDialog();
-				userLoginActivity.loginSuccess();
+				userLoginActivity.loginSuccess(employee);
 			}
 
 			@Override
@@ -38,11 +38,6 @@ public class EmployeeLoginPresenter {
 			public void onServerException(String tipInfo) {
 //				userLoginActivity.closeProgressDialog();
 				userLoginActivity.showToast(tipInfo);
-			}
-
-			@Override
-			public void onBefore() {
-				userLoginActivity.showProgressDialog();
 			}
 
 			@Override

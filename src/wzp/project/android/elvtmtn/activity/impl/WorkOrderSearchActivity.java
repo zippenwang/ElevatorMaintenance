@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,8 +45,10 @@ public class WorkOrderSearchActivity extends FragmentActivity {
 	private int[] selectedStateArray;
 	private TextView[] tvHiddenArray;					// 用于标注当前所在的选项卡
 	private TextView[] tvArray;							// 用于标注当前所在的选项卡的标题
-	private int currentSelectedId = 0;
 	
+	private Button btnBack;
+	
+	private int currentSelectedId = 0;
 	private int workOrderType = 0;						// 工单类型
 	private static final String tag = "WorkOrderSearchActivity";
 	
@@ -82,6 +85,16 @@ public class WorkOrderSearchActivity extends FragmentActivity {
 		tvOverdue = (TextView) findViewById(R.id.tv_overdue);
 	
 		vpWorkOrder = (ViewPager) findViewById(R.id.vp_workOrder);
+		// 设置ViewPager的预加载值，即让ViewPager维护以当前Fragment为中心，左右各2个Fragment
+		vpWorkOrder.setOffscreenPageLimit(2);
+		
+		btnBack = (Button) findViewById(R.id.btn_back);
+		btnBack.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				finish();
+			}
+		});
 	}
 	
 	private void initParam() {

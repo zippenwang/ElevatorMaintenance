@@ -67,6 +67,7 @@ public class FinishedWorkOrderFragment extends Fragment implements IWorkOrderSea
 	
 	private boolean isPtrlvHidden = false;			// PullToRefreshListView控件是否被隐藏
 	private String tipInfo;							// PullToRefreshListView控件被隐藏时的提示信息
+	private boolean isFirstAccessServer = true;
 	
 	private static final String tag = "FinishedWorkOrderFragment";
 	
@@ -97,7 +98,7 @@ public class FinishedWorkOrderFragment extends Fragment implements IWorkOrderSea
 		 * 2、URL需要进行区分；
 		 * 2、Adapter需要区分；
 		 */		
-		curPage = 1;
+		/*curPage = 1;
 		if (WorkOrderType.MAINTAIN_ORDER == workOrderType) {
 			mAdapter = new MaintainOrderAdapter(workOrderSearchActivity, 
 					R.layout.listitem_maintain_order, maintainOrderList);
@@ -108,16 +109,33 @@ public class FinishedWorkOrderFragment extends Fragment implements IWorkOrderSea
 					R.layout.listitem_fault_order, faultOrderList);
 			workOrderSearchPresenter.searchFaultOrder(WorkOrderState.FINISHED, 
 					curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
-		}
+		}*/
 		
 		// 可以在此处进行第一次网络访问
 //		initData();
 	}
+	
 
-	/*private void initData() {
-		dataList.addAll(Arrays.asList("刘备", "关羽", "张飞", "赵云", "诸葛孔明"));
-		adapter = new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, dataList);
-	}*/
+	@Override
+	public void setUserVisibleHint(boolean isVisibleToUser) {
+		if (isVisibleToUser && isFirstAccessServer) {
+			curPage = 1;
+			if (WorkOrderType.MAINTAIN_ORDER == workOrderType) {
+				mAdapter = new MaintainOrderAdapter(workOrderSearchActivity, 
+						R.layout.listitem_maintain_order, maintainOrderList);
+				workOrderSearchPresenter.searchMaintainOrder(WorkOrderState.FINISHED, curPage++, 
+						ProjectContants.PAGE_SIZE, maintainOrderList);
+			} else if (WorkOrderType.FAULT_ORDER == workOrderType) {
+				mAdapter = new FaultOrderAdapter(workOrderSearchActivity, 
+						R.layout.listitem_fault_order, faultOrderList);
+				workOrderSearchPresenter.searchFaultOrder(WorkOrderState.FINISHED, 
+						curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
+			}
+			isFirstAccessServer = false;
+		}
+		
+		super.setUserVisibleHint(isVisibleToUser);
+	}
 
 	private void initWidget(View view) {
 		ptrlvFinished = (PullToRefreshListView) view.findViewById(R.id.ptrlv_finished);
@@ -245,19 +263,22 @@ public class FinishedWorkOrderFragment extends Fragment implements IWorkOrderSea
 				
 				progressDialog.show();
 			}
-		});		
+		});	
 	}
 
 	@Override
 	public void closeProgressDialog() {
-		workOrderSearchActivity.runOnUiThread(new Runnable() {			
+		/*workOrderSearchActivity.runOnUiThread(new Runnable() {			
 			@Override
 			public void run() {
 				if (progressDialog != null) {
 					progressDialog.dismiss();
 				}
 			}
-		});		
+		});	*/
+		if (progressDialog != null) {
+			progressDialog.dismiss();
+		}
 	}
 
 	@Override

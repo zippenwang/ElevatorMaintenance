@@ -118,18 +118,7 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 //					R.layout.listitem_fault_order, faultOrderList);
 			workOrderSearchPresenter.searchFaultOrder(WorkOrderState.UNFINISHED, 
 					curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
-		}		
-		
-		// 可以在此处进行第一次网络访问
-//		initData();		
-	}
-
-	/**
-	 * 模拟第一次访问服务器，获取数据
-	 */
-	private void initData() {
-		dataList.addAll(Arrays.asList("Iverson", "Wade", "Paul", "James", "Bryant"));
-		adapter = new ArrayAdapter<String>(workOrderSearchActivity, android.R.layout.simple_list_item_1, dataList);
+		}	
 	}
 
 	/**
@@ -150,7 +139,6 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 			}
 		});
 		
-//		ptrlvUnfinished.setAdapter(adapter);
 		ptrlvUnfinished.setAdapter(mAdapter);
 		/*if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
 			ptrlvUnfinished.setAdapter(maintainAdapter);
@@ -176,17 +164,6 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 				new SearchMoreTask().execute();
 			}
 		});
-		
-		// 设置下拉刷新的具体操作
-		/*ptrlvUnfinished.setOnRefreshListener(new OnRefreshListener<ListView>() {
-			@Override
-			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-				String label = "上次刷新时间：" + sdf.format(new Date());
-				refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);  
-				
-                new GetDataTask().execute();
-			}
-		});*/
 		
 		ptrlvUnfinished.setOnScrollListener(new OnScrollListener() {			
 			@Override
@@ -256,34 +233,6 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 		}
 	}
 	
-	private class GetDataTask extends AsyncTask<Void, Void, List<String>> {
-        @Override  
-        protected List<String> doInBackground(Void... params) {
-        	/*
-        	 * 此处可执行一些费时的操作，例如网络访问
-        	 */
-            try {  
-                Thread.sleep(3000);  
-            } catch (InterruptedException e) {  
-            	Log.e(tag, Log.getStackTraceString(e));
-            }
-
-            // 返回执行的结果
-            return Arrays.asList("武松", "李逵", "****鲁智深****");    
-        }  
- 
-        @Override  
-        protected void onPostExecute(List<String> result) {
-        	dataList.addAll(result);
-              
-            // 通知程序数据集已经改变，如果不做通知，那么将不会刷新ListView的集合  
-            adapter.notifyDataSetChanged();
-            
-            // 当下拉更新完成后，一定要调用该方法，否则更新进度条会一直存在！！
-            ptrlvUnfinished.onRefreshComplete();
-        }	
-	}
-	
 	private class RefreshDataTask extends AsyncTask<Void, Void, Void> {
         @Override  
         protected Void doInBackground(Void... params) {
@@ -327,7 +276,7 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 	
 	@Override
 	public void showProgressDialog() {
-		/*workOrderSearchActivity.runOnUiThread(new Runnable() {		
+		workOrderSearchActivity.runOnUiThread(new Runnable() {		
 			@Override
 			public void run() {
 				progressDialog.setTitle("正在访问服务器，请稍后...");
@@ -336,12 +285,7 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 				
 				progressDialog.show();
 			}
-		});*/
-		progressDialog.setTitle("正在访问服务器，请稍后...");
-		progressDialog.setMessage("Loading...");
-		progressDialog.setCancelable(true);
-		
-		progressDialog.show();
+		});
 	}
 
 	@Override

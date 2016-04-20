@@ -16,7 +16,7 @@ public class FaultOrder {
 	private String signOutAddress;			// 签退地点
 	private Boolean fixed = Boolean.FALSE;	// 是否修好
 	private String remark;					// 备注
-	private Employee employee;				// 维修人员
+	private Employee employee;				// 维修人员，记录接单的工作人员
 	private ElevatorRecord elevatorRecord;	// 电梯档案
 	
 	public long getId() {

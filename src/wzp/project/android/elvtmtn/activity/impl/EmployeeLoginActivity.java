@@ -3,10 +3,14 @@ package wzp.project.android.elvtmtn.activity.impl;
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.activity.IEmployeeLoginActivity;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
+import wzp.project.android.elvtmtn.entity.Employee;
 import wzp.project.android.elvtmtn.presenter.EmployeeLoginPresenter;
+import wzp.project.android.elvtmtn.util.MyApplication;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -77,7 +81,13 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 	}
 
 	@Override
-	public void loginSuccess() {
+	public void loginSuccess(Employee employee) {
+		SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext()).edit();
+		editor.putLong("id", employee.getId());
+		editor.putString("username", employee.getUsername());
+		editor.putString("password", employee.getPassword());
+		editor.commit();
+		
 		/*
 		 * 若登录成功，则跳转至主界面
 		 */
@@ -92,7 +102,7 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 
 	@Override
 	public void showProgressDialog() {
-		/*runOnUiThread(new Runnable() {		
+		runOnUiThread(new Runnable() {		
 			@Override
 			public void run() {
 				progressDialog.setTitle("正在验证用户名和密码，请稍后...");
@@ -101,12 +111,7 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 				
 				progressDialog.show();
 			}
-		});*/
-		progressDialog.setTitle("正在验证用户名和密码，请稍后...");
-		progressDialog.setMessage("Loading...");
-		progressDialog.setCancelable(true);
-		
-		progressDialog.show();
+		});
 	}
 
 	@Override

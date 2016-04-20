@@ -8,6 +8,6 @@ public interface ProjectContants {
 	int ORDER_SHOW_COMPLETE = 0x51;			// 工单已经全部被显示出来了
 	int ORDER_SHOW_UNCOMPLETE = 0X52;		// 工单还未全部显示出来
 	
-	int PAGE_SIZE = 10;
+	int PAGE_SIZE = 2;
 	
 }
