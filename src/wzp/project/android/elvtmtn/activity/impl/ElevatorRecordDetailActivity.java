@@ -16,7 +16,7 @@ import android.widget.TextView;
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
 import wzp.project.android.elvtmtn.entity.ElevatorRecord;
-import wzp.project.android.elvtmtn.helper.adapter.FaultOrderAdapter;
+import wzp.project.android.elvtmtn.helper.adapter.UnfinishedFaultOrderAdapter;
 
 public class ElevatorRecordDetailActivity extends BaseActivity {
 

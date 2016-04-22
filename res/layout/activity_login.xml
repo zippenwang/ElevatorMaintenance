@@ -29,6 +29,7 @@
 	        <EditText
 	            android:id="@+id/edt_username"
 	            android:layout_height="wrap_content"
+	            android:text="sa"
 	            android:hint="请输入员工号..." />
 	    </TableRow>
 			
@@ -40,6 +41,7 @@
 	        <EditText
 	            android:id="@+id/edt_password"
 	            android:layout_height="wrap_content"
+	            android:text="123456"
 	            android:hint="请输入密码..."
 	            android:inputType="textPassword" />
 	    </TableRow>

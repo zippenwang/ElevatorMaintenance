@@ -3,14 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
-    <!-- <TextView 
-        android:id="@+id/tv_workOrderType"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="30sp"
-        android:background="@color/titleNormalColor"
-        android:gravity="center"/> -->
     
     <RelativeLayout 
         android:layout_width="match_parent"
@@ -25,10 +17,10 @@
             android:layout_marginLeft="10dp"
             android:layout_centerVertical="true"/>        
         
-		<TextView 
-	        android:id="@+id/tv_workOrderType"
+		<TextView
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
+	        android:text="保养工单"
 	        android:textSize="24sp"
 	        android:textColor="#FFFFFF"
 	        android:gravity="center"
@@ -129,14 +121,6 @@
             android:layout_weight="1"
             android:background="@drawable/title_bg"
             android:paddingTop="5dp" >
-
-            <!-- <ImageView
-                android:id="@+id/rightImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_launcher" /> -->
                 
             <TextView 
                 android:id="@+id/tv_overdue"
@@ -160,7 +144,7 @@
     </LinearLayout>
     
     <android.support.v4.view.ViewPager
-        android:id="@+id/vp_workOrder"
+        android:id="@+id/vp_maintainOrder"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
     </android.support.v4.view.ViewPager>

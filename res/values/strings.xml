@@ -22,6 +22,21 @@
 	<string name="faultDescription">故障描述</string>
 	<string name="receiveState">接单状态</string>
 	<string name="receiveTime">接单时间</string>
+	<string name="fixEmployee">维修人员</string>
+	<string name="fixGroup">维修小组</string>
+	<string name="signInTime">签到时间</string>
+	<string name="signInAddress">签到地点</string>
+	<string name="signOutTime">签退时间</string>
+	<string name="signOutAddress">签退地点</string>
+	<string name="faultReason">故障原因</string>
+	<string name="isFixed">是否修好</string>
+	<string name="remark">备注</string>
+	
+	<string name="maintainType">保养类型</string>
+	<string name="finalTime">截止日期</string>
+	<string name="isFinished">是否完成</string>
+	<string name="maintainItem">保养项目</string>
+	
 	
 	<!-- 电梯数据库 -->
 	<string name="elevatorNumber">电梯编码</string>

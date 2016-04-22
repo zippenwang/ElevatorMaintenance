@@ -1,0 +1,544 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <RelativeLayout 
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#484E61">
+        <Button 
+            android:id="@+id/btn_back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/back"
+            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"/>        
+        
+		<TextView 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="24sp"
+	        android:textColor="#FFFFFF"
+	        android:text="工单详情"
+	        android:gravity="center"
+	        android:layout_alignParentRight="true"
+	        android:layout_centerVertical="true"
+	        android:layout_marginRight="10dp"/>        
+    </RelativeLayout>
+    
+    <TextView 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:textSize="30sp"
+	    android:text="故障工单"
+	    android:gravity="center"/>
+    
+    <ScrollView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout 
+            android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:orientation="vertical">
+            <!-- 工单号 -->
+		    <LinearLayout 
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">        
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/workOrderId"
+		            android:textSize="@dimen/work_order_detail"/>
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:textSize="@dimen/work_order_detail"
+		            android:layout_marginRight="5dp" />
+		        <TextView 
+		            android:id="@+id/tv_workOrderId"
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="001"
+		            android:textSize="@dimen/work_order_detail" />        
+		    </LinearLayout>
+		
+		    <!-- 电梯地址 -->
+		    <LinearLayout 
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">        
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/elevatorAddress"
+		            android:textSize="@dimen/work_order_detail" />
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:layout_marginRight="5dp"
+		            android:textSize="@dimen/work_order_detail" />
+		        <TextView 
+		            android:id="@+id/tv_elevatorAddress"
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:singleLine="true"
+		            android:ellipsize="marquee"
+		            android:marqueeRepeatLimit="marquee_forever"
+		            android:focusableInTouchMode="true"
+		            android:focusable="true"
+		            android:textSize="@dimen/work_order_detail" />   
+		    </LinearLayout>
+		    
+		    <!-- 故障发生时间 -->
+		    <LinearLayout
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/faultOccuredTime"
+		            android:textSize="@dimen/work_order_detail" />
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:layout_marginRight="5dp"
+		            android:textSize="@dimen/work_order_detail" />
+		        <TextView 
+		            android:id="@+id/tv_faultOccuredTime"
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="xxx"
+		            android:textSize="@dimen/work_order_detail" />
+		    </LinearLayout>
+		    
+		    <!-- 故障描述 -->
+		    <LinearLayout
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/faultDescription"
+		            android:textSize="@dimen/work_order_detail" />
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:layout_marginRight="5dp"
+		            android:textSize="@dimen/work_order_detail" />
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:id="@+id/tv_faultDescription"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="xxx"
+		            android:textSize="@dimen/work_order_detail" />
+		    </LinearLayout>
+		    
+		    <!-- 接单状态 -->
+		    <LinearLayout
+		        android:id="@+id/linear_receiveState"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/receiveState"
+		            android:textSize="@dimen/work_order_detail" />
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:layout_marginRight="5dp"
+		            android:textSize="@dimen/work_order_detail" />
+		        <TextView 
+		            android:id="@+id/tv_receiveState"
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="未接单"
+		            android:textSize="@dimen/work_order_detail" />
+		    </LinearLayout>
+		    
+		    <!-- 接单时间 -->
+		    <LinearLayout
+		        android:id="@+id/linear_receiveTime"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp"
+		        android:visibility="gone">
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/receiveTime"
+		            android:textSize="@dimen/work_order_detail" />
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:layout_marginRight="5dp"
+		            android:textSize="@dimen/work_order_detail" />
+		        <TextView 
+		            android:id="@+id/tv_receiveTime"
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="未接单"
+		            android:textSize="@dimen/work_order_detail" />
+		    </LinearLayout>
+		    
+		    <LinearLayout 
+		        android:id="@+id/linear_finished"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:visibility="gone"
+		        android:orientation="vertical">
+		        <!-- 维修人员 -->
+			    <LinearLayout
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:layout_marginTop="10dp"
+			        android:paddingLeft="20dp"
+			        android:paddingRight="20dp">
+			        <TextView 
+			            android:layout_width="0dp"
+			            android:layout_weight="2"
+			            android:layout_height="wrap_content"
+			            android:gravity="left"
+			            android:text="@string/fixEmployee"
+			            android:textSize="@dimen/work_order_detail" />
+			        <TextView 
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:text="@string/:"
+			            android:layout_marginRight="5dp"
+			            android:textSize="@dimen/work_order_detail" />
+			        <TextView 
+			            android:id="@+id/tv_fixEmployee"
+			            android:layout_width="0dp"
+			            android:layout_weight="3"
+			            android:layout_height="wrap_content"
+			            android:gravity="left"
+			            android:text="未接单"
+			            android:textSize="@dimen/work_order_detail" />
+			    </LinearLayout>
+		        
+			    <!-- 维修小组 -->
+			    <LinearLayout
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:layout_marginTop="10dp"
+			        android:paddingLeft="20dp"
+			        android:paddingRight="20dp">
+			        <TextView 
+			            android:layout_width="0dp"
+			            android:layout_weight="2"
+			            android:layout_height="wrap_content"
+			            android:gravity="left"
+			            android:text="@string/fixGroup"
+			            android:textSize="@dimen/work_order_detail" />
+			        <TextView 
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:text="@string/:"
+			            android:layout_marginRight="5dp"
+			            android:textSize="@dimen/work_order_detail" />
+			        <TextView 
+			            android:id="@+id/tv_fixGroup"
+			            android:layout_width="0dp"
+			            android:layout_weight="3"
+			            android:layout_height="wrap_content"
+			            android:gravity="left"
+			            android:text="未接单"
+			            android:textSize="@dimen/work_order_detail" />
+			    </LinearLayout>
+		        
+			    <!-- 签到时间 -->
+			    <LinearLayout
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:layout_marginTop="10dp"
+			        android:paddingLeft="20dp"
+			        android:paddingRight="20dp">
+			        <TextView 
+			            android:layout_width="0dp"
+			            android:layout_weight="2"
+			            android:layout_height="wrap_content"
+			            android:gravity="left"
+			            android:text="@string/signInTime"
+			            android:textSize="@dimen/work_order_detail" />
+			        <TextView 
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:text="@string/:"
+			            android:layout_marginRight="5dp"
+			            android:textSize="@dimen/work_order_detail" />
+			        <TextView 
+			            android:id="@+id/tv_signInTime"
+			            android:layout_width="0dp"
+			            android:layout_weight="3"
+			            android:layout_height="wrap_content"
+			            android:gravity="left"
+			            android:text="未接单"
+			            android:textSize="@dimen/work_order_detail" />
+			    </LinearLayout>
+			    
+			    <!-- 签到地点 -->
+			    <LinearLayout
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:layout_marginTop="10dp"
+			        android:paddingLeft="20dp"
+			        android:paddingRight="20dp">
+			        <TextView 
+			            android:layout_width="0dp"
+			            android:layout_weight="2"
+			            android:layout_height="wrap_content"
+			            android:gravity="left"
+			            android:text="@string/signInAddress"
+			            android:textSize="@dimen/work_order_detail" />
+			        <TextView 
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:text="@string/:"
+			            android:layout_marginRight="5dp"
+			            android:textSize="@dimen/work_order_detail" />
+			        <TextView 
+			            android:id="@+id/tv_signInAddress"
+			            android:layout_width="0dp"
+			            android:layout_weight="3"
+			            android:layout_height="wrap_content"
+			            android:gravity="left"
+			            android:text="未接单"
+			            android:textSize="@dimen/work_order_detail" />
+			    </LinearLayout>
+			    
+			    <!-- 签退时间 -->
+			    <LinearLayout
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:layout_marginTop="10dp"
+			        android:paddingLeft="20dp"
+			        android:paddingRight="20dp">
+			        <TextView 
+			            android:layout_width="0dp"
+			            android:layout_weight="2"
+			            android:layout_height="wrap_content"
+			            android:gravity="left"
+			            android:text="@string/signOutTime"
+			            android:textSize="@dimen/work_order_detail" />
+			        <TextView 
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:text="@string/:"
+			            android:layout_marginRight="5dp"
+			            android:textSize="@dimen/work_order_detail" />
+			        <TextView 
+			            android:id="@+id/tv_signOutTime"
+			            android:layout_width="0dp"
+			            android:layout_weight="3"
+			            android:layout_height="wrap_content"
+			            android:gravity="left"
+			            android:text="未接单"
+			            android:textSize="@dimen/work_order_detail" />
+			    </LinearLayout>
+			    
+			    <!-- 签退地点 -->
+			    <LinearLayout
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:layout_marginTop="10dp"
+			        android:paddingLeft="20dp"
+			        android:paddingRight="20dp">
+			        <TextView 
+			            android:layout_width="0dp"
+			            android:layout_weight="2"
+			            android:layout_height="wrap_content"
+			            android:gravity="left"
+			            android:text="@string/signOutAddress"
+			            android:textSize="@dimen/work_order_detail" />
+			        <TextView 
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:text="@string/:"
+			            android:layout_marginRight="5dp"
+			            android:textSize="@dimen/work_order_detail" />
+			        <TextView 
+			            android:id="@+id/tv_signOutAddress"
+			            android:layout_width="0dp"
+			            android:layout_weight="3"
+			            android:layout_height="wrap_content"
+			            android:gravity="left"
+			            android:text="未接单"
+			            android:textSize="@dimen/work_order_detail" />
+			    </LinearLayout>
+			    
+			    <!-- 故障原因 -->
+			    <LinearLayout
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:layout_marginTop="10dp"
+			        android:paddingLeft="20dp"
+			        android:paddingRight="20dp">
+			        <TextView 
+			            android:layout_width="0dp"
+			            android:layout_weight="2"
+			            android:layout_height="wrap_content"
+			            android:gravity="left"
+			            android:text="@string/faultReason"
+			            android:textSize="@dimen/work_order_detail" />
+			        <TextView 
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:text="@string/:"
+			            android:layout_marginRight="5dp"
+			            android:textSize="@dimen/work_order_detail" />
+			        <TextView 
+			            android:id="@+id/tv_faultReason"
+			            android:layout_width="0dp"
+			            android:layout_weight="3"
+			            android:layout_height="wrap_content"
+			            android:gravity="left"
+			            android:text="未接单"
+			            android:textSize="@dimen/work_order_detail" />
+			    </LinearLayout>
+			    
+			    <!-- 是否修好 -->
+			    <LinearLayout
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:layout_marginTop="10dp"
+			        android:paddingLeft="20dp"
+			        android:paddingRight="20dp">
+			        <TextView 
+			            android:layout_width="0dp"
+			            android:layout_weight="2"
+			            android:layout_height="wrap_content"
+			            android:gravity="left"
+			            android:text="@string/isFixed"
+			            android:textSize="@dimen/work_order_detail" />
+			        <TextView 
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:text="@string/:"
+			            android:layout_marginRight="5dp"
+			            android:textSize="@dimen/work_order_detail" />
+			        <TextView 
+			            android:id="@+id/tv_isFixed"
+			            android:layout_width="0dp"
+			            android:layout_weight="3"
+			            android:layout_height="wrap_content"
+			            android:gravity="left"
+			            android:text="未接单"
+			            android:textSize="@dimen/work_order_detail" />
+			    </LinearLayout>
+			    
+			    <!-- 备注 -->
+			    <LinearLayout
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:layout_marginTop="10dp"
+			        android:paddingLeft="20dp"
+			        android:paddingRight="20dp">
+			        <TextView 
+			            android:layout_width="0dp"
+			            android:layout_weight="2"
+			            android:layout_height="wrap_content"
+			            android:gravity="left"
+			            android:text="@string/remark"
+			            android:textSize="@dimen/work_order_detail" />
+			        <TextView 
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:text="@string/:"
+			            android:layout_marginRight="5dp"
+			            android:textSize="@dimen/work_order_detail" />
+			        <TextView 
+			            android:id="@+id/tv_remark"
+			            android:layout_width="0dp"
+			            android:layout_weight="3"
+			            android:layout_height="wrap_content"
+			            android:gravity="left"
+			            android:text="未接单"
+			            android:textSize="@dimen/work_order_detail" />
+			    </LinearLayout>
+		    </LinearLayout>
+		    
+		    <LinearLayout 
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp"
+		        android:gravity="center">
+		        <Button 
+		            android:id="@+id/btn_queryElevatorRecord"
+		            android:layout_width="0dp"
+		            android:layout_weight="1"
+		            android:layout_height="wrap_content"
+		            android:text="查询电梯档案" />
+		        <TextView 
+		            android:layout_width="5dp"
+		            android:layout_height="wrap_content"/>
+		        <Button 
+		            android:id="@+id/btn_receiveOrder"
+		            android:layout_width="0dp"
+		            android:layout_weight="1"
+		            android:layout_height="wrap_content"
+		            android:text="接单" />
+		        <Button 
+		            android:id="@+id/btn_cancelReceiveOrder"
+		            android:layout_width="0dp"
+		            android:layout_weight="1"
+		            android:layout_height="wrap_content"
+		            android:text="取消接单"
+		            android:visibility="gone" />
+		    </LinearLayout>
+		            
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
+

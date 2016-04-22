@@ -1,11 +1,8 @@
 package wzp.project.android.elvtmtn.entity;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public class MaintainOrder implements Serializable {
-
-	private static final long serialVersionUID = -2296104832254941753L;
+public class MaintainOrder {
 	
 	private long id;							// 工单id
 	private Date finalTime;						// 截止日期
@@ -19,6 +16,7 @@ public class MaintainOrder implements Serializable {
 	private Employee employee;					// 保养人员
 	private Group group;						// 保养小组
 	private ElevatorRecord elevatorRecord;		// 电梯档案
+	private MaintainType maintainType;			// 维保类型
 	
 	
 	public long getId() {
@@ -92,5 +90,11 @@ public class MaintainOrder implements Serializable {
 	}
 	public void setElevatorRecord(ElevatorRecord elevatorRecord) {
 		this.elevatorRecord = elevatorRecord;
+	}
+	public MaintainType getMaintainType() {
+		return maintainType;
+	}
+	public void setMaintainType(MaintainType maintainType) {
+		this.maintainType = maintainType;
 	}
 }

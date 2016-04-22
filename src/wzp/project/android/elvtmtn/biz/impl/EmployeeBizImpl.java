@@ -61,7 +61,7 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 					
 					if (!TextUtils.isEmpty(result)) {
 						if (result.equals("success")) {
-							listener.onLoginSuccess((Employee) jo.get("employee"));
+							listener.onLoginSuccess((JSON.toJavaObject((JSONObject) jo.get("employee"), Employee.class)));
 						} else if (result.equals("failed")) {
 							listener.onLoginFailure();
 						}

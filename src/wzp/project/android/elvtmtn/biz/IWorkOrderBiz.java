@@ -19,7 +19,7 @@ public interface IWorkOrderBiz {
 	 * @param dataList 保养工单的List集合
 	 * @param listener 用于回调的监听器
 	 */
-	void getMaintainOrdersByCondition(int workOrderState, int pageNumber, 
+	void getMaintainOrdersByCondition(long groupId, int workOrderState, int pageNumber, 
 			int pageSize, List<MaintainOrder> dataList, IWorkOrderSearchListener listener);
 	
 	/**
@@ -31,9 +31,11 @@ public interface IWorkOrderBiz {
 	 * @param dataList 故障工单的List集合
 	 * @param listener 用于回调的监听器
 	 */
-	void getFaultOrdersByCondition(int workOrderState, int pageNumber, 
+	void getFaultOrdersByCondition(long groupId, int workOrderState, int pageNumber, 
 			int pageSize, List<FaultOrder> dataList, IWorkOrderSearchListener listener);
 	
 	
-	void receiveOrder(Long workOrderId, Long employeeId, IWorkOrderReceiveListener listener);
+	void receiveOrder(int workOrderType, Long workOrderId, Long employeeId, IWorkOrderReceiveListener listener);
+
+	void cancelReceiveOrder(int workOrderType, Long workOrderId, Long employeeId, IWorkOrderCancelListener listener);
 }

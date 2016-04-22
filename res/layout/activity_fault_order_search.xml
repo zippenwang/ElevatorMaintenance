@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <RelativeLayout 
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#484E61">
+        <Button 
+            android:id="@+id/btn_back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/back"
+            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"/>        
+        
+		<TextView 
+	        android:layout_width="wrap_content"
+	        android:text="故障工单"
+	        android:layout_height="wrap_content"
+	        android:textSize="24sp"
+	        android:textColor="#FFFFFF"
+	        android:gravity="center"
+	        android:layout_alignParentRight="true"
+	        android:layout_centerVertical="true"
+	        android:layout_marginRight="10dp"/>        
+    </RelativeLayout>
+    
+    <ImageView
+        android:id="@+id/iv_spiltLine"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/spilt_line" />
+    
+    <LinearLayout
+        android:id="@+id/linear_workOrderState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:id="@+id/relative_unfinished"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/title_bg"
+            android:paddingTop="5dp" >
+            
+            <TextView 
+                android:id="@+id/tv_unfinished"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_centerHorizontal="true"
+                android:text="未完成"
+                android:textSize="20sp"
+                android:textColor="#FF0000"
+                android:gravity="center"
+                android:src="@drawable/ic_launcher"/>
+
+            <TextView
+                android:id="@+id/tv_unfinished_hidden"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_below="@id/tv_unfinished"
+                android:layout_marginTop="5dp"
+                android:background="#FF0000" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relative_finished"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/title_bg"
+            android:paddingTop="5dp" >
+                        
+            <TextView 
+                android:id="@+id/tv_finished"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_centerHorizontal="true"
+                android:text="已完成"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:src="@drawable/ic_launcher"/>
+
+            <TextView
+                android:layout_width="0.5dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/tv_finished"
+                android:layout_alignParentLeft="true"
+                android:layout_alignTop="@id/tv_finished"
+                android:background="@color/whiteColor" />
+
+            <TextView
+                android:id="@+id/tv_finished_hidden"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_below="@id/tv_finished"
+                android:layout_marginTop="5dp"
+                android:background="#FF0000"
+                android:visibility="invisible" />
+        </RelativeLayout>     
+    </LinearLayout>
+    
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_faultOrder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </android.support.v4.view.ViewPager>
+</LinearLayout>

@@ -31,6 +31,8 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 	
 	private EmployeeLoginPresenter userLoginPresenter = new EmployeeLoginPresenter(this);
 	
+	private static final String tag = "EmployeeLoginActivity";
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +85,9 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 	@Override
 	public void loginSuccess(Employee employee) {
 		SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext()).edit();
-		editor.putLong("id", employee.getId());
+		Log.i(tag, "employeeId:" + employee.getId() + ";groupId" + employee.getGroup().getId());
+		editor.putLong("employeeId", employee.getId());
+		editor.putLong("groupId", employee.getGroup().getId());
 		editor.putString("username", employee.getUsername());
 		editor.putString("password", employee.getPassword());
 		editor.commit();

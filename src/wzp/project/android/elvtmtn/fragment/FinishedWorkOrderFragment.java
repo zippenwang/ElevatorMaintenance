@@ -4,27 +4,34 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 
 import wzp.project.android.elvtmtn.R;
-import wzp.project.android.elvtmtn.activity.impl.WorkOrderDetailActivity;
-import wzp.project.android.elvtmtn.activity.impl.WorkOrderSearchActivity;
+import wzp.project.android.elvtmtn.activity.impl.FaultOrderDetailActivity;
+import wzp.project.android.elvtmtn.activity.impl.FaultOrderSearchActivity;
+import wzp.project.android.elvtmtn.activity.impl.MaintainOrderDetailActivity;
+import wzp.project.android.elvtmtn.activity.impl.MaintainOrderSearchActivity;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
-import wzp.project.android.elvtmtn.helper.adapter.FaultOrderAdapter;
+import wzp.project.android.elvtmtn.helper.adapter.UnfinishedFaultOrderAdapter;
+import wzp.project.android.elvtmtn.helper.adapter.FinishedFaultOrderAdapter;
 import wzp.project.android.elvtmtn.helper.adapter.MaintainOrderAdapter;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderState;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 import wzp.project.android.elvtmtn.presenter.WorkOrderSearchPresenter;
+import wzp.project.android.elvtmtn.util.MyApplication;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -61,16 +68,23 @@ public class FinishedWorkOrderFragment extends Fragment implements IWorkOrderSea
 	private List<FaultOrder> faultOrderList = new ArrayList<FaultOrder>();				// 故障工单集合
 	
 	private WorkOrderSearchPresenter workOrderSearchPresenter = new WorkOrderSearchPresenter(this);
-	private WorkOrderSearchActivity workOrderSearchActivity;
+//	private WorkOrderSearchActivity workOrderSearchActivity;
+	private Activity workOrderSearchActivity;
 	
 	private volatile int curPage = 1;				// 当前需要访问的页码
 	
 	private boolean isPtrlvHidden = false;			// PullToRefreshListView控件是否被隐藏
 	private String tipInfo;							// PullToRefreshListView控件被隐藏时的提示信息
 	private boolean isFirstAccessServer = true;
+	private int listIndex;
+	
+	private SharedPreferences preferences 
+		= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
+	private long groupId;
 	
 	private static final String tag = "FinishedWorkOrderFragment";
 	
+	// 该方法只会被回调一次
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -85,34 +99,25 @@ public class FinishedWorkOrderFragment extends Fragment implements IWorkOrderSea
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		
-		workOrderSearchActivity = (WorkOrderSearchActivity) activity;
+//		workOrderSearchActivity = (WorkOrderSearchActivity) activity;
+		if (activity instanceof FaultOrderSearchActivity) {
+			workOrderSearchActivity = (FaultOrderSearchActivity) activity;
+			workOrderType = WorkOrderType.FAULT_ORDER;
+		} else {
+			workOrderSearchActivity = (MaintainOrderSearchActivity) activity;
+			workOrderType = WorkOrderType.MAINTAIN_ORDER;
+		}
 		
 		// 初始化ProgressDialog，必须在此处进行初始化，因为访问服务器时，需要调用ProgressDialog
 		progressDialog = new ProgressDialog(workOrderSearchActivity);
 		
-		workOrderType = workOrderSearchActivity.getWorkOrderType();		// 获取工单类型
+//		workOrderType = workOrderSearchActivity.getWorkOrderType();		// 获取工单类型
 		
-		/*
-		 * 根据工单类型判断Adapter应该选用MaintainOrder还是FaultOrder
-		 * 1、List中的泛型需要区分；
-		 * 2、URL需要进行区分；
-		 * 2、Adapter需要区分；
-		 */		
-		/*curPage = 1;
-		if (WorkOrderType.MAINTAIN_ORDER == workOrderType) {
-			mAdapter = new MaintainOrderAdapter(workOrderSearchActivity, 
-					R.layout.listitem_maintain_order, maintainOrderList);
-			workOrderSearchPresenter.searchMaintainOrder(WorkOrderState.FINISHED, curPage++, 
-					ProjectContants.PAGE_SIZE, maintainOrderList);
-		} else if (WorkOrderType.FAULT_ORDER == workOrderType) {
-			mAdapter = new FaultOrderAdapter(workOrderSearchActivity, 
-					R.layout.listitem_fault_order, faultOrderList);
-			workOrderSearchPresenter.searchFaultOrder(WorkOrderState.FINISHED, 
-					curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
-		}*/
+		groupId = preferences.getLong("groupId", -1);
 		
-		// 可以在此处进行第一次网络访问
-//		initData();
+		if (groupId == -1) {
+			throw new IllegalArgumentException("小组ID有误！");
+		}
 	}
 	
 
@@ -122,16 +127,21 @@ public class FinishedWorkOrderFragment extends Fragment implements IWorkOrderSea
 			curPage = 1;
 			if (WorkOrderType.MAINTAIN_ORDER == workOrderType) {
 				mAdapter = new MaintainOrderAdapter(workOrderSearchActivity, 
-						R.layout.listitem_maintain_order, maintainOrderList);
-				workOrderSearchPresenter.searchMaintainOrder(WorkOrderState.FINISHED, curPage++, 
+						R.layout.listitem_unfinished_overdue_maintain_order, maintainOrderList);
+				workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.FINISHED, curPage++, 
 						ProjectContants.PAGE_SIZE, maintainOrderList);
 			} else if (WorkOrderType.FAULT_ORDER == workOrderType) {
-				mAdapter = new FaultOrderAdapter(workOrderSearchActivity, 
-						R.layout.listitem_fault_order, faultOrderList);
-				workOrderSearchPresenter.searchFaultOrder(WorkOrderState.FINISHED, 
+//				mAdapter = new FaultOrderAdapter(workOrderSearchActivity, 
+//						R.layout.listitem_fault_order, faultOrderList);
+				mAdapter = new FinishedFaultOrderAdapter(workOrderSearchActivity, 
+						R.layout.listitem_finished_fault_order, faultOrderList);
+				workOrderSearchPresenter.searchFaultOrder(groupId, WorkOrderState.FINISHED, 
 						curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
 			}
 			isFirstAccessServer = false;
+			
+			ptrlvFinished.setAdapter(mAdapter);		// 该方法一定要在mAdapter创建成功后再调用，否则无效
+//			Log.i(tag, "执行ptrlvFinished.setAdapter(mAdapter)");
 		}
 		
 		super.setUserVisibleHint(isVisibleToUser);
@@ -150,8 +160,8 @@ public class FinishedWorkOrderFragment extends Fragment implements IWorkOrderSea
 			}
 		});
 		
-//		ptrlvFinished.setAdapter(adapter);
-		ptrlvFinished.setAdapter(mAdapter);
+//		ptrlvFinished.setAdapter(mAdapter);
+//		Log.i(tag, "执行ptrlvFinished.setAdapter(mAdapter)");
 		
 		ptrlvFinished.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
 		ptrlvFinished.getLoadingLayoutProxy().setPullLabel("下拉刷新...");
@@ -200,8 +210,18 @@ public class FinishedWorkOrderFragment extends Fragment implements IWorkOrderSea
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				Intent actIntent = new Intent(workOrderSearchActivity, WorkOrderDetailActivity.class);
-				startActivity(actIntent);
+				/*Intent actIntent = new Intent(workOrderSearchActivity, WorkOrderDetailActivity.class);
+				startActivity(actIntent);*/
+				listIndex = position - 1;
+				
+				if (workOrderType == WorkOrderType.FAULT_ORDER) {
+					FaultOrderDetailActivity.myStartActivity(workOrderSearchActivity,
+							WorkOrderState.FINISHED, JSON.toJSONString(faultOrderList.get(position - 1)));	
+				} else if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
+					MaintainOrderDetailActivity.myStartActivity(workOrderSearchActivity,
+							WorkOrderState.FINISHED, JSON.toJSONString(maintainOrderList.get(position - 1)));
+					
+				}
 			}
 		});
 		
@@ -217,9 +237,9 @@ public class FinishedWorkOrderFragment extends Fragment implements IWorkOrderSea
 			curPage = 1;
 			
         	if (WorkOrderType.MAINTAIN_ORDER == workOrderType) {
-        		workOrderSearchPresenter.searchMaintainOrder(WorkOrderState.FINISHED, curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
+        		workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.FINISHED, curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
 			} else if (WorkOrderType.FAULT_ORDER == workOrderType) {
-				workOrderSearchPresenter.searchFaultOrder(WorkOrderState.FINISHED, curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
+				workOrderSearchPresenter.searchFaultOrder(groupId, WorkOrderState.FINISHED, curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
 			}
         	
             // 返回执行的结果
@@ -237,9 +257,9 @@ public class FinishedWorkOrderFragment extends Fragment implements IWorkOrderSea
         @Override  
         protected Void doInBackground(Void... params) {
         	if (WorkOrderType.MAINTAIN_ORDER == workOrderType) {
-        		workOrderSearchPresenter.searchMaintainOrder(WorkOrderState.FINISHED, curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
+        		workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.FINISHED, curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
 			} else if (WorkOrderType.FAULT_ORDER == workOrderType) {
-				workOrderSearchPresenter.searchFaultOrder(WorkOrderState.FINISHED, curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
+				workOrderSearchPresenter.searchFaultOrder(groupId, WorkOrderState.FINISHED, curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
 			}
             return null;    
         }  

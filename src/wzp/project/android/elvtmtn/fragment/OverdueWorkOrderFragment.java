@@ -1,6 +1,7 @@
 package wzp.project.android.elvtmtn.fragment;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
@@ -10,20 +11,24 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 import wzp.project.android.elvtmtn.R;
-import wzp.project.android.elvtmtn.activity.impl.WorkOrderDetailActivity;
-import wzp.project.android.elvtmtn.activity.impl.WorkOrderSearchActivity;
+import wzp.project.android.elvtmtn.activity.impl.MaintainOrderDetailActivity;
+import wzp.project.android.elvtmtn.activity.impl.MaintainOrderSearchActivity;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
-import wzp.project.android.elvtmtn.helper.adapter.FaultOrderAdapter;
+import wzp.project.android.elvtmtn.helper.adapter.UnfinishedFaultOrderAdapter;
 import wzp.project.android.elvtmtn.helper.adapter.MaintainOrderAdapter;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderState;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 import wzp.project.android.elvtmtn.presenter.WorkOrderSearchPresenter;
+import wzp.project.android.elvtmtn.util.MyApplication;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -42,6 +47,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * 只有保养工单才有超期工单查询
+ * @author Zippen
+ *
+ */
 public class OverdueWorkOrderFragment extends Fragment implements IWorkOrderSearchFragment {
 	
 	private PullToRefreshListView ptrlvOverdue;			// 提供下拉刷新功能的ListView
@@ -50,23 +60,30 @@ public class OverdueWorkOrderFragment extends Fragment implements IWorkOrderSear
 	private Button btnRefreshAgain;							// 重试按钮
 	private ProgressDialog progressDialog;					// 进度对话框
 	
-	private int workOrderType;
-	private ArrayAdapter<?> mAdapter;
+//	private int workOrderType;
+	private ArrayAdapter<MaintainOrder> mAdapter;
 	
 	/*
 	 * 由于需要在List集合中添加元素，因此不能直接定义一个List<?>
 	 */
 	private List<MaintainOrder> maintainOrderList = new ArrayList<MaintainOrder>();		// 保养工单集合
-	private List<FaultOrder> faultOrderList = new ArrayList<FaultOrder>();				// 故障工单集合
+//	private List<FaultOrder> faultOrderList = new ArrayList<FaultOrder>();				// 故障工单集合
 	
 	private WorkOrderSearchPresenter workOrderSearchPresenter = new WorkOrderSearchPresenter(this);
-	private WorkOrderSearchActivity workOrderSearchActivity;
+	private MaintainOrderSearchActivity workOrderSearchActivity;
 	
 	private volatile int curPage = 1;				// 当前需要访问的页码
 	
 	private boolean isPtrlvHidden = false;			// PullToRefreshListView控件是否被隐藏
 	private String tipInfo;							// PullToRefreshListView控件被隐藏时的提示信息
 	private boolean isFirstAccessServer = true;
+	
+	private SharedPreferences preferences 
+		= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
+	private long groupId;
+	
+	private int listIndex;
+	private static final int REQUEST_REFRESH = 0x30;
 	
 	private static final String tag = "OverdueWorkOrderFragment";
 	
@@ -84,49 +101,49 @@ public class OverdueWorkOrderFragment extends Fragment implements IWorkOrderSear
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		
-		workOrderSearchActivity = (WorkOrderSearchActivity) activity;
+		// Activity一定是MaintainOrderSearchActivity的实例
+		workOrderSearchActivity = (MaintainOrderSearchActivity) activity;
 		
 		// 初始化ProgressDialog，必须在此处进行初始化，因为访问服务器时，需要调用ProgressDialog
 		progressDialog = new ProgressDialog(workOrderSearchActivity);
 		
-		workOrderType = workOrderSearchActivity.getWorkOrderType();		// 获取工单类型
-		
-		/*
-		 * 根据工单类型判断Adapter应该选用MaintainOrder还是FaultOrder
-		 * 1、List中的泛型需要区分；
-		 * 2、URL需要进行区分；
-		 * 2、Adapter需要区分；
-		 */		
-		/*curPage = 1;
-		if (WorkOrderType.MAINTAIN_ORDER == workOrderType) {
-			mAdapter = new MaintainOrderAdapter(workOrderSearchActivity, 
-					R.layout.listitem_maintain_order, maintainOrderList);
-			workOrderSearchPresenter.searchMaintainOrder(WorkOrderState.OVERDUE, curPage++, 
-					ProjectContants.PAGE_SIZE, maintainOrderList);
-		} else if (WorkOrderType.FAULT_ORDER == workOrderType) {
-			mAdapter = new FaultOrderAdapter(workOrderSearchActivity, 
-					R.layout.listitem_fault_order, faultOrderList);
-			workOrderSearchPresenter.searchFaultOrder(WorkOrderState.OVERDUE, 
-					curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
-		}*/
+		groupId = preferences.getLong("groupId", -1);
+		if (groupId == -1) {
+			throw new IllegalArgumentException("小组ID有误！");
+		}
 	}
 	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Log.i(tag, "进入onActivityResult");
+		switch (requestCode) {
+			case REQUEST_REFRESH:
+				if (resultCode == Activity.RESULT_OK) {
+					boolean isNeedRefresh = data.getBooleanExtra("isNeedRefresh", false);
+					Log.i(tag, "" + isNeedRefresh);
+					if (isNeedRefresh) {
+						Date receivingTime = (Date) data.getSerializableExtra("receivingTime");
+						maintainOrderList.get(listIndex).setReceivingTime(receivingTime);				
+						updateInterface();
+					}
+				}
+				break;
+	
+			default:
+				break;
+		}
+	}
+
 	@Override
 	public void setUserVisibleHint(boolean isVisibleToUser) {
 		if (isVisibleToUser && isFirstAccessServer) {
 			curPage = 1;
-			if (WorkOrderType.MAINTAIN_ORDER == workOrderType) {
-				mAdapter = new MaintainOrderAdapter(workOrderSearchActivity, 
-						R.layout.listitem_maintain_order, maintainOrderList);
-				workOrderSearchPresenter.searchMaintainOrder(WorkOrderState.OVERDUE, curPage++, 
-						ProjectContants.PAGE_SIZE, maintainOrderList);
-			} else if (WorkOrderType.FAULT_ORDER == workOrderType) {
-				mAdapter = new FaultOrderAdapter(workOrderSearchActivity, 
-						R.layout.listitem_fault_order, faultOrderList);
-				workOrderSearchPresenter.searchFaultOrder(WorkOrderState.OVERDUE, 
-						curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
-			}
+			mAdapter = new MaintainOrderAdapter(workOrderSearchActivity, 
+					R.layout.listitem_unfinished_overdue_maintain_order, maintainOrderList);
+			workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.OVERDUE, curPage++, 
+					ProjectContants.PAGE_SIZE, maintainOrderList);
 			isFirstAccessServer = false;
+			ptrlvOverdue.setAdapter(mAdapter);
 		}
 		
 		super.setUserVisibleHint(isVisibleToUser);
@@ -145,8 +162,6 @@ public class OverdueWorkOrderFragment extends Fragment implements IWorkOrderSear
 				new RefreshDataTask().execute();
 			}
 		});
-		
-		ptrlvOverdue.setAdapter(mAdapter);
 		
 		ptrlvOverdue.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
 		ptrlvOverdue.getLoadingLayoutProxy().setPullLabel("下拉刷新...");
@@ -194,14 +209,10 @@ public class OverdueWorkOrderFragment extends Fragment implements IWorkOrderSear
 		ptrlvOverdue.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {				
-				if (workOrderType == WorkOrderType.FAULT_ORDER) {
-					WorkOrderDetailActivity.myStartActivity(workOrderSearchActivity, 
-							workOrderType, JSON.toJSONString(faultOrderList.get(position - 1)));
-				} else if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
-					WorkOrderDetailActivity.myStartActivity(workOrderSearchActivity, 
-							workOrderType, JSON.toJSONString(maintainOrderList.get(position - 1)));
-				}
+					int position, long id) {
+				listIndex = position - 1;
+				MaintainOrderDetailActivity.myStartActivityForResult(OverdueWorkOrderFragment.this, REQUEST_REFRESH, 
+						WorkOrderState.OVERDUE, JSON.toJSONString(maintainOrderList.get(listIndex)));
 			}
 		});
 		
@@ -215,14 +226,7 @@ public class OverdueWorkOrderFragment extends Fragment implements IWorkOrderSear
         protected Void doInBackground(Void... params) {
         	// pageNumber一定是为1，表示只加载第一页的内容
 			curPage = 1;
-			
-        	if (WorkOrderType.MAINTAIN_ORDER == workOrderType) {
-        		workOrderSearchPresenter.searchMaintainOrder(WorkOrderState.OVERDUE, curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
-			} else if (WorkOrderType.FAULT_ORDER == workOrderType) {
-				workOrderSearchPresenter.searchFaultOrder(WorkOrderState.OVERDUE, curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
-			}
-        	
-            // 返回执行的结果
+        	workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.OVERDUE, curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
             return null;    
         }  
  
@@ -236,11 +240,7 @@ public class OverdueWorkOrderFragment extends Fragment implements IWorkOrderSear
 	private class SearchMoreTask extends AsyncTask<Void, Void, Void> {
         @Override  
         protected Void doInBackground(Void... params) {
-        	if (WorkOrderType.MAINTAIN_ORDER == workOrderType) {
-        		workOrderSearchPresenter.searchMaintainOrder(WorkOrderState.OVERDUE, curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
-			} else if (WorkOrderType.FAULT_ORDER == workOrderType) {
-				workOrderSearchPresenter.searchFaultOrder(WorkOrderState.OVERDUE, curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
-			}
+        	workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.OVERDUE, curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
             return null;    
         }  
  

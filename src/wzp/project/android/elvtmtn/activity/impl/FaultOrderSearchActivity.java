@@ -29,19 +29,15 @@ import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
  * @author Zippen
  *
  */
-public class WorkOrderSearchActivity extends FragmentActivity {
+public class FaultOrderSearchActivity extends FragmentActivity {
 
-	private TextView tvWorkOrderType;
 	private RelativeLayout relativeUnfinished;
 	private RelativeLayout relativeFinished;
-	private RelativeLayout relativeOverdue;
 	private TextView tvUnfinishedHidden;
 	private TextView tvFinishedHidden;
-	private TextView tvOverdueHidden;
 	private TextView tvUnfinished;
 	private TextView tvFinished;
-	private TextView tvOverdue;
-	private ViewPager vpWorkOrder;
+	private ViewPager vpFaultOrder;
 	private int[] selectedStateArray;
 	private TextView[] tvHiddenArray;					// 用于标注当前所在的选项卡
 	private TextView[] tvArray;							// 用于标注当前所在的选项卡的标题
@@ -49,7 +45,7 @@ public class WorkOrderSearchActivity extends FragmentActivity {
 	private Button btnBack;
 	
 	private int currentSelectedId = 0;
-	private int workOrderType = 0;						// 工单类型
+//	private int workOrderType = 0;						// 工单类型
 	private static final String tag = "WorkOrderSearchActivity";
 	
 	
@@ -57,36 +53,25 @@ public class WorkOrderSearchActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.activity_work_order_search);		
+		setContentView(R.layout.activity_fault_order_search);		
 		
+//		workOrderType = WorkOrderType.FAULT_ORDER;
 		initWidget();
 		initParam();
 	}
 	
-	private void initWidget() {
-		tvWorkOrderType = (TextView) findViewById(R.id.tv_workOrderType);
-		// 保存工单类型
-		workOrderType = getIntent().getIntExtra("workOrderType", WorkOrderType.MAINTAIN_ORDER);
-		if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
-			tvWorkOrderType.setText("保养工单");
-		} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
-			tvWorkOrderType.setText("故障工单");
-		}
-		
+	private void initWidget() {		
 		relativeUnfinished = (RelativeLayout) findViewById(R.id.relative_unfinished);
 		relativeFinished = (RelativeLayout) findViewById(R.id.relative_finished);
-		relativeOverdue = (RelativeLayout) findViewById(R.id.relative_overdue);
 		
 		tvUnfinishedHidden = (TextView) findViewById(R.id.tv_unfinished_hidden);
 		tvFinishedHidden = (TextView) findViewById(R.id.tv_finished_hidden);
-		tvOverdueHidden = (TextView) findViewById(R.id.tv_overdue_hidden);
 		tvUnfinished = (TextView) findViewById(R.id.tv_unfinished);
 		tvFinished = (TextView) findViewById(R.id.tv_finished);
-		tvOverdue = (TextView) findViewById(R.id.tv_overdue);
 	
-		vpWorkOrder = (ViewPager) findViewById(R.id.vp_workOrder);
+		vpFaultOrder = (ViewPager) findViewById(R.id.vp_faultOrder);
 		// 设置ViewPager的预加载值，即让ViewPager维护以当前Fragment为中心，左右各2个Fragment
-		vpWorkOrder.setOffscreenPageLimit(2);
+		vpFaultOrder.setOffscreenPageLimit(1);
 		
 		btnBack = (Button) findViewById(R.id.btn_back);
 		btnBack.setOnClickListener(new OnClickListener() {
@@ -99,15 +84,14 @@ public class WorkOrderSearchActivity extends FragmentActivity {
 	
 	private void initParam() {
 		// 0表示选中，1表示未选中(默认第一个选中)
-		selectedStateArray = new int[] {0, 1, 1};
-		tvHiddenArray = new TextView[] {tvUnfinishedHidden, tvFinishedHidden, tvOverdueHidden};
-		tvArray = new TextView[] {tvUnfinished, tvFinished, tvOverdue};
+		selectedStateArray = new int[] {0, 1};
+		tvHiddenArray = new TextView[] {tvUnfinishedHidden, tvFinishedHidden};
+		tvArray = new TextView[] {tvUnfinished, tvFinished};
 		
-		relativeUnfinished.setOnClickListener(listener);	
-		relativeOverdue.setOnClickListener(listener);
+		relativeUnfinished.setOnClickListener(listener);
 		relativeFinished.setOnClickListener(listener);
 		
-		vpWorkOrder.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {		
+		vpFaultOrder.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {		
 			@Override
 			public int getCount() {
 				return selectedStateArray.length;
@@ -125,16 +109,14 @@ public class WorkOrderSearchActivity extends FragmentActivity {
 						Log.d(tag, "case 1");
 						fragment = new FinishedWorkOrderFragment();
 						break;
-					case 2:
-						Log.d(tag, "case 2");
-						fragment = new OverdueWorkOrderFragment();
+					default:
 						break;
 				}
 				return fragment;
 			}
 		});
 		
-		vpWorkOrder.setOnPageChangeListener(new SimpleOnPageChangeListener(){
+		vpFaultOrder.setOnPageChangeListener(new SimpleOnPageChangeListener(){
 			public void onPageSelected(int position) {
 //				Toast.makeText(WorkOrderSearchActivity.this, "页面更改", 0).show();
 				setSelectedTitle(position);
@@ -170,7 +152,7 @@ public class WorkOrderSearchActivity extends FragmentActivity {
 						return;
 					} else {
 						setSelectedTitle(0);
-						vpWorkOrder.setCurrentItem(0);
+						vpFaultOrder.setCurrentItem(0);
 					}
 					break;
 				case R.id.relative_finished:
@@ -178,28 +160,27 @@ public class WorkOrderSearchActivity extends FragmentActivity {
 						return;
 					} else {
 						setSelectedTitle(1);
-						vpWorkOrder.setCurrentItem(1);
+						vpFaultOrder.setCurrentItem(1);
 					}
 					break;
-				case R.id.relative_overdue:
-					if (currentSelectedId == 2) {
-						return;
-					} else {
-						setSelectedTitle(2);
-						vpWorkOrder.setCurrentItem(2);
-					}
+				default:
 					break;
 			}
 		}
 	};
 	
-	public static void myStartActivity(Context context, int workOrderType) {
-		Intent actIntent = new Intent(context, WorkOrderSearchActivity.class);
+	/*public static void myStartActivity(Context context, int workOrderType) {
+		Intent actIntent = new Intent(context, FaultOrderSearchActivity.class);
 		actIntent.putExtra("workOrderType", workOrderType);
+		context.startActivity(actIntent);
+	}*/
+	
+	public static void myStartActivity(Context context) {
+		Intent actIntent = new Intent(context, FaultOrderSearchActivity.class);
 		context.startActivity(actIntent);
 	}
 
-	public int getWorkOrderType() {
+	/*public int getWorkOrderType() {
 		return workOrderType;
-	}
+	}*/
 }

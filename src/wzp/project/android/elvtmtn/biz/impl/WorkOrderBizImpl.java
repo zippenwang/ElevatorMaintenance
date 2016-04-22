@@ -17,6 +17,7 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import wzp.project.android.elvtmtn.biz.IWorkOrderBiz;
+import wzp.project.android.elvtmtn.biz.IWorkOrderCancelListener;
 import wzp.project.android.elvtmtn.biz.IWorkOrderReceiveListener;
 import wzp.project.android.elvtmtn.biz.IWorkOrderSearchListener;
 import wzp.project.android.elvtmtn.entity.Employee;
@@ -121,12 +122,13 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 	 * 按条件查询保养工单
 	 */
 	@Override
-	public void getMaintainOrdersByCondition(int workOrderState, final int pageNumber, int pageSize,
+	public void getMaintainOrdersByCondition(long groupId, int workOrderState, final int pageNumber, int pageSize,
 			final List<MaintainOrder> dataList, final IWorkOrderSearchListener listener) {
 		StringBuilder strUrl = new StringBuilder(ProjectContants.basePath);
 		strUrl.append("/maintainOrder/list");
 		
 		OkHttpUtils.get().url(strUrl.toString())
+			.addParams("groupId", String.valueOf(groupId))
 			.addParams("pageNumber", String.valueOf(pageNumber))
 			.addParams("pageSize", String.valueOf(pageSize))
 			.addParams("type", String.valueOf(workOrderState))
@@ -195,12 +197,13 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 	 * 按条件查询错误工单
 	 */
 	@Override
-	public void getFaultOrdersByCondition(int workOrderState, final int pageNumber, int pageSize,
+	public void getFaultOrdersByCondition(long groupId, int workOrderState, final int pageNumber, int pageSize,
 			final List<FaultOrder> dataList, final IWorkOrderSearchListener listener) {
 		StringBuilder strUrl = new StringBuilder(ProjectContants.basePath);
 		strUrl.append("/faultOrder/list");
 		
 		OkHttpUtils.get().url(strUrl.toString())
+			.addParams("groupId", String.valueOf(groupId))
 			.addParams("pageNumber", String.valueOf(pageNumber))
 			.addParams("pageSize", String.valueOf(pageSize))
 			.addParams("type", String.valueOf(workOrderState))
@@ -266,28 +269,40 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 	}
 
 	@Override
-	public void receiveOrder(Long workOrderId, Long employeeId, 
-			final IWorkOrderReceiveListener listener) {		
-		OkHttpUtils.post().url(ProjectContants.basePath + "/faultOrder/accept")
+	public void receiveOrder(int workOrderType, Long workOrderId, Long employeeId, 
+			final IWorkOrderReceiveListener listener) {
+		String url = null;
+		if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
+			url = ProjectContants.basePath + "/maintainOrder/accept";
+		} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
+			url = ProjectContants.basePath + "/faultOrder/accept";
+		} else {
+			throw new IllegalArgumentException("工单类型有误");
+		}
+		
+		OkHttpUtils.post().url(url)
 			.addParams("id", String.valueOf(workOrderId))
 			.addParams("employeeId", String.valueOf(employeeId))
 			.build()
 			.execute(new StringCallback() {		
 				@Override
 				public void onResponse(String response) {
+					Log.i(response, response);
 					JSONObject jo = JSON.parseObject(response);
 					String result = jo.getString("result");
 					
 					if (!TextUtils.isEmpty(result)) {
 						if (result.equals("success")) {
-							listener.onReceiveSuccess();
+							listener.onReceiveSuccess(jo.getDate("receivingTime"));
 						} else if (result.equals("repeat")) {
-							
+							listener.onReceiveFailure("重复接单，接单失败！");
 						} else if (result.equals("employeeNotExist")) {
 							
 						} else if (response.equals("faultOrderNotExist")) {
 							
-						}						
+						} else if (response.equals("maintainOrderNotExist")) {
+							
+						}
 					} else {
 						listener.onReceiveFailure("服务器故障，响应数据有误！");
 					}
@@ -299,7 +314,58 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 					listener.onReceiveFailure("服务器正在打盹\n请检查网络连接后重试");					
 				}
 			});
-		
 	}
+
+	@Override
+	public void cancelReceiveOrder(int workOrderType, Long workOrderId,
+			Long employeeId, final IWorkOrderCancelListener listener) {
+		String url = null;
+		if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
+			url = ProjectContants.basePath + "/maintainOrder/cancel";
+		} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
+			url = ProjectContants.basePath + "/faultOrder/cancel";
+		} else {
+			throw new IllegalArgumentException("工单类型有误");
+		}
+		
+		OkHttpUtils.post().url(url)
+			.addParams("id", String.valueOf(workOrderId))
+			.addParams("employeeId", String.valueOf(employeeId))
+			.build()
+			.execute(new StringCallback() {				
+				@Override
+				public void onResponse(String response) {
+					Log.i(response, response);
+					JSONObject jo = JSON.parseObject(response);
+					String result = jo.getString("result");
+					
+					if (!TextUtils.isEmpty(result)) {
+						if (result.equals("success")) {
+							listener.onCancelSuccess();
+						} else if (result.equals("notMatch")) {
+							
+						} else if (result.equals("notAccept")) {
+							
+						} else if (result.equals("employeeNotExist")) {
+							
+						} else if (result.equals("maintainOrderNotExist")) {
+							
+						} else if (result.equals("faultOrderNotExist")) {
+							
+						}
+					} else {
+						listener.onCancelFailure("服务器故障，响应数据有误！");		
+					}
+				}
+				
+				@Override
+				public void onError(Call call, Exception e) {
+					Log.e(tag, Log.getStackTraceString(e));
+					listener.onCancelFailure("服务器正在打盹\n请检查网络连接后重试");			
+				}
+			});
+	}
+	
+	
 
 }

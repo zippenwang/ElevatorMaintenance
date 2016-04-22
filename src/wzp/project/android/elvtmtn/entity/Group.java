@@ -4,6 +4,7 @@ import java.util.List;
 
 public class Group {
 
+	private long id;								// 小组id
 	private String name;							// 小组名称
 	private String description;						// 描述
 	private List<Employee> employees;				// 小组中包含的员工集合
@@ -11,6 +12,14 @@ public class Group {
 	
 	
 	public Group() {}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
 
 	public String getName() {
 		return name;

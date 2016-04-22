@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.Toast;
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
+import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 
 public class MainActivity extends BaseActivity {
 
@@ -49,7 +50,12 @@ public class MainActivity extends BaseActivity {
 				altDlgBuilder.setItems(items, new DialogInterface.OnClickListener() {			
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						WorkOrderSearchActivity.myStartActivity(MainActivity.this, which);
+//						WorkOrderSearchActivity.myStartActivity(MainActivity.this, which);
+						if (WorkOrderType.FAULT_ORDER == which) {
+							FaultOrderSearchActivity.myStartActivity(MainActivity.this);
+						} else if (WorkOrderType.MAINTAIN_ORDER == which) {
+							MaintainOrderSearchActivity.myStartActivity(MainActivity.this);
+						}
 					}
 				});
 				altDlgBuilder.show();

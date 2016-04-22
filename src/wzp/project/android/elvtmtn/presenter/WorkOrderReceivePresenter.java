@@ -1,7 +1,10 @@
 package wzp.project.android.elvtmtn.presenter;
 
+import java.util.Date;
+
 import wzp.project.android.elvtmtn.activity.IWorkOrderDetailActivity;
 import wzp.project.android.elvtmtn.biz.IWorkOrderBiz;
+import wzp.project.android.elvtmtn.biz.IWorkOrderCancelListener;
 import wzp.project.android.elvtmtn.biz.IWorkOrderReceiveListener;
 import wzp.project.android.elvtmtn.biz.impl.WorkOrderBizImpl;
 
@@ -15,11 +18,12 @@ public class WorkOrderReceivePresenter {
 		this.workOrderDetailActivity = workOrderDetailActivity;
 	}
 	
-	public void receiveOrder(Long workOrderId, Long employeeId) {
-		workOrderBiz.receiveOrder(workOrderId, employeeId, new IWorkOrderReceiveListener() {	
+	public void receiveOrder(int workOrderType, Long workOrderId, Long employeeId) {
+		workOrderBiz.receiveOrder(workOrderType, workOrderId, employeeId, 
+				new IWorkOrderReceiveListener() {	
 			@Override
-			public void onReceiveSuccess() {
-				workOrderDetailActivity.receiveSuccess();
+			public void onReceiveSuccess(Date receiveTime) {
+				workOrderDetailActivity.receiveSuccess(receiveTime);
 			}
 			
 			@Override
@@ -28,6 +32,24 @@ public class WorkOrderReceivePresenter {
 			}
 		});
 	}
+	
+	public void cancelReceiveOrder(int workOrderType, Long workOrderId, Long employeeId) {
+		workOrderBiz.cancelReceiveOrder(workOrderType, workOrderId, 
+				employeeId, new IWorkOrderCancelListener() {
+			@Override
+			public void onCancelSuccess() {
+				workOrderDetailActivity.cancelReceiveSuccess();
+			}
+			
+			@Override
+			public void onCancelFailure(String tipInfo) {
+				workOrderDetailActivity.showToast(tipInfo);
+			}
+		});
+	}
+	
+	
+	
 	
 
 	

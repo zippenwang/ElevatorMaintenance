@@ -75,9 +75,9 @@ public class WorkOrderSearchPresenter implements IWorkOrderSearchListener {
 		});
 	}*/
 	
-	public void searchMaintainOrder(int workOrderState, int pageNumber, int pageSize, List<MaintainOrder> dataList) {
+	public void searchMaintainOrder(long groupId, int workOrderState, int pageNumber, int pageSize, List<MaintainOrder> dataList) {
 		workOrderSearchFragment.showProgressDialog();
-		workOrderBiz.getMaintainOrdersByCondition(workOrderState, pageNumber, pageSize, dataList, this);
+		workOrderBiz.getMaintainOrdersByCondition(groupId, workOrderState, pageNumber, pageSize, dataList, this);
 		/*workOrderBiz.getMaintainOrdersByCondition(workOrderState, page, 
 				pageSize, dataList, new IWorkOrderSearchListener() {			
 			@Override
@@ -107,7 +107,7 @@ public class WorkOrderSearchPresenter implements IWorkOrderSearchListener {
 		});*/
 	}
 	
-	public void searchFaultOrder(int workOrderState, int pageNumber, int pageSize, List<FaultOrder> dataList) {
+	public void searchFaultOrder(long groupId, int workOrderState, int pageNumber, int pageSize, List<FaultOrder> dataList) {
 		workOrderSearchFragment.showProgressDialog();
 		
 		/*workOrderBiz.getFaultOrdersByCondition(workOrderState, page, 
@@ -138,7 +138,7 @@ public class WorkOrderSearchPresenter implements IWorkOrderSearchListener {
 			}
 		});*/
 		
-		workOrderBiz.getFaultOrdersByCondition(workOrderState, pageNumber, pageSize, dataList, this);
+		workOrderBiz.getFaultOrdersByCondition(groupId, workOrderState, pageNumber, pageSize, dataList, this);
 	}
 
 	@Override
