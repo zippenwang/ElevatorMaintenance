@@ -16,6 +16,7 @@ import wzp.project.android.elvtmtn.activity.impl.FaultOrderDetailActivity;
 import wzp.project.android.elvtmtn.activity.impl.FaultOrderSearchActivity;
 import wzp.project.android.elvtmtn.activity.impl.MaintainOrderDetailActivity;
 import wzp.project.android.elvtmtn.activity.impl.MaintainOrderSearchActivity;
+import wzp.project.android.elvtmtn.entity.Employee;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
 import wzp.project.android.elvtmtn.helper.adapter.UnfinishedFaultOrderAdapter;
@@ -82,6 +83,7 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 	private SharedPreferences preferences 
 		= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
 	private long groupId;	
+	private Employee employee;
 	
 	private static final String tag = "UnfinishedWorkOrderFragment";
 	
@@ -119,6 +121,8 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 		if (groupId == -1) {
 			throw new IllegalArgumentException("小组ID有误！");
 		}
+		
+		employee = JSON.parseObject(preferences.getString("employeeJson", ""), Employee.class);
 		
 		/*
 		 * 根据工单类型判断Adapter应该选用MaintainOrder还是FaultOrder
@@ -253,21 +257,34 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 					boolean isNeedRefresh = data.getBooleanExtra("isNeedRefresh", false);
 					Log.i(tag, "" + isNeedRefresh);
 					if (isNeedRefresh) {
-						/*Date receivingTime = (Date) data.getSerializableExtra("receivingTime");
+						Date receivingTime = (Date) data.getSerializableExtra("receivingTime");
 						if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
 							maintainOrderList.get(listIndex).setReceivingTime(receivingTime);
+							// 接单时间为空，Employee也同时为空
+							if (receivingTime != null) {
+								maintainOrderList.get(listIndex).setEmployee(employee);
+							} else {
+								maintainOrderList.get(listIndex).setEmployee(null);
+							}
+							
 						} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
-							faultOrderList.get(listIndex).setReceivingTime(receivingTime);							
+							faultOrderList.get(listIndex).setReceivingTime(receivingTime);
+							// 接单时间为空，Employee也同时为空
+							if (receivingTime != null) {
+								faultOrderList.get(listIndex).setEmployee(employee);
+							} else {
+								faultOrderList.get(listIndex).setEmployee(null);
+							}
 						}
-						updateInterface();*/
-						if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
+						updateInterface();
+						/*if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
 							workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.UNFINISHED, 
 									1, maintainOrderList.size(), maintainOrderList);
 						} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
 							workOrderSearchPresenter.searchFaultOrder(groupId, WorkOrderState.UNFINISHED, 
 									1, faultOrderList.size(), faultOrderList);
 						}
-						ptrlvUnfinished.getRefreshableView().setSelection(listIndex + 1);
+						ptrlvUnfinished.getRefreshableView().setSelection(listIndex + 1);*/
 					}
 				}
 				break;

@@ -34,8 +34,12 @@ public interface IWorkOrderBiz {
 	void getFaultOrdersByCondition(long groupId, int workOrderState, int pageNumber, 
 			int pageSize, List<FaultOrder> dataList, IWorkOrderSearchListener listener);
 	
+	void getReceivedMaintainOrdersByCondition(long employeeId, int pageNumber, 
+			int pageSize, List<MaintainOrder> dataList, IWorkOrderSearchListener listener);
+	
 	
 	void receiveOrder(int workOrderType, Long workOrderId, Long employeeId, IWorkOrderReceiveListener listener);
 
 	void cancelReceiveOrder(int workOrderType, Long workOrderId, Long employeeId, IWorkOrderCancelListener listener);
+
 }

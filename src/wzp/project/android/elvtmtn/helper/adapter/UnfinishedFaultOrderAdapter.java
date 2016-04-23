@@ -20,7 +20,7 @@ public class UnfinishedFaultOrderAdapter extends ArrayAdapter<FaultOrder> {
 	private int resourceId;
 	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
-	private static final String tag = "FaultOrderAdapter";
+	private static final String tag = "UnfinishedFaultOrderAdapter";
 	
 	public UnfinishedFaultOrderAdapter(Context context, int textViewResourceId,
 			List<FaultOrder> objects) {

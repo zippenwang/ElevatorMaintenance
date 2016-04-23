@@ -37,6 +37,8 @@
 	<string name="isFinished">是否完成</string>
 	<string name="maintainItem">保养项目</string>
 	
+	<string name="currentAddress">当前地址</string>
+	
 	
 	<!-- 电梯数据库 -->
 	<string name="elevatorNumber">电梯编码</string>
@@ -49,4 +51,9 @@
 	<string name="buildingNumber">楼号</string>
 	<string name="userUnit">使用单位</string>
 	<string name="phone">联系电话</string>
+	
+	<!-- 员工信息 -->
+	<string name="username">用户名</string>
+	<string name="name">员工姓名</string>
+	<string name="groupMember">小组成员</string>
 </resources>

@@ -18,8 +18,10 @@ import com.zhy.http.okhttp.callback.StringCallback;
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.biz.IEmployeeBiz;
 import wzp.project.android.elvtmtn.biz.IEmployeeLoginListener;
+import wzp.project.android.elvtmtn.biz.IEmployeeSignInListener;
 import wzp.project.android.elvtmtn.entity.Employee;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
+import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 
 public class EmployeeBizImpl implements IEmployeeBiz {
 	
@@ -56,6 +58,7 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 
 				@Override
 				public void onResponse(String response) {
+					Log.i(tag, response);
 					JSONObject jo = JSON.parseObject(response);
 					String result = jo.getString("result");
 					
@@ -74,6 +77,49 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
 					listener.onServerException("访问服务器失败\n请检查网络连接后重试");					
+				}
+			});
+	}
+
+	@Override
+	public void signIn(int workOrderType, Long workOrderId,
+			String signInAddress, final IEmployeeSignInListener listener) {
+		String url = null;
+		if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
+			url = ProjectContants.basePath + "/maintainOrder/singIn";
+		} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
+			url = ProjectContants.basePath + "/faultOrder/signIn";
+		} else {
+			throw new IllegalArgumentException("工单类型有误");
+		}
+		
+		OkHttpUtils.post().url(url)
+			.addParams("id", String.valueOf(workOrderId))
+			.addParams("signInAddress", signInAddress)
+			.build()
+			.execute(new StringCallback() {
+				@Override
+				public void onResponse(String response) {
+					Log.i(tag, response);
+					JSONObject jo = JSON.parseObject(response);
+					String result = jo.getString("result");
+					
+					if (!TextUtils.isEmpty(result)) {
+						if (result.equals("success")) {
+							listener.onSignInSuccess();
+						} else if (result.endsWith("OrderNotExist")) {
+							// 表名工单不存在
+							listener.onSignInFailure("签到失败！工单不存在！");
+						}
+					} else {
+						listener.onSignInFailure("服务器故障，响应数据有误！");
+					}
+				}
+				
+				@Override
+				public void onError(Call call, Exception e) {
+					Log.e(tag, Log.getStackTraceString(e));
+					listener.onSignInFailure("服务器正在打盹\n请检查网络连接后重试");		
 				}
 			});
 	}

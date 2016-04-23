@@ -8,7 +8,6 @@ import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
 import android.content.Context;
 import android.graphics.Color;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,15 +15,15 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class FinishedFaultOrderAdapter extends ArrayAdapter<FaultOrder> {
+public class MaintainOrderSignInAdapter extends ArrayAdapter<MaintainOrder> {
 
 	private int resourceId;
 	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
-	private static final String tag = "FinishedFaultOrderAdapter";
+	private static final String tag = "FaultOrderSignInAdapter";
 	
-	public FinishedFaultOrderAdapter(Context context, int textViewResourceId,
-			List<FaultOrder> objects) {
+	public MaintainOrderSignInAdapter(Context context, int textViewResourceId,
+			List<MaintainOrder> objects) {
 		super(context, textViewResourceId, objects);
 		resourceId = textViewResourceId;
 	}
@@ -32,7 +31,7 @@ public class FinishedFaultOrderAdapter extends ArrayAdapter<FaultOrder> {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		FaultOrder faultOrder = getItem(position);
+		MaintainOrder maintainOrder = getItem(position);
 		View view = null;
 		SubViewHolder subViewHolder = null;
 		
@@ -40,36 +39,37 @@ public class FinishedFaultOrderAdapter extends ArrayAdapter<FaultOrder> {
 			view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
 			subViewHolder = new SubViewHolder();
 			subViewHolder.tvWorkOrderId = (TextView) view.findViewById(R.id.tv_workOrderId);
+			subViewHolder.tvIsSignIn = (TextView) view.findViewById(R.id.tv_isSignIn);
 			subViewHolder.tvAddress = (TextView) view.findViewById(R.id.tv_address);
-			subViewHolder.tvFixEmployee = (TextView) view.findViewById(R.id.tv_fixEmployee);
+			subViewHolder.tvReceivingTime = (TextView) view.findViewById(R.id.tv_receivingTime);
 			view.setTag(subViewHolder);
 		} else {
 			view = convertView;
 			subViewHolder = (SubViewHolder) view.getTag();
 		}
 		
-		subViewHolder.tvWorkOrderId.setText(faultOrder.getId() + "");
-		
-		if (faultOrder.getEmployee() != null) {
-			if (!TextUtils.isEmpty(faultOrder.getEmployee().getName())) {
-				subViewHolder.tvFixEmployee.setText(faultOrder.getEmployee().getName());
-			} else {
-				subViewHolder.tvFixEmployee.setText("姓名未知");
-				subViewHolder.tvFixEmployee.setTextColor(Color.RED);
-			}
-		} else {
-			subViewHolder.tvFixEmployee.setText("暂无员工信息");
-			subViewHolder.tvFixEmployee.setTextColor(Color.RED);
-		}
-		
-		if (faultOrder.getElevatorRecord() != null) {
-			if (faultOrder.getElevatorRecord().getAddress() == null) {
+		subViewHolder.tvWorkOrderId.setText(maintainOrder.getId() + "");
+		if (maintainOrder.getElevatorRecord() != null) {
+			if (maintainOrder.getElevatorRecord().getAddress() == null) {
 				subViewHolder.tvAddress.setText("暂无地址信息");
 			} else {
-				subViewHolder.tvAddress.setText(faultOrder.getElevatorRecord().getAddress());
+				subViewHolder.tvAddress.setText(maintainOrder.getElevatorRecord().getAddress());
 			}
 		} else {
 			subViewHolder.tvAddress.setText("电梯档案为空");
+		}
+		if (maintainOrder.getReceivingTime() != null) {
+			subViewHolder.tvReceivingTime.setText(sdf.format(maintainOrder.getReceivingTime()));
+		} else {
+			subViewHolder.tvReceivingTime.setText("无");
+		}
+		
+		if (maintainOrder.getSignInTime() != null) {
+			subViewHolder.tvIsSignIn.setText("已签到");
+			subViewHolder.tvIsSignIn.setTextColor(Color.BLACK);
+		} else {
+			subViewHolder.tvIsSignIn.setText("未签到");
+			subViewHolder.tvIsSignIn.setTextColor(Color.RED);
 		}
 			
 		return view;
@@ -82,8 +82,9 @@ public class FinishedFaultOrderAdapter extends ArrayAdapter<FaultOrder> {
 	 */
 	private class SubViewHolder {
 		TextView tvWorkOrderId;
+		TextView tvIsSignIn;
 		TextView tvAddress;
-		TextView tvFixEmployee;
+		TextView tvReceivingTime;
 	}
 
 }

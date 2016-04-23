@@ -56,11 +56,11 @@
         <activity
             android:name="wzp.project.android.elvtmtn.activity.impl.EmployeeLoginActivity"
             android:label="@string/app_name" >
-            <!-- <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter> -->
+            </intent-filter>
         </activity>
         
         <activity 
@@ -97,11 +97,11 @@
         
         <activity 
             android:name="wzp.project.android.elvtmtn.activity.impl.EmployeeSignInDetailActivity">
-       		<intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
+        
+        <activity 
+            android:name="wzp.project.android.elvtmtn.activity.impl.EmployeeInfoActivity">
+        </activity>
+        
     </application>
 </manifest>

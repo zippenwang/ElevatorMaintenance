@@ -70,6 +70,9 @@ public class MainActivity extends BaseActivity {
 				altDlgBuilder.setItems(items, new DialogInterface.OnClickListener() {			
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
+//						EmployeeSignInActivity.myStartActivity(MainActivity.this, which);
+//						Intent actIntent = new Intent(MainActivity.this, EmployeeSignInDetailActivity.class);
+//						startActivity(actIntent);
 						EmployeeSignInActivity.myStartActivity(MainActivity.this, which);
 					}
 				});
@@ -109,7 +112,9 @@ public class MainActivity extends BaseActivity {
 		btnUserInfo.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(MainActivity.this, "员工信息被点击", Toast.LENGTH_SHORT).show();
+//				Toast.makeText(MainActivity.this, "员工信息被点击", Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(MainActivity.this, EmployeeInfoActivity.class);
+				startActivity(intent);
 			}
 		});
 	}

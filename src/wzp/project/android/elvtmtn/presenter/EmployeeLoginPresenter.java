@@ -8,41 +8,41 @@ import wzp.project.android.elvtmtn.entity.Employee;
 
 public class EmployeeLoginPresenter {
 
-	private static IEmployeeBiz userBiz = new EmployeeBizImpl();
-	private IEmployeeLoginActivity userLoginActivity;
+	private static IEmployeeBiz employeeBiz = new EmployeeBizImpl();
+	private IEmployeeLoginActivity employeeLoginActivity;
 	
 	
-	public EmployeeLoginPresenter(IEmployeeLoginActivity userLoginActivity) {
-		this.userLoginActivity = userLoginActivity;
+	public EmployeeLoginPresenter(IEmployeeLoginActivity employeeLoginActivity) {
+		this.employeeLoginActivity = employeeLoginActivity;
 	}
 	
 	public void login(String username, String password) {
 		Employee employee = new Employee(username, password);
 
-		userLoginActivity.showProgressDialog();
+		employeeLoginActivity.showProgressDialog();
 		
-		userBiz.login(employee, new IEmployeeLoginListener() {
+		employeeBiz.login(employee, new IEmployeeLoginListener() {
 			@Override
 			public void onLoginSuccess(Employee employee) {
-//				userLoginActivity.closeProgressDialog();
-				userLoginActivity.loginSuccess(employee);
+//				employeeLoginActivity.closeProgressDialog();
+				employeeLoginActivity.loginSuccess(employee);
 			}
 
 			@Override
 			public void onLoginFailure() {
-//				userLoginActivity.closeProgressDialog();
-				userLoginActivity.loginFail();
+//				employeeLoginActivity.closeProgressDialog();
+				employeeLoginActivity.loginFail();
 			}
 
 			@Override
 			public void onServerException(String tipInfo) {
-//				userLoginActivity.closeProgressDialog();
-				userLoginActivity.showToast(tipInfo);
+//				employeeLoginActivity.closeProgressDialog();
+				employeeLoginActivity.showToast(tipInfo);
 			}
 
 			@Override
 			public void onAfter() {
-				userLoginActivity.closeProgressDialog();
+				employeeLoginActivity.closeProgressDialog();
 			}
 		});
 	}

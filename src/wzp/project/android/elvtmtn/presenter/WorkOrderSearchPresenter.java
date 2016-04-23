@@ -140,6 +140,11 @@ public class WorkOrderSearchPresenter implements IWorkOrderSearchListener {
 		
 		workOrderBiz.getFaultOrdersByCondition(groupId, workOrderState, pageNumber, pageSize, dataList, this);
 	}
+	
+	public void searchReceivedMaintainOrders(long employeeId, int pageNumber, int pageSize, List<MaintainOrder> dataList) {
+		workOrderSearchFragment.showProgressDialog();
+		workOrderBiz.getReceivedMaintainOrdersByCondition(employeeId, pageNumber, pageSize, dataList, this);
+	}
 
 	@Override
 	public void onSearchSuccess(int successType) {

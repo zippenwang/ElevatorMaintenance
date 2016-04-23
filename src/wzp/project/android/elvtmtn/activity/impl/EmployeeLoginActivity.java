@@ -1,5 +1,7 @@
 package wzp.project.android.elvtmtn.activity.impl;
 
+import com.alibaba.fastjson.JSON;
+
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.activity.IEmployeeLoginActivity;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
@@ -90,6 +92,7 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 		editor.putLong("groupId", employee.getGroup().getId());
 		editor.putString("username", employee.getUsername());
 		editor.putString("password", employee.getPassword());
+		editor.putString("employeeJson", JSON.toJSONString(employee));
 		editor.commit();
 		
 		/*
