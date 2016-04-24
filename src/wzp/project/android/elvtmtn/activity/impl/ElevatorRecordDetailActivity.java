@@ -39,7 +39,7 @@ public class ElevatorRecordDetailActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_elevator_record);
+		setContentView(R.layout.activity_elevator_record_detail);
 		
 		initWidget();
 		

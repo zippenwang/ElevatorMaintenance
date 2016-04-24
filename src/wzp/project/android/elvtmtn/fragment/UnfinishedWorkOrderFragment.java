@@ -257,7 +257,7 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 					boolean isNeedRefresh = data.getBooleanExtra("isNeedRefresh", false);
 					Log.i(tag, "" + isNeedRefresh);
 					if (isNeedRefresh) {
-						Date receivingTime = (Date) data.getSerializableExtra("receivingTime");
+						/*Date receivingTime = (Date) data.getSerializableExtra("receivingTime");
 						if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
 							maintainOrderList.get(listIndex).setReceivingTime(receivingTime);
 							// 接单时间为空，Employee也同时为空
@@ -276,15 +276,19 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 								faultOrderList.get(listIndex).setEmployee(null);
 							}
 						}
-						updateInterface();
-						/*if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
+						updateInterface();*/
+						
+//						curPage = 1;
+						if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
+							/*workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.UNFINISHED, 
+									1, maintainOrderList.size(), maintainOrderList);*/
 							workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.UNFINISHED, 
-									1, maintainOrderList.size(), maintainOrderList);
+									1, (curPage - 1) * ProjectContants.PAGE_SIZE, maintainOrderList);
 						} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
 							workOrderSearchPresenter.searchFaultOrder(groupId, WorkOrderState.UNFINISHED, 
-									1, faultOrderList.size(), faultOrderList);
+									1, (curPage - 1) * ProjectContants.PAGE_SIZE, faultOrderList);
 						}
-						ptrlvUnfinished.getRefreshableView().setSelection(listIndex + 1);*/
+						ptrlvUnfinished.getRefreshableView().setSelection(listIndex + 1);
 					}
 				}
 				break;

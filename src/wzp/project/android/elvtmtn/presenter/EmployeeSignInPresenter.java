@@ -1,6 +1,6 @@
 package wzp.project.android.elvtmtn.presenter;
 
-import wzp.project.android.elvtmtn.activity.IEmployeeSignInActivity;
+import wzp.project.android.elvtmtn.activity.IEmployeeSignInDetailActivity;
 import wzp.project.android.elvtmtn.biz.IEmployeeBiz;
 import wzp.project.android.elvtmtn.biz.IEmployeeSignInListener;
 import wzp.project.android.elvtmtn.biz.impl.EmployeeBizImpl;
@@ -8,11 +8,11 @@ import wzp.project.android.elvtmtn.biz.impl.EmployeeBizImpl;
 public class EmployeeSignInPresenter {
 
 	private static IEmployeeBiz employeeBiz = new EmployeeBizImpl();
-	private IEmployeeSignInActivity employeeSignInActivity;
+	private IEmployeeSignInDetailActivity employeeSignInDetailActivity;
 	
 	
-	public EmployeeSignInPresenter(IEmployeeSignInActivity employeeSignInActivity) {
-		this.employeeSignInActivity = employeeSignInActivity;
+	public EmployeeSignInPresenter(IEmployeeSignInDetailActivity employeeSignInActivity) {
+		this.employeeSignInDetailActivity = employeeSignInActivity;
 	}
 	
 	public void signIn(int workOrderType, Long workOrderId, String signInAddress) {
@@ -20,12 +20,12 @@ public class EmployeeSignInPresenter {
 				signInAddress, new IEmployeeSignInListener() {
 			@Override
 			public void onSignInSuccess() {
-				employeeSignInActivity.signInSuccess();
+				employeeSignInDetailActivity.signInSuccess();
 			}
 			
 			@Override
 			public void onSignInFailure(String tipInfo) {
-				employeeSignInActivity.showToast(tipInfo);
+				employeeSignInDetailActivity.showToast(tipInfo);
 			}
 		});
 	}

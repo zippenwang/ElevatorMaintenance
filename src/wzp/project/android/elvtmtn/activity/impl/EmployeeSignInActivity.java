@@ -6,11 +6,13 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +25,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -34,6 +38,7 @@ import wzp.project.android.elvtmtn.activity.base.BaseActivity;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
 import wzp.project.android.elvtmtn.fragment.IWorkOrderSearchFragment;
+import wzp.project.android.elvtmtn.helper.adapter.FaultOrderSignInAdapter;
 import wzp.project.android.elvtmtn.helper.adapter.MaintainOrderSignInAdapter;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
@@ -42,6 +47,7 @@ import wzp.project.android.elvtmtn.util.MyApplication;
 
 public class EmployeeSignInActivity extends BaseActivity implements IWorkOrderSearchFragment {
 	
+	private Button btnBack;
 	private TextView tvWorkOrderType;
 	private PullToRefreshListView ptrlvSignIn;
 	private LinearLayout linearTipInfo;						// 提示网络异常、或当前工单不存在的LinearLayout控件
@@ -68,8 +74,10 @@ public class EmployeeSignInActivity extends BaseActivity implements IWorkOrderSe
 	private SharedPreferences preferences 
 		= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
 	private long employeeId;	
+	
+	private int listIndex;
+	private static final int REQUEST_REFRESH = 0x30;
 		
-	private static SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日 HH:mm:ss");
 	private static final String tag = "EmployeeSignInActivity";
 	
 	
@@ -82,6 +90,30 @@ public class EmployeeSignInActivity extends BaseActivity implements IWorkOrderSe
 		initWidget();
 	}
 	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {		
+		switch (requestCode) {
+		case REQUEST_REFRESH:
+			if (resultCode == Activity.RESULT_OK) {
+				boolean isNeedRefresh = data.getBooleanExtra("isNeedRefresh", false);
+				if (isNeedRefresh) {
+					if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
+						workOrderSearchPresenter.searchReceivedMaintainOrders(employeeId, 1,
+								(curPage - 1) * ProjectContants.PAGE_SIZE, maintainOrderList);
+					} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
+						workOrderSearchPresenter.searchReceivedFaultOrders(employeeId, 1, 
+								(curPage - 1) * ProjectContants.PAGE_SIZE, faultOrderList); 
+					}
+				}
+			}
+			break;
+
+		default:
+			break;
+		}
+		
+	}
+
 	private void initData() {
 		Intent intent = getIntent();
 		workOrderType = intent.getIntExtra("workOrderType", -1);
@@ -101,12 +133,13 @@ public class EmployeeSignInActivity extends BaseActivity implements IWorkOrderSe
 			mAdapter = new MaintainOrderSignInAdapter(this, R.layout.listitem_sign_in_order, maintainOrderList);
 			workOrderSearchPresenter.searchReceivedMaintainOrders(employeeId, curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);			
 		} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
-			
-			
+			mAdapter = new FaultOrderSignInAdapter(this, R.layout.listitem_sign_in_order, faultOrderList);
+			workOrderSearchPresenter.searchReceivedFaultOrders(employeeId, curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
 		}
 	}
 	
 	private void initWidget() {
+		btnBack = (Button) findViewById(R.id.btn_back);
 		tvWorkOrderType = (TextView) findViewById(R.id.tv_workOrderType);
 		ptrlvSignIn = (PullToRefreshListView) findViewById(R.id.ptrlv_signIn);
 		linearTipInfo = (LinearLayout) findViewById(R.id.linear_tipInfo);
@@ -118,6 +151,13 @@ public class EmployeeSignInActivity extends BaseActivity implements IWorkOrderSe
 		} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
 			tvWorkOrderType.setText("故障工单");
 		}
+		
+		btnBack.setOnClickListener(new OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+				finish();				
+			}
+		});
 		
 		btnRefreshAgain.setOnClickListener(new OnClickListener() {		
 			@Override
@@ -172,6 +212,22 @@ public class EmployeeSignInActivity extends BaseActivity implements IWorkOrderSe
 			}			
 		});
 		
+		ptrlvSignIn.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				listIndex = position - 1;
+				
+				if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
+					EmployeeSignInDetailActivity.myStartActivityForResult(EmployeeSignInActivity.this, REQUEST_REFRESH, 
+							workOrderType, JSON.toJSONString(maintainOrderList.get(listIndex)));
+				} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
+					EmployeeSignInDetailActivity.myStartActivityForResult(EmployeeSignInActivity.this, REQUEST_REFRESH, 
+							workOrderType, JSON.toJSONString(faultOrderList.get(listIndex)));
+				}
+			}
+		});
+		
 		if (isPtrlvHidden) {
 			hidePtrlvAndShowLinearLayout(tipInfo);
 		}
@@ -187,7 +243,8 @@ public class EmployeeSignInActivity extends BaseActivity implements IWorkOrderSe
         		workOrderSearchPresenter.searchReceivedMaintainOrders(employeeId, curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
         	} else if (WorkOrderType.FAULT_ORDER == workOrderType) {
 //				workOrderSearchPresenter.searchFaultOrder(groupId, WorkOrderState.UNFINISHED, curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
-			}
+        		workOrderSearchPresenter.searchReceivedFaultOrders(employeeId, curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
+        	}
         	
             // 返回执行的结果
             return null;    
@@ -207,6 +264,7 @@ public class EmployeeSignInActivity extends BaseActivity implements IWorkOrderSe
         		workOrderSearchPresenter.searchReceivedMaintainOrders(employeeId, curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
 			} else if (WorkOrderType.FAULT_ORDER == workOrderType) {
 //				workOrderSearchPresenter.searchFaultOrder(groupId, WorkOrderState.UNFINISHED, curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
+				workOrderSearchPresenter.searchReceivedFaultOrders(employeeId, curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
 			}
             return null;    
         }  
@@ -240,7 +298,8 @@ public class EmployeeSignInActivity extends BaseActivity implements IWorkOrderSe
 
 	@Override
 	public void closeProgressDialog() {
-		if (progressDialog != null) {
+		if (progressDialog != null
+				&& progressDialog.isShowing()) {
 			progressDialog.dismiss();
 		}
 	}

@@ -39,9 +39,9 @@ public class FaultOrderSignInAdapter extends ArrayAdapter<FaultOrder> {
 			view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
 			subViewHolder = new SubViewHolder();
 			subViewHolder.tvWorkOrderId = (TextView) view.findViewById(R.id.tv_workOrderId);
-			subViewHolder.tvIsSignIn = (TextView) view.findViewById(R.id.tv_isWorkOrderReceived);
+			subViewHolder.tvIsSignIn = (TextView) view.findViewById(R.id.tv_isSignIn);
 			subViewHolder.tvAddress = (TextView) view.findViewById(R.id.tv_address);
-			subViewHolder.tvReceivingTime = (TextView) view.findViewById(R.id.tv_occuredTime);
+			subViewHolder.tvReceivingTime = (TextView) view.findViewById(R.id.tv_receivingTime);
 			view.setTag(subViewHolder);
 		} else {
 			view = convertView;

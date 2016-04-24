@@ -1,6 +1,7 @@
 package wzp.project.android.elvtmtn.biz.impl;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -86,7 +87,7 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 			String signInAddress, final IEmployeeSignInListener listener) {
 		String url = null;
 		if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
-			url = ProjectContants.basePath + "/maintainOrder/singIn";
+			url = ProjectContants.basePath + "/maintainOrder/signIn";
 		} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
 			url = ProjectContants.basePath + "/faultOrder/signIn";
 		} else {
@@ -94,6 +95,7 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 		}
 		
 		OkHttpUtils.post().url(url)
+			.addHeader("Content-Type", "multipart/form-data;charset=utf-8")
 			.addParams("id", String.valueOf(workOrderId))
 			.addParams("signInAddress", signInAddress)
 			.build()

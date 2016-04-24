@@ -17,6 +17,7 @@ import wzp.project.android.elvtmtn.activity.impl.MaintainOrderDetailActivity;
 import wzp.project.android.elvtmtn.activity.impl.MaintainOrderSearchActivity;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
+import wzp.project.android.elvtmtn.helper.adapter.FinishedMaintainOrderAdapter;
 import wzp.project.android.elvtmtn.helper.adapter.UnfinishedFaultOrderAdapter;
 import wzp.project.android.elvtmtn.helper.adapter.FinishedFaultOrderAdapter;
 import wzp.project.android.elvtmtn.helper.adapter.MaintainOrderAdapter;
@@ -126,13 +127,11 @@ public class FinishedWorkOrderFragment extends Fragment implements IWorkOrderSea
 		if (isVisibleToUser && isFirstAccessServer) {
 			curPage = 1;
 			if (WorkOrderType.MAINTAIN_ORDER == workOrderType) {
-				mAdapter = new MaintainOrderAdapter(workOrderSearchActivity, 
-						R.layout.listitem_unfinished_overdue_maintain_order, maintainOrderList);
+				mAdapter = new FinishedMaintainOrderAdapter(workOrderSearchActivity, 
+						R.layout.listitem_finished_maintain_order, maintainOrderList);
 				workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.FINISHED, curPage++, 
 						ProjectContants.PAGE_SIZE, maintainOrderList);
 			} else if (WorkOrderType.FAULT_ORDER == workOrderType) {
-//				mAdapter = new FaultOrderAdapter(workOrderSearchActivity, 
-//						R.layout.listitem_fault_order, faultOrderList);
 				mAdapter = new FinishedFaultOrderAdapter(workOrderSearchActivity, 
 						R.layout.listitem_finished_fault_order, faultOrderList);
 				workOrderSearchPresenter.searchFaultOrder(groupId, WorkOrderState.FINISHED, 

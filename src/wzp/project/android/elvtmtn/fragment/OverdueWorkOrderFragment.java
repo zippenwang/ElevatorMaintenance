@@ -60,14 +60,12 @@ public class OverdueWorkOrderFragment extends Fragment implements IWorkOrderSear
 	private Button btnRefreshAgain;							// 重试按钮
 	private ProgressDialog progressDialog;					// 进度对话框
 	
-//	private int workOrderType;
 	private ArrayAdapter<MaintainOrder> mAdapter;
 	
 	/*
 	 * 由于需要在List集合中添加元素，因此不能直接定义一个List<?>
 	 */
 	private List<MaintainOrder> maintainOrderList = new ArrayList<MaintainOrder>();		// 保养工单集合
-//	private List<FaultOrder> faultOrderList = new ArrayList<FaultOrder>();				// 故障工单集合
 	
 	private WorkOrderSearchPresenter workOrderSearchPresenter = new WorkOrderSearchPresenter(this);
 	private MaintainOrderSearchActivity workOrderSearchActivity;
@@ -122,9 +120,14 @@ public class OverdueWorkOrderFragment extends Fragment implements IWorkOrderSear
 					boolean isNeedRefresh = data.getBooleanExtra("isNeedRefresh", false);
 					Log.i(tag, "" + isNeedRefresh);
 					if (isNeedRefresh) {
-						Date receivingTime = (Date) data.getSerializableExtra("receivingTime");
+						/*Date receivingTime = (Date) data.getSerializableExtra("receivingTime");
 						maintainOrderList.get(listIndex).setReceivingTime(receivingTime);				
-						updateInterface();
+						updateInterface();*/
+						
+						Log.i(tag, "准备再次刷新Overdue");
+						workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.OVERDUE, 
+								1, (curPage - 1) * ProjectContants.PAGE_SIZE, maintainOrderList);						
+						ptrlvOverdue.getRefreshableView().setSelection(listIndex + 1);
 					}
 				}
 				break;

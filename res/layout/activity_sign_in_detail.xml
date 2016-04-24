@@ -138,8 +138,99 @@
             android:textSize="@dimen/work_order_detail" />   
     </LinearLayout>
 
+    <!-- 签到状态 -->
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">        
+        <TextView 
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:text="@string/signInState"
+            android:textSize="@dimen/work_order_detail" />
+        <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/:"
+            android:layout_marginRight="5dp"
+            android:textSize="@dimen/work_order_detail" />
+        <TextView 
+            android:id="@+id/tv_signInState"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:textSize="@dimen/work_order_detail" />   
+    </LinearLayout>
+    
+    <!-- 签到时间 -->
+    <LinearLayout 
+        android:id="@+id/linear_signInTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">        
+        <TextView 
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:text="@string/signInTime"
+            android:textSize="@dimen/work_order_detail" />
+        <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/:"
+            android:layout_marginRight="5dp"
+            android:textSize="@dimen/work_order_detail" />
+        <TextView 
+            android:id="@+id/tv_signInTime"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:textSize="@dimen/work_order_detail" />   
+    </LinearLayout>
+    
+    <!-- 签到位置 -->
+    <LinearLayout 
+        android:id="@+id/linear_signInAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">        
+        <TextView 
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:text="@string/signInAddress"
+            android:textSize="@dimen/work_order_detail" />
+        <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/:"
+            android:layout_marginRight="5dp"
+            android:textSize="@dimen/work_order_detail" />
+        <TextView 
+            android:id="@+id/tv_signInAddress"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:lines="3"
+            android:textSize="@dimen/work_order_detail" />   
+    </LinearLayout>
+    
     <!-- 当前位置 -->
     <LinearLayout 
+        android:id="@+id/linear_currentAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -167,6 +258,8 @@
             android:lines="3"
             android:textSize="@dimen/work_order_detail" />   
     </LinearLayout>
+    
+    
     
     <!-- 一键签到 -->
     <LinearLayout 

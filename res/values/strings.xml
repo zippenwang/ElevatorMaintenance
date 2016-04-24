@@ -37,7 +37,9 @@
 	<string name="isFinished">是否完成</string>
 	<string name="maintainItem">保养项目</string>
 	
+	<!-- 签到 -->
 	<string name="currentAddress">当前地址</string>
+	<string name="signInState">签到状态</string>
 	
 	
 	<!-- 电梯数据库 -->
