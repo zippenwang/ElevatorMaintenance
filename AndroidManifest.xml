@@ -103,5 +103,17 @@
             android:name="wzp.project.android.elvtmtn.activity.impl.EmployeeInfoActivity">
         </activity>
         
+        <activity 
+            android:name="wzp.project.android.elvtmtn.activity.impl.FaultOrderFeedbackDetailActivity">
+        </activity>
+        
+        <activity 
+            android:name="wzp.project.android.elvtmtn.activity.impl.MaintainOrderFeedbackDetailActivity">
+        </activity>
+        
+        <activity 
+            android:name="wzp.project.android.elvtmtn.activity.impl.ElevatorRecordSearchActivity">
+        </activity>
+        
     </application>
 </manifest>

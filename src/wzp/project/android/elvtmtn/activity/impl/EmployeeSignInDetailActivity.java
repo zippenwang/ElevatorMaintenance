@@ -383,6 +383,9 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 				isSignInSuccess = true;
 				Toast.makeText(EmployeeSignInDetailActivity.this, "签到成功", Toast.LENGTH_SHORT).show();
 				btnSignIn.setEnabled(false);
+				tvSignInState.setText("已签到");
+				btnRefreshCurAddress.setVisibility(View.GONE);
+				locationClient.unRegisterLocationListener(locationListener);
 			}
 		});
 	}

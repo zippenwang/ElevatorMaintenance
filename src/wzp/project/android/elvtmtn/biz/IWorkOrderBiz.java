@@ -40,8 +40,16 @@ public interface IWorkOrderBiz {
 	void getReceivedFaultOrdersByCondition(long employeeId, int pageNumber,
 			int pageSize, List<FaultOrder> dataList, IWorkOrderSearchListener listener);
 	
+	void getSignedInMaintainOrdersByCondition(long employeeId, int pageNumber,
+			int pageSize, List<MaintainOrder> maintainOrders, IWorkOrderSearchListener listener);
+	
+	void getSignedInFaultOrdersByCondition(long employeeId, int pageNumber,
+			int pageSize, List<FaultOrder> faultOrderList, IWorkOrderSearchListener listener);
+	
 	void receiveOrder(int workOrderType, Long workOrderId, Long employeeId, IWorkOrderReceiveListener listener);
 
 	void cancelReceiveOrder(int workOrderType, Long workOrderId, Long employeeId, IWorkOrderCancelListener listener);
 
+	void feedbackOrder(int workOrderType, Long workOrderId, Long employeeId, String faultReason, 
+			boolean isDone, String remark, String signOutAddress, IWorkOrderFeedbackListener listener);
 }

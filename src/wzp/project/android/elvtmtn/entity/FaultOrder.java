@@ -6,6 +6,7 @@ import java.util.Date;
 public class FaultOrder {
 
 	private long id;
+	private String no;
 	private Date occuredTime;				// 故障发生时间
 	private String description;				// 故障描述
 	private String reason;					// 故障原因
@@ -19,6 +20,12 @@ public class FaultOrder {
 	private Employee employee;				// 维修人员，记录接单的工作人员
 	private ElevatorRecord elevatorRecord;	// 电梯档案
 	
+	public String getNo() {
+		return no;
+	}
+	public void setNo(String no) {
+		this.no = no;
+	}
 	public long getId() {
 		return id;
 	}

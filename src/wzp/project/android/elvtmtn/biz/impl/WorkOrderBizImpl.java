@@ -14,10 +14,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.builder.PostFormBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import wzp.project.android.elvtmtn.biz.IWorkOrderBiz;
 import wzp.project.android.elvtmtn.biz.IWorkOrderCancelListener;
+import wzp.project.android.elvtmtn.biz.IWorkOrderFeedbackListener;
 import wzp.project.android.elvtmtn.biz.IWorkOrderReceiveListener;
 import wzp.project.android.elvtmtn.biz.IWorkOrderSearchListener;
 import wzp.project.android.elvtmtn.entity.Employee;
@@ -418,6 +420,139 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				}
 			});
 	}
+	
+	@Override
+	public void getSignedInFaultOrdersByCondition(long employeeId,
+			final int pageNumber, int pageSize, final List<FaultOrder> faultOrderList,
+			final IWorkOrderSearchListener listener) {
+		String url = ProjectContants.basePath + "/faultOrder/feedback/list";
+		
+		OkHttpUtils.get().url(url)
+			.addParams("employeeId", String.valueOf(employeeId))
+			.addParams("pageNumber", String.valueOf(pageNumber))
+			.addParams("pageSize", String.valueOf(pageSize))
+			.build()
+			.execute(new StringCallback() {
+				@Override
+				public void onAfter() {
+					listener.onAfter();
+				}
+				
+				@Override
+				public void onResponse(String response) {
+					Log.i(tag, response);
+					
+					if (!TextUtils.isEmpty(response)) {
+						List<FaultOrder> respDataList = JSON.parseObject(response, 
+								new TypeReference<List<FaultOrder>>() {});
+						if (respDataList != null && respDataList.size() > 0) {
+							if (1 == pageNumber) {
+								faultOrderList.clear();
+							}
+							faultOrderList.addAll(respDataList);
+							
+							if (respDataList.size() % ProjectContants.PAGE_SIZE == 0) {
+								listener.onSearchSuccess(ProjectContants.ORDER_SHOW_UNCOMPLETE);
+							} else {
+								listener.onSearchSuccess(ProjectContants.ORDER_SHOW_COMPLETE);
+							}
+						} else {
+							/*
+							 * 响应数据为空，表示当前请求的数据不存在，有两种可能的情况
+							 * 1、压根就没有数据；
+							 * 2、表示当前pageNumber下，没有数据，即1~pageNumber-1之间的页面，就已经把数据完全显示出来了；
+							 * 
+							 * 解决方案：
+							 * 1、如果pageNumber等于1，属于上述第一种情况，此时应该提示“当前没有符合要求的工单”；
+							 * 2、如果pageNumber大于1，属于上述第二种情况，此时应该利用Toast提示已经显示出所有工单，并关闭上拉加载的功能；
+							 * 
+							 * 提供一个标志位，根据不同的情况，执行不同的操作；
+							 */
+							if (1 == pageNumber) {
+								listener.onSearchSuccess(ProjectContants.ORDER_IS_NULL);
+							} else if (pageNumber > 1) {
+								listener.onSearchSuccess(ProjectContants.ORDER_SHOW_COMPLETE);
+							}
+						}
+					} else {
+						listener.onSearchFailure("服务器故障，响应数据有误！");
+					}
+				}
+				
+				@Override
+				public void onError(Call call, Exception e) {
+					Log.e(tag, Log.getStackTraceString(e));
+					listener.onSearchFailure("服务器正在打盹\n请检查网络连接后重试");	
+				}
+			});
+		
+	}
+	
+	@Override
+	public void getSignedInMaintainOrdersByCondition(long employeeId,
+			final int pageNumber, int pageSize, final List<MaintainOrder> maintainOrderList,
+			final IWorkOrderSearchListener listener) {
+		String url = ProjectContants.basePath + "/maintainOrder/feedback/list";
+		
+		OkHttpUtils.get().url(url)
+			.addParams("employeeId", String.valueOf(employeeId))
+			.addParams("pageNumber", String.valueOf(pageNumber))
+			.addParams("pageSize", String.valueOf(pageSize))
+			.build()
+			.execute(new StringCallback() {
+				@Override
+				public void onAfter() {
+					listener.onAfter();
+				}
+				
+				@Override
+				public void onResponse(String response) {
+					Log.i(tag, response);
+					
+					if (!TextUtils.isEmpty(response)) {
+						List<MaintainOrder> respDataList = JSON.parseObject(response, 
+								new TypeReference<List<MaintainOrder>>() {});
+						if (respDataList != null && respDataList.size() > 0) {
+							if (1 == pageNumber) {
+								maintainOrderList.clear();
+							}
+							maintainOrderList.addAll(respDataList);
+							
+							if (respDataList.size() % ProjectContants.PAGE_SIZE == 0) {
+								listener.onSearchSuccess(ProjectContants.ORDER_SHOW_UNCOMPLETE);
+							} else {
+								listener.onSearchSuccess(ProjectContants.ORDER_SHOW_COMPLETE);
+							}
+						} else {
+							/*
+							 * 响应数据为空，表示当前请求的数据不存在，有两种可能的情况
+							 * 1、压根就没有数据；
+							 * 2、表示当前pageNumber下，没有数据，即1~pageNumber-1之间的页面，就已经把数据完全显示出来了；
+							 * 
+							 * 解决方案：
+							 * 1、如果pageNumber等于1，属于上述第一种情况，此时应该提示“当前没有符合要求的工单”；
+							 * 2、如果pageNumber大于1，属于上述第二种情况，此时应该利用Toast提示已经显示出所有工单，并关闭上拉加载的功能；
+							 * 
+							 * 提供一个标志位，根据不同的情况，执行不同的操作；
+							 */
+							if (1 == pageNumber) {
+								listener.onSearchSuccess(ProjectContants.ORDER_IS_NULL);
+							} else if (pageNumber > 1) {
+								listener.onSearchSuccess(ProjectContants.ORDER_SHOW_COMPLETE);
+							}
+						}
+					} else {
+						listener.onSearchFailure("服务器故障，响应数据有误！");
+					}
+				}
+				
+				@Override
+				public void onError(Call call, Exception e) {
+					Log.e(tag, Log.getStackTraceString(e));
+					listener.onSearchFailure("服务器正在打盹\n请检查网络连接后重试");	
+				}
+			});
+	}
 
 	@Override
 	public void receiveOrder(int workOrderType, Long workOrderId, Long employeeId, 
@@ -516,6 +651,61 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				}
 			});
 	}
-	
+
+	@Override
+	public void feedbackOrder(int workOrderType, Long workOrderId,
+			Long employeeId, String faultReason, boolean isDone, String remark,
+			String signOutAddress, final IWorkOrderFeedbackListener listener) {
+		String url = null;
+		PostFormBuilder builder = OkHttpUtils.post()
+			.addParams("id", String.valueOf(workOrderId))
+			.addParams("employee.id", String.valueOf(employeeId))
+			.addParams("remark", remark)
+			.addParams("signOutAddress", signOutAddress);
+		
+		if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
+			url = ProjectContants.basePath + "/maintainOrder/feedback";
+			builder.addParams("finished", String.valueOf(isDone))
+				.url(url);			
+		} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
+			url = ProjectContants.basePath + "/faultOrder/feedback";
+			builder.addParams("fixed", String.valueOf(isDone))
+				.addParams("reason", faultReason)
+				.url(url);
+		} else {
+			throw new IllegalArgumentException("工单类型有误");
+		}
+		
+		builder.build().execute(new StringCallback() {			
+			@Override
+			public void onResponse(String response) {
+				Log.i(response, response);
+				JSONObject jo = JSON.parseObject(response);
+				String result = jo.getString("result");
+				
+				if (!TextUtils.isEmpty(result)) {
+					if (result.equals("success")) {
+						listener.onFeedbackSuccess();
+					} else if (result.equals("failed")) {
+						listener.onFeedbackFailure("未知异常，工单反馈失败，请联系管理员");
+					} else if (result.equals("employeeNotExist")) {
+						
+					} else if (result.equals("maintainOrderNotExist")) {
+						
+					} else if (result.equals("faultOrderNotExist")) {
+						
+					}
+				} else {
+					listener.onFeedbackFailure("服务器故障，响应数据有误！");		
+				}
+			}
+			
+			@Override
+			public void onError(Call call, Exception e) {
+				Log.e(tag, Log.getStackTraceString(e));
+				listener.onFeedbackFailure("服务器正在打盹\n请检查网络连接后重试");
+			}
+		});
+	}
 
 }

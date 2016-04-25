@@ -55,7 +55,7 @@
 	            android:id="@+id/btn_search"
 	            android:layout_width="match_parent"
 	            android:layout_height="wrap_content"
-	            android:background="@drawable/search" />
+	            android:background="@drawable/order_search" />
 
 	     <TextView
 	         android:layout_width="match_parent"

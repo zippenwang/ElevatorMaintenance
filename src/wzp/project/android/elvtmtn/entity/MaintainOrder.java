@@ -5,6 +5,7 @@ import java.util.Date;
 public class MaintainOrder {
 	
 	private long id;							// 工单id
+	private String no;
 	private Date finalTime;						// 截止日期
 	private Date receivingTime;					// 接单时间
 	private Date signInTime;					// 签到时间
@@ -24,6 +25,12 @@ public class MaintainOrder {
 	}
 	public void setId(long id) {
 		this.id = id;
+	}
+	public String getNo() {
+		return no;
+	}
+	public void setNo(String no) {
+		this.no = no;
 	}
 	public Date getFinalTime() {
 		return finalTime;

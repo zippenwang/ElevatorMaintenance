@@ -2,6 +2,7 @@ package wzp.project.android.elvtmtn.activity.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import com.alibaba.fastjson.JSON;
 
@@ -26,6 +27,7 @@ import wzp.project.android.elvtmtn.activity.IWorkOrderDetailActivity;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
 import wzp.project.android.elvtmtn.biz.IWorkOrderBiz;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
+import wzp.project.android.elvtmtn.entity.MaintainItem;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
 import wzp.project.android.elvtmtn.fragment.UnfinishedWorkOrderFragment;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderState;
@@ -120,6 +122,19 @@ public class MaintainOrderDetailActivity extends BaseActivity implements IWorkOr
 		tvElevatorAddress.setText(maintainOrder.getElevatorRecord().getAddress());
 		tvMaintainType.setText(maintainOrder.getMaintainType().getName());
 //		tvMaintainItem.setText(maintainOrder.getMaintainType().getMaintainItems())
+		tvMaintainItem.setText("");
+		/*for (MaintainItem item : maintainOrder.getMaintainType().getMaintainItems()) {
+			tvMaintainItem.append(item.getName() + "\n");
+		}*/
+		List<MaintainItem> items = maintainOrder.getMaintainType().getMaintainItems();
+		int itemsSize = items.size();
+		for (int i=0; i<itemsSize; i++) {
+			tvMaintainItem.append(items.get(i).getName());
+			if (i != (itemsSize - 1)) {
+				tvMaintainItem.append("\n");
+			}
+		}
+		
 		tvFinalTime.setText(sdf.format(maintainOrder.getFinalTime()));
 		
 		if (maintainOrder.getEmployee() != null) {

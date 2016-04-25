@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <RelativeLayout 
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#484E61">
+        <Button 
+            android:id="@+id/btn_back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/back"
+            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"/>         
+        
+		<TextView 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="24sp"
+	        android:textColor="#FFFFFF"
+	        android:text="工单反馈"
+	        android:gravity="center"
+			android:layout_centerInParent="true"/>     
+	        
+		<Button 
+            android:id="@+id/btn_refreshCurAddress"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/refresh"
+            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+    
+    <TextView 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:textSize="30sp"
+	    android:text="保养工单"
+	    android:gravity="center"/>
+    
+    <ScrollView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        	<!-- 工单号 -->
+		    <LinearLayout 
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">        
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/workOrderId"
+		            android:textSize="@dimen/work_order_detail"/>
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:textSize="@dimen/work_order_detail"
+		            android:layout_marginRight="5dp" />
+		        <TextView 
+		            android:id="@+id/tv_workOrderId"
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="001"
+		            android:textSize="@dimen/work_order_detail" />        
+		    </LinearLayout>
+		
+		    <!-- 电梯地址 -->
+		    <LinearLayout 
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">        
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/elevatorAddress"
+		            android:textSize="@dimen/work_order_detail" />
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:layout_marginRight="5dp"
+		            android:textSize="@dimen/work_order_detail" />
+		        <TextView 
+		            android:id="@+id/tv_elevatorAddress"
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:singleLine="true"
+		            android:ellipsize="marquee"
+		            android:marqueeRepeatLimit="marquee_forever"
+		            android:focusableInTouchMode="true"
+		            android:focusable="true"
+		            android:textSize="@dimen/work_order_detail" />   
+		    </LinearLayout>
+		    
+		    <!-- 签到时间 -->
+		    <LinearLayout
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/signInTime"
+		            android:textSize="@dimen/work_order_detail" />
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:layout_marginRight="5dp"
+		            android:textSize="@dimen/work_order_detail" />
+		        <TextView 
+		            android:id="@+id/tv_signInTime"
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="未接单"
+		            android:textSize="@dimen/work_order_detail" />
+		    </LinearLayout>
+		    
+		    <!-- 签到地点 -->
+		    <LinearLayout
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/signInAddress"
+		            android:textSize="@dimen/work_order_detail" />
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:layout_marginRight="5dp"
+		            android:textSize="@dimen/work_order_detail" />
+		        <TextView 
+		            android:id="@+id/tv_signInAddress"
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="未接单"
+		            android:textSize="@dimen/work_order_detail" />
+		    </LinearLayout>
+		    
+		    <!-- 反馈状态 -->
+		    <LinearLayout
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/feedbackState"
+		            android:textSize="@dimen/work_order_detail" />
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:layout_marginRight="5dp"
+		            android:textSize="@dimen/work_order_detail" />
+		        <TextView 
+		            android:id="@+id/tv_feedbackState"
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="未接单"
+		            android:textSize="@dimen/work_order_detail" />
+		    </LinearLayout>
+		    
+		    <!-- 当前位置 -->
+		    <LinearLayout 
+		        android:id="@+id/linear_currentAddress"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">        
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/currentAddress"
+		            android:textSize="@dimen/work_order_detail" />
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:layout_marginRight="5dp"
+		            android:textSize="@dimen/work_order_detail" />
+		        <TextView 
+		            android:id="@+id/tv_currentAddress"
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:lines="3"
+		            android:textSize="@dimen/work_order_detail" />   
+		    </LinearLayout>
+            
+		    <!-- 保养项目 -->
+		    <LinearLayout 
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">        
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/maintainItem"
+		            android:textSize="@dimen/work_order_detail"/>
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:textSize="@dimen/work_order_detail"
+		            android:layout_marginRight="5dp" />
+				<LinearLayout 
+				    android:id="@+id/linear_maintainItem"
+				    android:layout_width="0dp"
+				    android:layout_weight="3"
+				    android:layout_height="wrap_content"
+				    android:gravity="left"
+				    android:orientation="vertical">				    
+				</LinearLayout>
+		    </LinearLayout>
+            
+		    <!-- 备注 -->
+		    <LinearLayout 
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">        
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/remark"
+		            android:textSize="@dimen/work_order_detail"/>
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:textSize="@dimen/work_order_detail"
+		            android:layout_marginRight="5dp" />
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:textSize="@dimen/work_order_detail"/>		        
+		    </LinearLayout>
+		    <LinearLayout 
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">
+		        <EditText 
+		            android:id="@+id/edt_remark"
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:lines="3"
+		            android:hint="备注信息..."/>	        
+		    </LinearLayout>
+		    
+		    <!-- 是否完成 -->
+		    <LinearLayout 
+		        android:id="@+id/linear_isFixed"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">        
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/isFinished"
+		            android:textSize="@dimen/work_order_detail"/>
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:textSize="@dimen/work_order_detail"
+		            android:layout_marginRight="5dp" />
+		        <RadioGroup 
+		            android:id="@+id/rg_isFinished"
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:layout_gravity="center_vertical"
+		            android:orientation="horizontal">
+		            <RadioButton 
+		                android:id="@+id/rb_yes"
+		                android:layout_width="0dp"
+		                android:layout_weight="1"
+		                android:layout_height="wrap_content"
+		                android:text="是"/>
+		            <RadioButton 
+		                android:id="@+id/rb_no"
+		                android:layout_width="0dp"
+		                android:layout_weight="1"
+		                android:layout_height="wrap_content"
+		                android:checked="true"
+		                android:text="否"/>
+		        </RadioGroup>		        
+		    </LinearLayout>
+		    
+		    <!-- 按钮 -->
+		    <LinearLayout 
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp"
+		        android:gravity="center">
+		        <Button 
+		            android:id="@+id/btn_submit"
+		            android:layout_width="0dp"
+		            android:layout_weight="1"
+		            android:layout_height="wrap_content"
+		            android:text="提交" />		        
+		    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
