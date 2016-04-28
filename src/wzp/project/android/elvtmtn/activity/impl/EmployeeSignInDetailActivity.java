@@ -24,8 +24,11 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -80,6 +83,8 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 	private volatile boolean isShowCurrentAddress = false;
 	private volatile boolean isSignInSuccess = false;
 	
+	private ConnectivityManager mConnectivityManager;
+	
 	private static final String tag = "EmployeeSignInDetailActivity";
 	
 	@Override
@@ -109,6 +114,8 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 			faultOrder = JSON.parseObject(intent.getStringExtra("workOrder"), FaultOrder.class);
 			workOrderId = faultOrder.getId();
 		}
+		
+		mConnectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);				
 	}
 	
 	private void initWidget() {
@@ -201,8 +208,6 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 			}
 		});
 		
-		
-		
 		btnSignIn.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
@@ -210,6 +215,23 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 				if (mSearch == null) {
 					throw new IllegalArgumentException("mSearch为null");
 				}
+				
+				if (TextUtils.isEmpty(currentAddress)) {
+					Toast.makeText(EmployeeSignInDetailActivity.this, "百度地图定位失败，无法进行签到操作，\n检查网络后重试", Toast.LENGTH_SHORT).show();
+					Log.e(tag, "currentAddress is null");
+					return;
+				}
+								
+				NetworkInfo networkInfo = mConnectivityManager.getActiveNetworkInfo(); 
+				if (networkInfo == null) { 
+					Toast.makeText(EmployeeSignInDetailActivity.this, "网络异常，检查网络后重试", Toast.LENGTH_SHORT).show();
+					return;
+				} 
+				
+				// mSearch在编码过程中，不允许同时执行解码的操作，很容易造成空指针异常，因此
+				// 在这个过程中，先将解码的操作关闭，编码结束后，再打开允许解码的操作。
+				btnRefreshCurAddress.setEnabled(false);
+				showProgressDialog();
 				mSearch.geocode(new GeoCodeOption().city("").address(elevatorAddress));
 			}
 		});
@@ -232,23 +254,6 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 	 * @param distance 误差范围，单位为米
 	 * @return true：在误差范围内；false：不在误差范围内
 	 */
-	/*private boolean isInDistanceScope(LatLng src, LatLng dest, double distance) {
-		double delta = Math.sqrt(2) / 2 * distance * 1e-6;
-		Log.d(tag, String.valueOf(delta));
-		BigDecimal bdDelta = BigDecimal.valueOf(delta);
-		BigDecimal bdSrcLatitude = BigDecimal.valueOf(src.latitude);
-		BigDecimal bdSrcLongitude = BigDecimal.valueOf(src.longitude);
-		BigDecimal bdDestLatitude = BigDecimal.valueOf(dest.latitude);
-		BigDecimal bdDestLongitude = BigDecimal.valueOf(dest.longitude);
-		
-		if ((bdDestLatitude.subtract(bdSrcLatitude).abs().compareTo(bdDelta) <= 0)
-				&& (bdDestLongitude.subtract(bdSrcLongitude).abs().compareTo(bdDelta)) <= 0) {
-			return true;
-		}
-		
-		return false;
-	}*/
-	
 	private boolean isInDistanceScope(LatLng src, LatLng dest, double distance) {
 		double srcLatitude = src.latitude;
 		double srcLongitude = src.longitude;
@@ -315,19 +320,23 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 			
 			if (!isShowCurrentAddress) {
 				Log.d(tag, "执行地理反解码操作");
-//				showProgressDialog();
+				isShowCurrentAddress = true;
 				
 				// MapView销毁后不再处理新接收的位置
 				if (location == null)
 					return;
 				
-	//			LatLng ptCenter = new LatLng(location.getLatitude(), location.getLongitude());
-	//			mSearch.reverseGeoCode(new ReverseGeoCodeOption().location(ptCenter));
-				
 				LatLng ptCenter = new LatLng(location.getLatitude(), location.getLongitude());
-				mSearch.reverseGeoCode(new ReverseGeoCodeOption().location(ptCenter));
-				isShowCurrentAddress = true;
 				Log.i(tag, "当前位置，纬度：" + ptCenter.latitude + ",经度：" + ptCenter.longitude);
+
+				NetworkInfo networkInfo = mConnectivityManager.getActiveNetworkInfo(); 
+				if (networkInfo == null) { 
+					Toast.makeText(EmployeeSignInDetailActivity.this, "网络异常，定位失败，检查网络后重试", Toast.LENGTH_SHORT).show();
+					closeProgressDialog();
+					return;
+				} 
+				
+				mSearch.reverseGeoCode(new ReverseGeoCodeOption().location(ptCenter));
 			}
 		}		
 	}
@@ -340,6 +349,8 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 			return;
 		}
 		
+		Log.d(tag, "成功编码地理位置");
+		
 		elvtAddressLatLng = null;
 		elvtAddressLatLng = result.getLocation();
 		
@@ -347,17 +358,26 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 		
 		if (elvtAddressLatLng == null
 				|| curAddressLatLng == null) {
-			throw new IllegalArgumentException("电梯经纬度或当前经纬度为null");
+//			throw new IllegalArgumentException("电梯经纬度或当前经纬度为null");
+			Toast.makeText(EmployeeSignInDetailActivity.this, "百度地图定位失败，检查网络后重试", Toast.LENGTH_SHORT).show();
+			Log.e(tag, "电梯经纬度或当前经纬度为null");
+			return;
 		}
 		
 		// 误差范围定为200米
 		if (isInDistanceScope(elvtAddressLatLng, curAddressLatLng, 200)) {
-//			Toast.makeText(EmployeeSignInDetailActivity.this, "签到成功", Toast.LENGTH_SHORT).show();
-			
 			employeeSignInPresenter.signIn(workOrderType, workOrderId, currentAddress);			
 		} else {
 			Toast.makeText(EmployeeSignInDetailActivity.this, "超出误差范围，签到失败", Toast.LENGTH_SHORT).show();
 		}
+		
+		runOnUiThread(new Runnable() {			
+			@Override
+			public void run() {
+				btnRefreshCurAddress.setEnabled(true);
+			}
+		});
+		closeProgressDialog();
 	}
 
 	@Override
@@ -368,8 +388,9 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 			return;
 		}
 		
+		Log.d(tag, "成功反编码地理位置");
+		
 		curAddressLatLng = result.getLocation();
-//		tvCurrentAddress.setText("经度：" + latLng.latitude + ", 纬度：" + latLng.longitude + ";\n当前地址为：" + result.getAddress());
 		currentAddress = result.getAddress();
 		tvCurrentAddress.setText(currentAddress);
 		closeProgressDialog();

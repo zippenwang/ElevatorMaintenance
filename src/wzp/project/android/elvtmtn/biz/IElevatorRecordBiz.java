@@ -6,6 +6,6 @@ import wzp.project.android.elvtmtn.entity.ElevatorRecord;
 
 public interface IElevatorRecordBiz {
 
-	void getAllElevatorRecords(long groupId, int pageNumber, int pageSize, 
+	void getAllElevatorRecords(int pageNumber, int pageSize, 
 			List<ElevatorRecord> elevatorRecordList, IElevatorRecordSearchListener listener);
 }

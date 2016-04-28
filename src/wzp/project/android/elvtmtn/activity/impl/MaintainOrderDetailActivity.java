@@ -88,15 +88,18 @@ public class MaintainOrderDetailActivity extends BaseActivity implements IWorkOr
 	
 	private void initData() {
 		Intent intent = getIntent();
-		workOrderState = intent.getIntExtra("workOrderState", -1);				
 		
+		workOrderState = intent.getIntExtra("workOrderState", -1);		
 		if (-1 == workOrderState) {
 			throw new IllegalArgumentException("没有接收到工单状态的参数");
 		}
 		
 		maintainOrder = JSON.parseObject(intent.getStringExtra("workOrder"), MaintainOrder.class);
 		
-		employeeId = preferences.getLong("employeeId", 0);
+		employeeId = preferences.getLong("employeeId", -1);
+		if (-1 == employeeId) {
+			throw new IllegalArgumentException("员工id有误");
+		}
 	}
 	
 	private void initWidget() {
@@ -119,17 +122,13 @@ public class MaintainOrderDetailActivity extends BaseActivity implements IWorkOr
 		 * 为未完成、已完成、超期的保养工单均需要显示的控件设置数值
 		 */
 		tvWorkOrderId.setText(String.valueOf(maintainOrder.getId()));
-		tvElevatorAddress.setText(maintainOrder.getElevatorRecord().getAddress());
-		tvMaintainType.setText(maintainOrder.getMaintainType().getName());
-//		tvMaintainItem.setText(maintainOrder.getMaintainType().getMaintainItems())
+		tvElevatorAddress.setText(maintainOrder.getElevatorRecord().getAddress().trim());
+		tvMaintainType.setText(maintainOrder.getMaintainType().getName().trim());
 		tvMaintainItem.setText("");
-		/*for (MaintainItem item : maintainOrder.getMaintainType().getMaintainItems()) {
-			tvMaintainItem.append(item.getName() + "\n");
-		}*/
 		List<MaintainItem> items = maintainOrder.getMaintainType().getMaintainItems();
 		int itemsSize = items.size();
 		for (int i=0; i<itemsSize; i++) {
-			tvMaintainItem.append(items.get(i).getName());
+			tvMaintainItem.append(items.get(i).getName().trim());
 			if (i != (itemsSize - 1)) {
 				tvMaintainItem.append("\n");
 			}
@@ -137,12 +136,13 @@ public class MaintainOrderDetailActivity extends BaseActivity implements IWorkOr
 		
 		tvFinalTime.setText(sdf.format(maintainOrder.getFinalTime()));
 		
-		if (maintainOrder.getEmployee() != null) {
+		/*if (maintainOrder.getEmployee() != null) {
 			Log.i(tag, "Employee不为空");			
 		} else {
 			Log.i(tag, "Employee为空");
-		}
+		}*/
 		
+		// 接单时间若不为空，对应的Employee实例也一定不为空
 		if (maintainOrder.getReceivingTime() != null) {
 			tvReceiveState.setText("已接单");
 			tvReceiveState.setTextColor(Color.BLACK);
@@ -182,13 +182,13 @@ public class MaintainOrderDetailActivity extends BaseActivity implements IWorkOr
 			
 			if (maintainOrder.getEmployee() != null) {
 				if (!TextUtils.isEmpty(maintainOrder.getEmployee().getName())) {
-					tvFixEmployee.setText(maintainOrder.getEmployee().getName());
+					tvFixEmployee.setText(maintainOrder.getEmployee().getName().trim());
 				} else {
 					tvFixEmployee.setText("姓名未知");
 					tvFixEmployee.setTextColor(Color.RED);
 				}
 				if (maintainOrder.getEmployee().getGroup() != null) {
-					tvFixGroup.setText(String.valueOf(maintainOrder.getEmployee().getGroup().getId()));
+					tvFixGroup.setText(maintainOrder.getEmployee().getGroup().getName().trim());
 				} else {
 					tvFixGroup.setText("暂无组信息");
 				}
@@ -244,7 +244,8 @@ public class MaintainOrderDetailActivity extends BaseActivity implements IWorkOr
 			@Override
 			public void onClick(View v) {
 				isReceiveOrCancelOrder = true;
-				workOrderReceivePresenter.receiveOrder(WorkOrderType.MAINTAIN_ORDER, maintainOrder.getId(), employeeId);
+				workOrderReceivePresenter.receiveOrder(WorkOrderType.MAINTAIN_ORDER, 
+						maintainOrder.getId(), employeeId);
 			}
 		});
 		
@@ -253,7 +254,8 @@ public class MaintainOrderDetailActivity extends BaseActivity implements IWorkOr
 			public void onClick(View v) {
 				isReceiveOrCancelOrder = true;
 
-				workOrderReceivePresenter.cancelReceiveOrder(WorkOrderType.MAINTAIN_ORDER, maintainOrder.getId(), employeeId);
+				workOrderReceivePresenter.cancelReceiveOrder(WorkOrderType.MAINTAIN_ORDER, 
+						maintainOrder.getId(), employeeId);
 			}
 		});
 	}
@@ -315,25 +317,6 @@ public class MaintainOrderDetailActivity extends BaseActivity implements IWorkOr
 			}
 		});
 	}
-	
-	// 自定义一个startActivity()方法
-	/*public static void myStartActivity(Context context, int workOrderType, 
-			int workOrderState, String jsonWorkOrder) {
-		Intent actIntent = new Intent(context, MaintainOrderDetailActivity.class);
-		actIntent.putExtra("workOrderType", workOrderType);
-		actIntent.putExtra("workOrderState", workOrderState);
-		actIntent.putExtra("workOrder", jsonWorkOrder);
-		context.startActivity(actIntent);
-	}
-	
-	public static void myStartActivityForResult(Fragment fragment, int requestCode, 
-			int workOrderType, int workOrderState, String jsonWorkOrder) {
-		Intent actIntent = new Intent(fragment.getActivity(), MaintainOrderDetailActivity.class);
-		actIntent.putExtra("workOrderType", workOrderType);
-		actIntent.putExtra("workOrderState", workOrderState);
-		actIntent.putExtra("workOrder", jsonWorkOrder);
-		fragment.startActivityForResult(actIntent, requestCode);
-	}*/
 	
 	public static void myStartActivity(Context context, 
 			int workOrderState, String jsonWorkOrder) {

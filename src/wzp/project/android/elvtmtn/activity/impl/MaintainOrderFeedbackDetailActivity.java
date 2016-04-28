@@ -1,6 +1,7 @@
 package wzp.project.android.elvtmtn.activity.impl;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
@@ -20,10 +21,13 @@ import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -90,6 +94,11 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 		= new WorkOrderFeedbackPresenter(this);
 	
 	private int checkedNum;
+	private List<MaintainItem> itemList;
+//	private List<String> finishedItemList;
+	private String finishedItems;
+	
+	private ConnectivityManager mConnectivityManager;
 	
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static final String tag = "FaultOrderFeedbackDetailActivity";
@@ -141,6 +150,14 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 		if (employeeId == -1) {
 			throw new IllegalArgumentException("员工ID有误！");
 		}
+		itemList = maintainOrder.getMaintainType().getMaintainItems();
+//		finishedItemList = Arrays.asList(maintainOrder.getFinishedItems().split(";"));
+		finishedItems = maintainOrder.getFinishedItems();
+		if (finishedItems == null) {
+			finishedItems = "";
+		}
+		
+		mConnectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 	}
 	
 	private void initWidget() {
@@ -180,7 +197,7 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 			@Override
 			public void onClick(View v) {
 				// 刷新当前位置
-				showProgressDialog();
+				showProgressDialog("正在定位，请稍后...");
 				isShowCurrentAddress = false;
 			}
 		});
@@ -193,7 +210,7 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 					return;
 				}
 				
-				final String remark = edtRemark.getEditableText().toString();				
+				final String remark = edtRemark.getEditableText().toString().trim();				
 				final boolean isDone = (rgIsFinished.getCheckedRadioButtonId() == R.id.rb_yes);
 				String message = isDone ? "您当前已完成工单，是否确定提交？" : "您当前还未完成工单，是否确定提交？";
 			
@@ -205,9 +222,19 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 					altDlgBuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {						
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							/*workOrderFeedbackPresenter.feedbackOrder(WorkOrderType.FAULT_ORDER, 
-									workOrderId, employeeId, faultReason, isDone, 
-									remark, currentAddress);*/
+							StringBuilder finishedItems = new StringBuilder();
+							CheckBox ckbxItem = null;
+							for (int i=0; i<linearMaintainItem.getChildCount(); i++) {
+								ckbxItem = (CheckBox) linearMaintainItem.getChildAt(i);
+								if (ckbxItem.isChecked()) {
+									finishedItems.append(itemList.get(i).getId());
+									finishedItems.append(";");
+								}
+								ckbxItem = null;
+							}
+							workOrderFeedbackPresenter.feedbackOrder(WorkOrderType.MAINTAIN_ORDER, 
+									workOrderId, employeeId, null, isDone, 
+									remark, currentAddress, finishedItems.toString());
 						}
 					});
 					
@@ -243,17 +270,39 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 			tvFeedbackState.setTextColor(Color.RED);
 		}
 		
-		List<MaintainItem> itemList = maintainOrder.getMaintainType().getMaintainItems();
+		/*
+		 * 动态生成保养项目复选框
+		 */		
 		CheckBox ckBox = null;
 		for (MaintainItem item : itemList) {
 			ckBox = new CheckBox(this);
 			ckBox.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 			ckBox.setText(item.getName());
+			ckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {				
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					if (isChecked) {
+						checkedNum++;
+					} else {
+						checkedNum--;
+					}
+					Log.i(tag, "" + checkedNum);
+					if (checkedNum == linearMaintainItem.getChildCount()) {
+						rbYes.setEnabled(true);
+					} else {
+						rbYes.setEnabled(false);
+						rbNo.setChecked(true);
+					}
+				}
+			});
+			if (finishedItems.contains(String.valueOf(item.getId()))) {
+				ckBox.setChecked(true);
+			}
 			linearMaintainItem.addView(ckBox);
 			ckBox = null;
 		}
 		
-		for (int i=0; i<linearMaintainItem.getChildCount(); i++) {
+		/*for (int i=0; i<linearMaintainItem.getChildCount(); i++) {
 			CheckBox ckbxItem = (CheckBox) linearMaintainItem.getChildAt(i);
 			ckbxItem.setOnCheckedChangeListener(new OnCheckedChangeListener() {				
 				@Override
@@ -272,7 +321,7 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 					}
 				}
 			});
-		}
+		}*/
 
 		if (!TextUtils.isEmpty(maintainOrder.getRemark())) {
 			edtRemark.setText(maintainOrder.getRemark());
@@ -301,7 +350,7 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 		
 		locationClient.setLocOption(option);
 		
-		showProgressDialog();
+		showProgressDialog("正在定位，请稍后...");
 		locationClient.registerLocationListener(locationListener);
 	}
 	
@@ -312,17 +361,25 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 			
 			if (!isShowCurrentAddress) {
 				Log.d(tag, "执行地理反解码操作");
+				isShowCurrentAddress = true;
 				
 				// MapView销毁后不再处理新接收的位置
 				if (location == null)
 					return;
 								
 				LatLng ptCenter = new LatLng(location.getLatitude(), location.getLongitude());
-				mSearch.reverseGeoCode(new ReverseGeoCodeOption().location(ptCenter));
-				isShowCurrentAddress = true;
 				Log.i(tag, "当前位置，纬度：" + ptCenter.latitude + ",经度：" + ptCenter.longitude);
+				
+				NetworkInfo networkInfo = mConnectivityManager.getActiveNetworkInfo(); 
+				if (networkInfo == null) { 
+					Toast.makeText(MaintainOrderFeedbackDetailActivity.this, "网络异常，定位失败，检查网络后重试", Toast.LENGTH_SHORT).show();
+					closeProgressDialog();
+					return;
+				} 
+				
+				mSearch.reverseGeoCode(new ReverseGeoCodeOption().location(ptCenter));		
 			}
-		}		
+		}
 	}
 	
 	// 自定义一个startActivity()方法
@@ -352,11 +409,11 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 	}
 	
 	@Override
-	public void showProgressDialog() {
+	public void showProgressDialog(final String tipInfo) {
 		runOnUiThread(new Runnable() {		
 			@Override
 			public void run() {
-				progressDialog.setTitle("正在定位，请稍后...");
+				progressDialog.setTitle(tipInfo);
 				progressDialog.setMessage("Loading...");
 				progressDialog.setCancelable(true);
 				
@@ -392,6 +449,8 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 			return;
 		}
 		
+		Log.d(tag, "成功反编码地理位置");
+		
 		currentAddress = result.getAddress();
 		tvCurrentAddress.setText(currentAddress);
 		closeProgressDialog();
@@ -414,6 +473,11 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 				} else {
 					tvFeedbackState.setText("部分反馈");
 				}
+				 
+				for (int i=0; i<linearMaintainItem.getChildCount(); i++) {
+					linearMaintainItem.getChildAt(i).setEnabled(false);
+				}
+				
 				locationClient.unRegisterLocationListener(locationListener);
 				btnRefreshCurAddress.setVisibility(View.GONE);
 			}

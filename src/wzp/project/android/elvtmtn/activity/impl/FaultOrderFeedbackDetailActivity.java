@@ -19,10 +19,13 @@ import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -83,6 +86,8 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 	private WorkOrderFeedbackPresenter workOrderFeedbackPresenter
 		= new WorkOrderFeedbackPresenter(this);
 	
+	private ConnectivityManager mConnectivityManager;
+	
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static final String tag = "FaultOrderFeedbackDetailActivity";
 	
@@ -133,6 +138,8 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 		if (employeeId == -1) {
 			throw new IllegalArgumentException("员工ID有误！");
 		}
+		
+		mConnectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 	}
 	
 	private void initWidget() {
@@ -172,7 +179,7 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 			@Override
 			public void onClick(View v) {
 				// 刷新当前位置
-				showProgressDialog();
+				showProgressDialog("正在定位，请稍后...");
 				isShowCurrentAddress = false;
 			}
 		});
@@ -200,7 +207,7 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 						public void onClick(DialogInterface dialog, int which) {
 							workOrderFeedbackPresenter.feedbackOrder(WorkOrderType.FAULT_ORDER, 
 									workOrderId, employeeId, faultReason, isDone, 
-									remark, currentAddress);
+									remark, currentAddress, null);
 						}
 					});
 					
@@ -266,7 +273,7 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 		
 		locationClient.setLocOption(option);
 		
-		showProgressDialog();
+		showProgressDialog("正在定位，请稍后...");
 		locationClient.registerLocationListener(locationListener);
 	}
 	
@@ -277,15 +284,23 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 			
 			if (!isShowCurrentAddress) {
 				Log.d(tag, "执行地理反解码操作");
+				isShowCurrentAddress = true;
 				
 				// MapView销毁后不再处理新接收的位置
 				if (location == null)
 					return;
 								
 				LatLng ptCenter = new LatLng(location.getLatitude(), location.getLongitude());
-				mSearch.reverseGeoCode(new ReverseGeoCodeOption().location(ptCenter));
-				isShowCurrentAddress = true;
 				Log.i(tag, "当前位置，纬度：" + ptCenter.latitude + ",经度：" + ptCenter.longitude);
+				
+				NetworkInfo networkInfo = mConnectivityManager.getActiveNetworkInfo(); 
+				if (networkInfo == null) { 
+					Toast.makeText(FaultOrderFeedbackDetailActivity.this, "网络异常，定位失败，检查网络后重试", Toast.LENGTH_SHORT).show();
+					closeProgressDialog();
+					return;
+				} 
+				
+				mSearch.reverseGeoCode(new ReverseGeoCodeOption().location(ptCenter));
 			}
 		}		
 	}
@@ -317,11 +332,11 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 	}
 	
 	@Override
-	public void showProgressDialog() {
+	public void showProgressDialog(final String tipInfo) {
 		runOnUiThread(new Runnable() {		
 			@Override
 			public void run() {
-				progressDialog.setTitle("正在定位，请稍后...");
+				progressDialog.setTitle(tipInfo);
 				progressDialog.setMessage("Loading...");
 				progressDialog.setCancelable(true);
 				
@@ -356,6 +371,8 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 					.show();
 			return;
 		}
+		
+		Log.d(tag, "成功反编码地理位置");
 		
 		currentAddress = result.getAddress();
 		tvCurrentAddress.setText(currentAddress);

@@ -17,7 +17,7 @@ public class MainActivity extends BaseActivity {
 	private Button btnWorkOrderSearch;
 	private Button btnSignIn;
 	private Button btnWorkOrderFeedback;
-	private Button btnTakePhotos;
+//	private Button btnTakePhotos;
 	private Button btnElevatorRecord;
 	private Button btnUserInfo;
 	private AlertDialog.Builder altDlgBuilder;
@@ -37,7 +37,7 @@ public class MainActivity extends BaseActivity {
 		btnWorkOrderSearch = (Button) findViewById(R.id.btn_workOrderSearch);
 		btnSignIn = (Button) findViewById(R.id.btn_signIn);
 		btnWorkOrderFeedback = (Button) findViewById(R.id.btn_workOrderFeedback);
-		btnTakePhotos = (Button) findViewById(R.id.btn_takePhotos);
+//		btnTakePhotos = (Button) findViewById(R.id.btn_takePhotos);
 		btnElevatorRecord = (Button) findViewById(R.id.btn_elevatorRecord);
 		btnUserInfo = (Button) findViewById(R.id.btn_userInfo);
 		altDlgBuilder = new AlertDialog.Builder(this);
@@ -70,9 +70,6 @@ public class MainActivity extends BaseActivity {
 				altDlgBuilder.setItems(items, new DialogInterface.OnClickListener() {			
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-//						EmployeeSignInActivity.myStartActivity(MainActivity.this, which);
-//						Intent actIntent = new Intent(MainActivity.this, EmployeeSignInDetailActivity.class);
-//						startActivity(actIntent);
 						EmployeeSignInActivity.myStartActivity(MainActivity.this, which);
 					}
 				});
@@ -95,17 +92,18 @@ public class MainActivity extends BaseActivity {
 			}
 		});
 		
-		btnTakePhotos.setOnClickListener(new OnClickListener() {			
+		/*btnTakePhotos.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
 				Toast.makeText(MainActivity.this, "拍照上传被点击", Toast.LENGTH_SHORT).show();
 			}
-		});
+		});*/
 		
 		btnElevatorRecord.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(MainActivity.this, "电梯档案被点击", Toast.LENGTH_SHORT).show();
+				Intent actIntent = new Intent(MainActivity.this, ElevatorRecordSearchActivity.class);
+				startActivity(actIntent);
 			}
 		});
 		

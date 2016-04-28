@@ -69,7 +69,6 @@ public class FinishedWorkOrderFragment extends Fragment implements IWorkOrderSea
 	private List<FaultOrder> faultOrderList = new ArrayList<FaultOrder>();				// 故障工单集合
 	
 	private WorkOrderSearchPresenter workOrderSearchPresenter = new WorkOrderSearchPresenter(this);
-//	private WorkOrderSearchActivity workOrderSearchActivity;
 	private Activity workOrderSearchActivity;
 	
 	private volatile int curPage = 1;				// 当前需要访问的页码
@@ -100,7 +99,6 @@ public class FinishedWorkOrderFragment extends Fragment implements IWorkOrderSea
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		
-//		workOrderSearchActivity = (WorkOrderSearchActivity) activity;
 		if (activity instanceof FaultOrderSearchActivity) {
 			workOrderSearchActivity = (FaultOrderSearchActivity) activity;
 			workOrderType = WorkOrderType.FAULT_ORDER;
@@ -111,9 +109,7 @@ public class FinishedWorkOrderFragment extends Fragment implements IWorkOrderSea
 		
 		// 初始化ProgressDialog，必须在此处进行初始化，因为访问服务器时，需要调用ProgressDialog
 		progressDialog = new ProgressDialog(workOrderSearchActivity);
-		
-//		workOrderType = workOrderSearchActivity.getWorkOrderType();		// 获取工单类型
-		
+				
 		groupId = preferences.getLong("groupId", -1);
 		
 		if (groupId == -1) {
@@ -140,7 +136,6 @@ public class FinishedWorkOrderFragment extends Fragment implements IWorkOrderSea
 			isFirstAccessServer = false;
 			
 			ptrlvFinished.setAdapter(mAdapter);		// 该方法一定要在mAdapter创建成功后再调用，否则无效
-//			Log.i(tag, "执行ptrlvFinished.setAdapter(mAdapter)");
 		}
 		
 		super.setUserVisibleHint(isVisibleToUser);
@@ -158,10 +153,7 @@ public class FinishedWorkOrderFragment extends Fragment implements IWorkOrderSea
 				new RefreshDataTask().execute();
 			}
 		});
-		
-//		ptrlvFinished.setAdapter(mAdapter);
-//		Log.i(tag, "执行ptrlvFinished.setAdapter(mAdapter)");
-		
+				
 		ptrlvFinished.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
 		ptrlvFinished.getLoadingLayoutProxy().setPullLabel("下拉刷新...");
 		ptrlvFinished.getLoadingLayoutProxy().setReleaseLabel("释放开始刷新...");
@@ -209,17 +201,14 @@ public class FinishedWorkOrderFragment extends Fragment implements IWorkOrderSea
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				/*Intent actIntent = new Intent(workOrderSearchActivity, WorkOrderDetailActivity.class);
-				startActivity(actIntent);*/
 				listIndex = position - 1;
 				
 				if (workOrderType == WorkOrderType.FAULT_ORDER) {
 					FaultOrderDetailActivity.myStartActivity(workOrderSearchActivity,
-							WorkOrderState.FINISHED, JSON.toJSONString(faultOrderList.get(position - 1)));	
+							WorkOrderState.FINISHED, JSON.toJSONString(faultOrderList.get(listIndex)));	
 				} else if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
 					MaintainOrderDetailActivity.myStartActivity(workOrderSearchActivity,
-							WorkOrderState.FINISHED, JSON.toJSONString(maintainOrderList.get(position - 1)));
-					
+							WorkOrderState.FINISHED, JSON.toJSONString(maintainOrderList.get(listIndex)));					
 				}
 			}
 		});

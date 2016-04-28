@@ -13,10 +13,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -26,6 +28,7 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 	private EditText edtPassword;
 	private Button btnLogin;
 	private Button btnExit;
+	private CheckBox cbIsRemember;
 	
 	private Button btnIntoNext;
 	
@@ -52,8 +55,17 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 		edtPassword = (EditText) findViewById(R.id.edt_password);
 		btnLogin = (Button) findViewById(R.id.btn_login);
 		btnExit = (Button) findViewById(R.id.btn_exit);
+		cbIsRemember = (CheckBox) findViewById(R.id.cb_isRemember);
 		
 		progressDialog = new ProgressDialog(this);
+		
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
+		boolean isRemember = preferences.getBoolean("isRemember", false);
+		if (isRemember) {
+			cbIsRemember.setChecked(true);
+			edtUsername.setText(preferences.getString("username", ""));
+			edtPassword.setText(preferences.getString("password", ""));
+		}
 		
 		btnLogin.setOnClickListener(new OnClickListener() {			
 			@Override
@@ -62,6 +74,11 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 				String password = edtPassword.getText().toString();
 				
 				// 可以在此处对输入的内容进行正则表达式判断
+				if (TextUtils.isEmpty(username.trim())
+						|| TextUtils.isEmpty(password.trim())) {
+					Toast.makeText(EmployeeLoginActivity.this, "用户名或密码不能为空", Toast.LENGTH_SHORT).show();
+					return;
+				}		
 				
 				userLoginPresenter.login(username, password);
 			}
@@ -86,12 +103,14 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 
 	@Override
 	public void loginSuccess(Employee employee) {
-		SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext()).edit();
+		SharedPreferences.Editor editor 
+			= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext()).edit();
 		Log.i(tag, "employeeId:" + employee.getId() + ";groupId" + employee.getGroup().getId());
 		editor.putLong("employeeId", employee.getId());
 		editor.putLong("groupId", employee.getGroup().getId());
-		editor.putString("username", employee.getUsername());
-		editor.putString("password", employee.getPassword());
+		editor.putString("username", edtUsername.getEditableText().toString());
+		editor.putString("password", edtPassword.getEditableText().toString());
+		editor.putBoolean("isRemember", cbIsRemember.isChecked());
 		editor.putString("employeeJson", JSON.toJSONString(employee));
 		editor.commit();
 		

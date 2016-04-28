@@ -17,10 +17,11 @@ public class WorkOrderFeedbackPresenter {
 	
 	public void feedbackOrder(int workOrderType, Long workOrderId,
 			Long employeeId, String faultReason, boolean isDone, String remark,
-			String signOutAddress) {
+			String signOutAddress, String finishedItems) {
+		workOrderFeedbackActivity.showProgressDialog("正在提交反馈信息，请稍后");
 		workOrderBiz.feedbackOrder(workOrderType, workOrderId, 
 				employeeId, faultReason, isDone, remark, 
-				signOutAddress, new IWorkOrderFeedbackListener() {			
+				signOutAddress, finishedItems, new IWorkOrderFeedbackListener() {			
 			@Override
 			public void onFeedbackSuccess() {
 				workOrderFeedbackActivity.feedbackSuccess();
@@ -29,6 +30,11 @@ public class WorkOrderFeedbackPresenter {
 			@Override
 			public void onFeedbackFailure(String tipInfo) {
 				workOrderFeedbackActivity.showToast(tipInfo);
+			}
+
+			@Override
+			public void onAfter() {
+				workOrderFeedbackActivity.closeProgressDialog();
 			}
 		});
 	}

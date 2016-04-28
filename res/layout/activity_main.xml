@@ -29,7 +29,7 @@
 	            android:gravity="bottom|center" />
 	    </TableRow>
 	    
-	    <TableRow>
+	    <!-- <TableRow>
 	        <Button 
 	            android:id="@+id/btn_workOrderFeedback"
 	            android:layout_height="wrap_content"
@@ -51,6 +51,30 @@
 	            android:background="@drawable/elevator_record"
 	            android:text="电梯档案"
 	            android:gravity="bottom|center" />
+	        <Button 
+	            android:id="@+id/btn_userInfo"
+	            android:layout_height="wrap_content"
+	            android:background="@drawable/user_info"
+	            android:text="员工信息"
+	            android:gravity="bottom|center" />
+	    </TableRow> -->
+	    
+	    <TableRow>
+	        <Button 
+	            android:id="@+id/btn_workOrderFeedback"
+	            android:layout_height="wrap_content"
+	            android:background="@drawable/feedback"
+	            android:text="工单反馈"
+	            android:gravity="bottom|center" />
+	        <Button 
+	            android:id="@+id/btn_elevatorRecord"
+	            android:layout_height="wrap_content"
+	            android:background="@drawable/elevator_record"
+	            android:text="电梯档案"
+	            android:gravity="bottom|center" />
+	    </TableRow>
+	    
+	    <TableRow>     
 	        <Button 
 	            android:id="@+id/btn_userInfo"
 	            android:layout_height="wrap_content"

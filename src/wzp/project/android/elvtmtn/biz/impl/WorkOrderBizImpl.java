@@ -648,14 +648,14 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
 					listener.onCancelFailure("服务器正在打盹\n请检查网络连接后重试");			
-				}
+				}				
 			});
 	}
 
 	@Override
 	public void feedbackOrder(int workOrderType, Long workOrderId,
 			Long employeeId, String faultReason, boolean isDone, String remark,
-			String signOutAddress, final IWorkOrderFeedbackListener listener) {
+			String signOutAddress, String finishedItems, final IWorkOrderFeedbackListener listener) {
 		String url = null;
 		PostFormBuilder builder = OkHttpUtils.post()
 			.addParams("id", String.valueOf(workOrderId))
@@ -666,6 +666,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 		if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
 			url = ProjectContants.basePath + "/maintainOrder/feedback";
 			builder.addParams("finished", String.valueOf(isDone))
+				.addParams("finishedItems", finishedItems)
 				.url(url);			
 		} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
 			url = ProjectContants.basePath + "/faultOrder/feedback";
@@ -704,6 +705,11 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 			public void onError(Call call, Exception e) {
 				Log.e(tag, Log.getStackTraceString(e));
 				listener.onFeedbackFailure("服务器正在打盹\n请检查网络连接后重试");
+			}
+			
+			@Override
+			public void onAfter() {
+				listener.onAfter();
 			}
 		});
 	}

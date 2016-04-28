@@ -50,6 +50,19 @@ public interface IWorkOrderBiz {
 
 	void cancelReceiveOrder(int workOrderType, Long workOrderId, Long employeeId, IWorkOrderCancelListener listener);
 
+	/**
+	 * 
+	 * @param workOrderType
+	 * @param workOrderId
+	 * @param employeeId
+	 * @param faultReason 保养工单不需要传该参数
+	 * @param isDone
+	 * @param remark
+	 * @param signOutAddress
+	 * @param finishedItems 故障工单不需要传该参数
+	 * @param listener
+	 */
 	void feedbackOrder(int workOrderType, Long workOrderId, Long employeeId, String faultReason, 
-			boolean isDone, String remark, String signOutAddress, IWorkOrderFeedbackListener listener);
+			boolean isDone, String remark, String signOutAddress, 
+			String finishedItems, IWorkOrderFeedbackListener listener);
 }

@@ -66,7 +66,6 @@ public class FaultOrderDetailActivity extends BaseActivity implements IWorkOrder
 		= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
 	private Long employeeId;
 	
-//	private int workOrderType;
 	private int workOrderState;
 	private FaultOrder faultOrder;
 	
@@ -97,7 +96,10 @@ public class FaultOrderDetailActivity extends BaseActivity implements IWorkOrder
 
 		faultOrder = JSON.parseObject(intent.getStringExtra("workOrder"), FaultOrder.class);
 		
-		employeeId = preferences.getLong("employeeId", 0);
+		employeeId = preferences.getLong("employeeId", -1);
+		if (-1 == employeeId) {
+			throw new IllegalArgumentException("员工id有误");
+		}
 	}
 	
 	private void initWidget() {
@@ -172,13 +174,13 @@ public class FaultOrderDetailActivity extends BaseActivity implements IWorkOrder
 			
 			if (faultOrder.getEmployee() != null) {
 				if (!TextUtils.isEmpty(faultOrder.getEmployee().getName())) {
-					tvFixEmployee.setText(faultOrder.getEmployee().getName());
+					tvFixEmployee.setText(faultOrder.getEmployee().getName().trim());
 				} else {
 					tvFixEmployee.setText("姓名未知");
 					tvFixEmployee.setTextColor(Color.RED);
 				}
 				if (faultOrder.getEmployee().getGroup() != null) {
-					tvFixGroup.setText(String.valueOf(faultOrder.getEmployee().getGroup().getId()));
+					tvFixGroup.setText(faultOrder.getEmployee().getGroup().getName().trim());
 				} else {
 					tvFixGroup.setText("暂无组信息");
 				}
@@ -199,8 +201,8 @@ public class FaultOrderDetailActivity extends BaseActivity implements IWorkOrder
 			} else {
 				tvSignOutTime.setText("暂无该信息");
 			}
-			tvSignOutAddress.setText(faultOrder.getSignOutAddress());
-			tvFaultReason.setText(faultOrder.getReason());
+			tvSignOutAddress.setText(faultOrder.getSignOutAddress().trim());
+			tvFaultReason.setText(faultOrder.getReason().trim());
 			tvIsFixed.setText(faultOrder.getFixed() ? "已修好" : "未修好");
 			tvRemark.setText(faultOrder.getRemark());
 		}
@@ -312,25 +314,6 @@ public class FaultOrderDetailActivity extends BaseActivity implements IWorkOrder
 			}
 		});
 	}
-	
-/*	// 自定义一个startActivity()方法
-	public static void myStartActivity(Context context, int workOrderType, 
-			int workOrderState, String jsonWorkOrder) {
-		Intent actIntent = new Intent(context, FaultOrderDetailActivity.class);
-		actIntent.putExtra("workOrderType", workOrderType);
-		actIntent.putExtra("workOrderState", workOrderState);
-		actIntent.putExtra("workOrder", jsonWorkOrder);
-		context.startActivity(actIntent);
-	}
-	
-	public static void myStartActivityForResult(Fragment fragment, int requestCode, 
-			int workOrderType, int workOrderState, String jsonWorkOrder) {
-		Intent actIntent = new Intent(fragment.getActivity(), FaultOrderDetailActivity.class);
-		actIntent.putExtra("workOrderType", workOrderType);
-		actIntent.putExtra("workOrderState", workOrderState);
-		actIntent.putExtra("workOrder", jsonWorkOrder);
-		fragment.startActivityForResult(actIntent, requestCode);
-	}*/
 
 	// 自定义一个startActivity()方法
 	public static void myStartActivity(Context context,

@@ -32,6 +32,8 @@ import wzp.project.android.elvtmtn.activity.IElevatorRecordSearchActivity;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
 import wzp.project.android.elvtmtn.entity.ElevatorRecord;
 import wzp.project.android.elvtmtn.helper.adapter.ElevatorRecordAdapter;
+import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
+import wzp.project.android.elvtmtn.presenter.ElevatorRecordSearchPresenter;
 import wzp.project.android.elvtmtn.util.MyApplication;
 
 public class ElevatorRecordSearchActivity extends BaseActivity implements IElevatorRecordSearchActivity {
@@ -47,7 +49,8 @@ public class ElevatorRecordSearchActivity extends BaseActivity implements IEleva
 	private ArrayAdapter<ElevatorRecord> mAdapter;
 	
 	private List<ElevatorRecord> elevatorRecordList = new ArrayList<ElevatorRecord>();
-		
+	private ElevatorRecordSearchPresenter presenter = new ElevatorRecordSearchPresenter(this);
+	
 	private volatile int curPage = 1;				// 当前需要访问的页码
 	
 	private boolean isPtrlvHidden = false;			// PullToRefreshListView控件是否被隐藏
@@ -87,8 +90,7 @@ public class ElevatorRecordSearchActivity extends BaseActivity implements IEleva
 		
 		curPage = 1;
 		mAdapter = new ElevatorRecordAdapter(this, R.layout.listitem_elevator_record, elevatorRecordList);
-		// 访问一次网络
-		// ...
+		presenter.searchAllElevatorRecords(curPage++, ProjectContants.PAGE_SIZE, elevatorRecordList);
 	}
 	
 	private void initWidget() {
@@ -186,8 +188,7 @@ public class ElevatorRecordSearchActivity extends BaseActivity implements IEleva
         protected Void doInBackground(Void... params) {
         	// pageNumber一定是为1，表示只加载第一页的内容
 			curPage = 1;
-			
-			// 访问网络
+			presenter.searchAllElevatorRecords(curPage++, ProjectContants.PAGE_SIZE, elevatorRecordList);
         	
             // 返回执行的结果
             return null;    
@@ -203,7 +204,7 @@ public class ElevatorRecordSearchActivity extends BaseActivity implements IEleva
 	private class SearchMoreTask extends AsyncTask<Void, Void, Void> {
         @Override  
         protected Void doInBackground(Void... params) {
-        	// 访问网络
+        	presenter.searchAllElevatorRecords(curPage++, ProjectContants.PAGE_SIZE, elevatorRecordList);
         	
             return null;    
         }  

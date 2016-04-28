@@ -22,11 +22,12 @@ public class ElevatorRecordBizImpl implements IElevatorRecordBiz {
 	private static final String tag = "ElevatorRecordBizImpl";
 	
 	@Override
-	public void getAllElevatorRecords(long groupId, final int pageNumber, int pageSize, 
+	public void getAllElevatorRecords(final int pageNumber, int pageSize, 
 			final List<ElevatorRecord> elevatorRecordList, final IElevatorRecordSearchListener listener) {
 		String url = ProjectContants.basePath + "/elevatorRecord/list";
 		OkHttpUtils.get().url(url)
-			.addParams("groupId", String.valueOf(groupId))
+			.addParams("pageNumber", String.valueOf(pageNumber))
+			.addParams("pageSize", String.valueOf(pageSize))
 			.build()
 			.execute(new StringCallback() {				
 				@Override
@@ -44,13 +45,8 @@ public class ElevatorRecordBizImpl implements IElevatorRecordBiz {
 						if (respDataList != null && respDataList.size() > 0) {							
 							if (1 == pageNumber) {
 								elevatorRecordList.clear();
-								for (int i=0; i<respDataList.size(); i++) {
-									Log.d(tag, respDataList.get(i).getClass().getSimpleName());
-									elevatorRecordList.add(respDataList.get(i));
-								}
-							} else if (pageNumber > 1) {
-								elevatorRecordList.addAll(respDataList);
 							}
+							elevatorRecordList.addAll(respDataList);
 							
 							if (respDataList.size() % ProjectContants.PAGE_SIZE == 0) {
 								listener.onSearchSuccess(ProjectContants.ORDER_SHOW_UNCOMPLETE);

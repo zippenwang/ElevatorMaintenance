@@ -18,6 +18,7 @@ public class MaintainOrder {
 	private Group group;						// 保养小组
 	private ElevatorRecord elevatorRecord;		// 电梯档案
 	private MaintainType maintainType;			// 维保类型
+	private String finishedItems;				// 已完成的维保类型id字符串
 	
 	
 	public long getId() {
@@ -103,5 +104,11 @@ public class MaintainOrder {
 	}
 	public void setMaintainType(MaintainType maintainType) {
 		this.maintainType = maintainType;
+	}
+	public String getFinishedItems() {
+		return finishedItems;
+	}
+	public void setFinishedItems(String finishedItems) {
+		this.finishedItems = finishedItems;
 	}
 }

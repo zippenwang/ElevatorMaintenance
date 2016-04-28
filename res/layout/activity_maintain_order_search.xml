@@ -47,7 +47,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/title_bg"
+            android:background="@drawable/tab_bg"
             android:paddingTop="5dp" >
             
             <TextView 
@@ -75,7 +75,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/title_bg"
+            android:background="@drawable/tab_bg"
             android:paddingTop="5dp" >
                         
             <TextView 
@@ -119,7 +119,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/title_bg"
+            android:background="@drawable/tab_bg"
             android:paddingTop="5dp" >
                 
             <TextView 

@@ -69,7 +69,6 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 	private List<FaultOrder> faultOrderList = new ArrayList<FaultOrder>();				// 故障工单集合
 	
 	private WorkOrderSearchPresenter workOrderSearchPresenter = new WorkOrderSearchPresenter(this);
-//	private WorkOrderSearchActivity workOrderSearchActivity;
 	private Activity workOrderSearchActivity;
 	
 	private volatile int curPage = 1;				// 当前需要访问的页码
@@ -82,8 +81,7 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 	
 	private SharedPreferences preferences 
 		= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
-	private long groupId;	
-	private Employee employee;
+	private long groupId;
 	
 	private static final String tag = "UnfinishedWorkOrderFragment";
 	
@@ -113,8 +111,6 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 		// 初始化ProgressDialog，必须在此处进行初始化，因为访问服务器时，需要调用ProgressDialog
 		progressDialog = new ProgressDialog(workOrderSearchActivity);
 		
-//		workOrderType = workOrderSearchActivity.getWorkOrderType();		// 获取工单类型
-		
 		groupId = preferences.getLong("groupId", -1);
 		Log.i(tag, "groupId:" + groupId);
 		
@@ -122,7 +118,7 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 			throw new IllegalArgumentException("小组ID有误！");
 		}
 		
-		employee = JSON.parseObject(preferences.getString("employeeJson", ""), Employee.class);
+//		employee = JSON.parseObject(preferences.getString("employeeJson", ""), Employee.class);
 		
 		/*
 		 * 根据工单类型判断Adapter应该选用MaintainOrder还是FaultOrder
@@ -134,8 +130,8 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 		if (WorkOrderType.MAINTAIN_ORDER == workOrderType) {
 			mAdapter = new MaintainOrderAdapter(workOrderSearchActivity, 
 					R.layout.listitem_unfinished_overdue_maintain_order, maintainOrderList);
-			workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.UNFINISHED, curPage++, 
-					ProjectContants.PAGE_SIZE, maintainOrderList);
+			workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.UNFINISHED,
+					curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
 		} else if (WorkOrderType.FAULT_ORDER == workOrderType) {
 			mAdapter = new UnfinishedFaultOrderAdapter(workOrderSearchActivity, 
 					R.layout.listitem_unfinished_fault_order, faultOrderList);
@@ -194,26 +190,6 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 					int visibleItemCount, int totalItemCount) {
 				Log.i(tag, "onScroll#" + firstVisibleItem + "," + visibleItemCount + "," + totalItemCount);
 				
-				/*
-				 * android4.4以上的版本，可以采用如下方法，实现对PullToRefreshListView模式（上拉刷新，还是下拉刷新）的切换
-				 */				
-				/*if (totalItemCount > visibleItemCount
-						&& ptrlvUnfinished.getMode() != Mode.BOTH) {
-					Log.i(tag, "pullToRefreshListView模式更改为BOTH");
-//					ptrlvUnfinished.setMode(Mode.DISABLED);
-					ptrlvUnfinished.setMode(Mode.BOTH);
-				}*/
-		
-				/*
-				 * andoird4.4以下的版本，需要利用如下比较损耗性能的方法，才能实现对PullToRefreshListView模式（上拉刷新，还是下拉刷新）的切换
-				 */
-				/*if ((totalItemCount != 2)
-						&& (totalItemCount - 2) % 10 == 0) {
-					Log.i(tag, "pullToRefreshListView模式更改为BOTH");
-					ptrlvUnfinished.setMode(Mode.DISABLED);
-					ptrlvUnfinished.setMode(Mode.BOTH);
-				}*/
-				
 				// 此处可以进行一下优化，没必要每次滑动时都执行如下操作
 				if (0 == firstVisibleItem) {
 					ptrlvUnfinished.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
@@ -234,11 +210,13 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 				listIndex = position - 1;
 				
 				if (workOrderType == WorkOrderType.FAULT_ORDER) {
-					FaultOrderDetailActivity.myStartActivityForResult(UnfinishedWorkOrderFragment.this, REQUEST_REFRESH, 
-							WorkOrderState.UNFINISHED, JSON.toJSONString(faultOrderList.get(listIndex)));				
+					FaultOrderDetailActivity.myStartActivityForResult(UnfinishedWorkOrderFragment.this, 
+							REQUEST_REFRESH, WorkOrderState.UNFINISHED, 
+							JSON.toJSONString(faultOrderList.get(listIndex)));				
 				} else if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
-					MaintainOrderDetailActivity.myStartActivityForResult(UnfinishedWorkOrderFragment.this, REQUEST_REFRESH, 
-							WorkOrderState.UNFINISHED, JSON.toJSONString(maintainOrderList.get(listIndex)));
+					MaintainOrderDetailActivity.myStartActivityForResult(UnfinishedWorkOrderFragment.this,
+							REQUEST_REFRESH, WorkOrderState.UNFINISHED,
+							JSON.toJSONString(maintainOrderList.get(listIndex)));
 				}
 			}
 		});
@@ -278,10 +256,7 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 						}
 						updateInterface();*/
 						
-//						curPage = 1;
 						if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
-							/*workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.UNFINISHED, 
-									1, maintainOrderList.size(), maintainOrderList);*/
 							workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.UNFINISHED, 
 									1, (curPage - 1) * ProjectContants.PAGE_SIZE, maintainOrderList);
 						} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
@@ -430,12 +405,6 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 			}
 		});
 	}
-
-/*	@Override
-	public void hideLinearLayoutAndShowPtrlv() {
-		ptrlvUnfinished.setVisibility(View.VISIBLE);
-		linearTipInfo.setVisibility(View.GONE);
-	}*/
 
 	@Override
 	public void setIsPtrlvHidden(boolean isPtrlvHidden) {

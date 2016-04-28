@@ -4,4 +4,7 @@
     <color name="titleFocusedColor">#A8E3FE</color>
     <color name="titleNormalColor">#52C7FE</color>
 	<color name="whiteColor">#FFFFFFFF</color>
+	
+	<color name="actionBarNormalColor">#484E61</color>
+	<color name="actionBarFocusedColor">#000000</color>
 </resources>

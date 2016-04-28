@@ -16,6 +16,7 @@ import wzp.project.android.elvtmtn.util.MyApplication;
 
 public class EmployeeInfoActivity extends BaseActivity {
 
+	private Button btnBack;
 	private TextView tvUsername;
 	private TextView tvName;
 	private TextView tvFixGroup;
@@ -35,16 +36,25 @@ public class EmployeeInfoActivity extends BaseActivity {
 	}
 	
 	private void initWidget() {
+		btnBack = (Button) findViewById(R.id.btn_back);
 		tvUsername = (TextView) findViewById(R.id.tv_username);
 		tvName = (TextView) findViewById(R.id.tv_name);
 		tvFixGroup = (TextView) findViewById(R.id.tv_fixGroup);
 		tvGroupMember = (TextView) findViewById(R.id.tv_groupMember);
 		btnChangePassword = (Button) findViewById(R.id.btn_changePassword);
+		
 		btnChangePassword.setOnClickListener(new OnClickListener() {		
 			@Override
 			public void onClick(View v) {
 				
 				
+			}
+		});
+		
+		btnBack.setOnClickListener(new OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+				finish();				
 			}
 		});
 	}

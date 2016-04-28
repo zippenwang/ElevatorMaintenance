@@ -6,7 +6,7 @@ public interface IWorkOrderFeedbackActivity {
 	
 	void showToast(String tipInfo);
 	
-	void showProgressDialog();
+	void showProgressDialog(String tipInfo);
 	
 	void closeProgressDialog();
 }
