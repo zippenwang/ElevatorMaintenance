@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#40E0D0"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="40dp">  
     
-    <TableLayout
+    <!-- <TableLayout
         android:id="@+id/table_userLogin"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
@@ -65,7 +67,56 @@
 	            android:layout_height="wrap_content"
 	            android:text="退出"/>
 	    </LinearLayout>
-	</TableLayout>
+	</TableLayout> -->
+	
+	<TextView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/userLogin"
+        android:textSize="28sp"
+        android:gravity="center"
+        android:layout_marginBottom="20dp"/>
+	
+	<EditText 
+	    android:id="@+id/edt_username"
+	    android:layout_width="match_parent"
+	    android:layout_height="50dp"
+	    android:paddingLeft="10dp"
+	    android:paddingRight="10dp"
+	    android:hint="请输入用户名..."
+	    android:background="@drawable/username_edit_bg"/>
+    
+	<ImageView
+        android:id="@+id/iv_spiltLine"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/spilt_line" />
+	
+    <EditText 
+	    android:id="@+id/edt_password"
+	    android:layout_width="match_parent"
+	    android:layout_height="50dp"
+	    android:paddingLeft="10dp"
+	    android:paddingRight="10dp"
+	    android:hint="请输入密码"
+	    android:inputType="textPassword"
+	    android:background="@drawable/password_edit_bg"/>
+    
+    <CheckBox 
+        android:id="@+id/cb_isRemember"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="记住账号密码"/>
+    
+    <Button 
+        android:id="@+id/btn_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/login_btn_bg"
+        android:text="登录"/>
 	
     <Button 
         android:id="@+id/btn_intoNext"
@@ -74,6 +125,6 @@
         android:text="跳转"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"/>
-</RelativeLayout>
+</LinearLayout>
 
 

@@ -17,16 +17,32 @@
 	        <Button 
 	            android:id="@+id/btn_workOrderSearch"
 	            android:layout_height="wrap_content"
-	            android:background="@drawable/order_search"
+	            android:background="@drawable/main_btn_bg"
 	            android:text="工单查询"
 	            android:gravity="bottom|center" />
 
-            <Button 
+            <!-- <Button 
 	            android:id="@+id/btn_signIn"
 	            android:layout_height="wrap_content"
 	            android:background="@drawable/sign_in"
 	            android:text="一键签到"
-	            android:gravity="bottom|center" />
+	            android:gravity="bottom|center" /> -->
+	        
+	        <!-- ImageButton默认文字信息不会显示 -->
+	        <ImageButton 
+		            android:id="@+id/iBtn_signIn"
+		            android:layout_height="wrap_content"
+		            android:src="@drawable/sign_in"
+		            android:background="@drawable/sign_in_ibtn_bg" />
+	       <!--  <LinearLayout 
+	            android:layout_height="wrap_content"
+	            android:orientation="vertical">
+		        
+		        <TextView 
+		            android:layout_height="wrap_content"
+		            android:text="一键签到"
+		            android:gravity="center|top"/>
+		    </LinearLayout> -->
 	    </TableRow>
 	    
 	    <!-- <TableRow>

@@ -10,11 +10,13 @@
         android:background="#484E61">
         <Button 
             android:id="@+id/btn_back"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:background="@drawable/back"
-            android:layout_marginLeft="10dp"
+            android:background="@drawable/back_btn_bg"
+            android:text="返回"
+            android:textColor="@android:color/white"
+            android:layout_marginLeft="5dp"
             android:layout_centerVertical="true"/>        
         
 		<TextView 

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
@@ -15,7 +16,8 @@ import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 public class MainActivity extends BaseActivity {
 
 	private Button btnWorkOrderSearch;
-	private Button btnSignIn;
+//	private Button btnSignIn;
+	private ImageButton iBtnSignIn;
 	private Button btnWorkOrderFeedback;
 //	private Button btnTakePhotos;
 	private Button btnElevatorRecord;
@@ -35,7 +37,8 @@ public class MainActivity extends BaseActivity {
 	
 	private void initWidget() {
 		btnWorkOrderSearch = (Button) findViewById(R.id.btn_workOrderSearch);
-		btnSignIn = (Button) findViewById(R.id.btn_signIn);
+//		btnSignIn = (Button) findViewById(R.id.btn_signIn);
+		iBtnSignIn = (ImageButton) findViewById(R.id.iBtn_signIn);
 		btnWorkOrderFeedback = (Button) findViewById(R.id.btn_workOrderFeedback);
 //		btnTakePhotos = (Button) findViewById(R.id.btn_takePhotos);
 		btnElevatorRecord = (Button) findViewById(R.id.btn_elevatorRecord);
@@ -62,7 +65,21 @@ public class MainActivity extends BaseActivity {
 			}
 		});
 		
-		btnSignIn.setOnClickListener(new OnClickListener() {			
+		/*btnSignIn.setOnClickListener(new OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+				altDlgBuilder.setTitle("请选择工单类型 ");
+				altDlgBuilder.setCancelable(true);
+				altDlgBuilder.setItems(items, new DialogInterface.OnClickListener() {			
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						EmployeeSignInActivity.myStartActivity(MainActivity.this, which);
+					}
+				});
+				altDlgBuilder.show();
+			}
+		});*/
+		iBtnSignIn.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
 				altDlgBuilder.setTitle("请选择工单类型 ");

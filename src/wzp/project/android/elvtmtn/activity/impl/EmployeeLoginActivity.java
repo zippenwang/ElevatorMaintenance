@@ -27,7 +27,7 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 	private EditText edtUsername;
 	private EditText edtPassword;
 	private Button btnLogin;
-	private Button btnExit;
+//	private Button btnExit;
 	private CheckBox cbIsRemember;
 	
 	private Button btnIntoNext;
@@ -54,7 +54,7 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 		edtUsername = (EditText) findViewById(R.id.edt_username);
 		edtPassword = (EditText) findViewById(R.id.edt_password);
 		btnLogin = (Button) findViewById(R.id.btn_login);
-		btnExit = (Button) findViewById(R.id.btn_exit);
+//		btnExit = (Button) findViewById(R.id.btn_exit);
 		cbIsRemember = (CheckBox) findViewById(R.id.cb_isRemember);
 		
 		progressDialog = new ProgressDialog(this);
@@ -84,12 +84,12 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 			}
 		});
 		
-		btnExit.setOnClickListener(new OnClickListener() {			
+		/*btnExit.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
 				finish();
 			}
-		});
+		});*/
 		
 		btnIntoNext = (Button) findViewById(R.id.btn_intoNext);
 		btnIntoNext.setOnClickListener(new OnClickListener() {
