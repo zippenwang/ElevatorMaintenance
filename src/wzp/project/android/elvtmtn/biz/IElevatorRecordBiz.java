@@ -8,4 +8,7 @@ public interface IElevatorRecordBiz {
 
 	void getAllElevatorRecords(int pageNumber, int pageSize, 
 			List<ElevatorRecord> elevatorRecordList, IElevatorRecordSearchListener listener);
+	
+	void getAllElevatorRecords(long groupId, int pageNumber, int pageSize, 
+			List<ElevatorRecord> elevatorRecordList, IElevatorRecordSearchListener listener);
 }

@@ -8,14 +8,26 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="#484E61">
-        <Button 
+        <!-- <Button 
             android:id="@+id/btn_back"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignParentLeft="true"
             android:background="@drawable/back"
             android:layout_marginLeft="10dp"
-            android:layout_centerVertical="true"/>         
+            android:layout_centerVertical="true"/>      -->    
+        
+        <Button 
+            android:id="@+id/btn_back"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/back_btn_bg"
+            android:text="返回"
+            android:textSize="14sp"
+            android:textColor="@android:color/white"
+            android:layout_marginLeft="5dp"
+            android:layout_centerVertical="true"/>
         
 		<TextView 
 	        android:layout_width="wrap_content"
@@ -26,13 +38,25 @@
 	        android:gravity="center"
 			android:layout_centerInParent="true"/>     
 	        
-		<Button 
+		<!-- <Button 
             android:id="@+id/btn_refreshCurAddress"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignParentRight="true"
             android:background="@drawable/refresh"
             android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"/> -->
+            
+        <ImageButton 
+            android:id="@+id/ibtn_refreshCurAddress"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/refresh"
+            android:scaleType="centerInside"
+            android:background="@drawable/refresh_ibtn_bg"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
             android:layout_centerVertical="true"/>
     </RelativeLayout>
     
@@ -355,6 +379,7 @@
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
 		        android:layout_marginTop="10dp"
+		        android:layout_marginBottom="10dp"
 		        android:paddingLeft="20dp"
 		        android:paddingRight="20dp"
 		        android:gravity="center">
@@ -363,6 +388,7 @@
 		            android:layout_width="0dp"
 		            android:layout_weight="1"
 		            android:layout_height="wrap_content"
+		            android:background="@drawable/feedback_btn_bg"
 		            android:text="提交" />		        
 		    </LinearLayout>
         </LinearLayout>

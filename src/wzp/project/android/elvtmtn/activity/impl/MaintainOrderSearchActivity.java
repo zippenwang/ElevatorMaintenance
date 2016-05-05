@@ -1,20 +1,29 @@
 package wzp.project.android.elvtmtn.activity.impl;
 
+import java.util.List;
+
+import com.baidu.platform.comapi.map.m;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.view.ViewPager.SimpleOnPageChangeListener;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
+import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,7 +54,11 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 	private TextView[] tvHiddenArray;					// 用于标注当前所在的选项卡
 	private TextView[] tvArray;							// 用于标注当前所在的选项卡的标题
 	
+	private TextView tvWorkOrderType;
+	private PopupMenu pmSort;
+	
 	private Button btnBack;
+//	private ImageButton ibtnBack;
 	
 	private int currentSelectedId = 0;
 //	private int workOrderType = 0;						// 工单类型
@@ -73,18 +86,54 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 		tvUnfinished = (TextView) findViewById(R.id.tv_unfinished);
 		tvFinished = (TextView) findViewById(R.id.tv_finished);
 		tvOverdue = (TextView) findViewById(R.id.tv_overdue);
+		
+		tvWorkOrderType = (TextView) findViewById(R.id.tv_workOrderType);
+		pmSort = new PopupMenu(this, tvWorkOrderType);
+		getMenuInflater().inflate(R.menu.sort_way_menu, pmSort.getMenu());
 	
 		vpMaintainOrder = (ViewPager) findViewById(R.id.vp_maintainOrder);
 		// 设置ViewPager的预加载值，即让ViewPager维护以当前Fragment为中心，左右各2个Fragment
 		vpMaintainOrder.setOffscreenPageLimit(2);
 		
 		btnBack = (Button) findViewById(R.id.btn_back);
+//		ibtnBack = (ImageButton) findViewById(R.id.ibtn_back);
 		btnBack.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				finish();
 			}
 		});
+		
+		tvWorkOrderType.setOnClickListener(new OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+				pmSort.show();
+			}
+		});
+		
+		/*pmSort.setOnMenuItemClickListener(new OnMenuItemClickListener() {			
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				switch (item.getItemId()) {
+				case R.id.item_sortByFinalTime:
+					FragmentManager manager = getSupportFragmentManager();
+					List<Fragment> fragmentList = manager.getFragments();
+					for (Fragment fragment : fragmentList) {
+						if (fragment.isVisible()) {
+							
+						}
+					}
+					break;
+
+				default:
+					break;
+				}
+				
+				
+				
+				return false;
+			}
+		});*/
 	}
 	
 	private void initParam() {
@@ -184,11 +233,7 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 		}
 	};
 	
-	/*public static void myStartActivity(Context context, int workOrderType) {
-		Intent actIntent = new Intent(context, MaintainOrderSearchActivity.class);
-		actIntent.putExtra("workOrderType", workOrderType);
-		context.startActivity(actIntent);
-	}*/
+	
 	
 	public static void myStartActivity(Context context) {
 		Intent actIntent = new Intent(context, MaintainOrderSearchActivity.class);

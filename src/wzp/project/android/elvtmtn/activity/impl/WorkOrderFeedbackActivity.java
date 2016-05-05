@@ -147,9 +147,9 @@ public class WorkOrderFeedbackActivity extends BaseActivity implements IWorkOrde
 		btnRefreshAgain = (Button) findViewById(R.id.btn_refreshAgain);
 		
 		if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
-			tvWorkOrderType.setText("保养工单");
+			tvWorkOrderType.setText("保养");
 		} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
-			tvWorkOrderType.setText("故障工单");
+			tvWorkOrderType.setText("故障");
 		}
 		
 		btnBack.setOnClickListener(new OnClickListener() {			

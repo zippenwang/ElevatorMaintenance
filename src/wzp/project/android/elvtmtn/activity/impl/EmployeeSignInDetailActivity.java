@@ -33,6 +33,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,7 +49,8 @@ import wzp.project.android.elvtmtn.presenter.EmployeeSignInPresenter;
 public class EmployeeSignInDetailActivity extends BaseActivity implements IEmployeeSignInDetailActivity, OnGetGeoCoderResultListener {
 
 	private Button btnBack;
-	private Button btnRefreshCurAddress;
+//	private Button btnRefreshCurAddress;
+	private ImageButton ibtnRefreshCurAddress;
 	private TextView tvWorkOrderType;
 	private TextView tvWorkOrderId;
 	private TextView tvReceivingTime;
@@ -120,7 +122,8 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 	
 	private void initWidget() {
 		btnBack = (Button) findViewById(R.id.btn_back);
-		btnRefreshCurAddress = (Button) findViewById(R.id.btn_refreshCurAddress);
+//		btnRefreshCurAddress = (Button) findViewById(R.id.btn_refreshCurAddress);
+		ibtnRefreshCurAddress = (ImageButton) findViewById(R.id.ibtn_refreshCurAddress);
 		tvWorkOrderType = (TextView) findViewById(R.id.tv_workOrderType);
 		tvWorkOrderId = (TextView) findViewById(R.id.tv_workOrderId);
 		tvReceivingTime = (TextView) findViewById(R.id.tv_receiveTime);
@@ -149,7 +152,8 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 				tvSignInTime.setText(sdf.format(maintainOrder.getSignInTime()));
 				tvSignInAddress.setText(maintainOrder.getSignInAddress());
 				linearCurrentAddress.setVisibility(View.GONE);
-				btnRefreshCurAddress.setVisibility(View.GONE);
+//				btnRefreshCurAddress.setVisibility(View.GONE);
+				ibtnRefreshCurAddress.setVisibility(View.GONE);
 			} else {
 				linearSignInAddress.setVisibility(View.GONE);
 				linearSignInTime.setVisibility(View.GONE);
@@ -174,7 +178,8 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 				tvSignInTime.setText(sdf.format(faultOrder.getSignInTime()));
 				tvSignInAddress.setText(faultOrder.getSignInAddress());
 				linearCurrentAddress.setVisibility(View.GONE);
-				btnRefreshCurAddress.setVisibility(View.GONE);
+//				btnRefreshCurAddress.setVisibility(View.GONE);
+				ibtnRefreshCurAddress.setVisibility(View.GONE);
 			} else {
 				linearSignInAddress.setVisibility(View.GONE);
 				linearSignInTime.setVisibility(View.GONE);
@@ -199,7 +204,7 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 			}
 		});
 		
-		btnRefreshCurAddress.setOnClickListener(new OnClickListener() {		
+		ibtnRefreshCurAddress.setOnClickListener(new OnClickListener() {		
 			@Override
 			public void onClick(View v) {
 				// 刷新当前位置
@@ -230,7 +235,8 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 				
 				// mSearch在编码过程中，不允许同时执行解码的操作，很容易造成空指针异常，因此
 				// 在这个过程中，先将解码的操作关闭，编码结束后，再打开允许解码的操作。
-				btnRefreshCurAddress.setEnabled(false);
+//				btnRefreshCurAddress.setEnabled(false);
+				ibtnRefreshCurAddress.setEnabled(false);
 				showProgressDialog();
 				mSearch.geocode(new GeoCodeOption().city("").address(elevatorAddress));
 			}
@@ -374,7 +380,8 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 		runOnUiThread(new Runnable() {			
 			@Override
 			public void run() {
-				btnRefreshCurAddress.setEnabled(true);
+//				btnRefreshCurAddress.setEnabled(true);
+				ibtnRefreshCurAddress.setEnabled(true);
 			}
 		});
 		closeProgressDialog();
@@ -405,7 +412,8 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 				Toast.makeText(EmployeeSignInDetailActivity.this, "签到成功", Toast.LENGTH_SHORT).show();
 				btnSignIn.setEnabled(false);
 				tvSignInState.setText("已签到");
-				btnRefreshCurAddress.setVisibility(View.GONE);
+//				btnRefreshCurAddress.setVisibility(View.GONE);
+				ibtnRefreshCurAddress.setVisibility(View.GONE);
 				locationClient.unRegisterLocationListener(locationListener);
 			}
 		});

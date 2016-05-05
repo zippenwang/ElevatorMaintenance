@@ -12,16 +12,15 @@ import android.widget.Toast;
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
+import wzp.project.android.elvtmtn.util.MyImageButton;
 
 public class MainActivity extends BaseActivity {
 
-	private Button btnWorkOrderSearch;
-//	private Button btnSignIn;
-	private ImageButton iBtnSignIn;
-	private Button btnWorkOrderFeedback;
-//	private Button btnTakePhotos;
-	private Button btnElevatorRecord;
-	private Button btnUserInfo;
+	private MyImageButton mibtnWorkOrderSearch;
+	private MyImageButton mibtnSignIn;
+	private MyImageButton mibtnWorkOrderFeedback;
+	private MyImageButton mibtnElevatorRecord;
+	private MyImageButton mibtnUserInfo;
 	private AlertDialog.Builder altDlgBuilder;
 	
 	private String[] items = new String[] {"保养工单", "故障工单"};
@@ -36,16 +35,14 @@ public class MainActivity extends BaseActivity {
 	}
 	
 	private void initWidget() {
-		btnWorkOrderSearch = (Button) findViewById(R.id.btn_workOrderSearch);
-//		btnSignIn = (Button) findViewById(R.id.btn_signIn);
-		iBtnSignIn = (ImageButton) findViewById(R.id.iBtn_signIn);
-		btnWorkOrderFeedback = (Button) findViewById(R.id.btn_workOrderFeedback);
-//		btnTakePhotos = (Button) findViewById(R.id.btn_takePhotos);
-		btnElevatorRecord = (Button) findViewById(R.id.btn_elevatorRecord);
-		btnUserInfo = (Button) findViewById(R.id.btn_userInfo);
+		mibtnWorkOrderSearch = (MyImageButton) findViewById(R.id.mibtn_workOrderSearch);
+		mibtnSignIn = (MyImageButton) findViewById(R.id.mibtn_signIn);
+		mibtnWorkOrderFeedback = (MyImageButton) findViewById(R.id.mibtn_workOrderFeedback);
+		mibtnElevatorRecord = (MyImageButton) findViewById(R.id.mibtn_elevatorRecord);
+		mibtnUserInfo = (MyImageButton) findViewById(R.id.mibtn_userInfo);
 		altDlgBuilder = new AlertDialog.Builder(this);
 		
-		btnWorkOrderSearch.setOnClickListener(new OnClickListener() {			
+		mibtnWorkOrderSearch.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
 				altDlgBuilder.setTitle("请选择工单类型 ");
@@ -65,21 +62,7 @@ public class MainActivity extends BaseActivity {
 			}
 		});
 		
-		/*btnSignIn.setOnClickListener(new OnClickListener() {			
-			@Override
-			public void onClick(View v) {
-				altDlgBuilder.setTitle("请选择工单类型 ");
-				altDlgBuilder.setCancelable(true);
-				altDlgBuilder.setItems(items, new DialogInterface.OnClickListener() {			
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						EmployeeSignInActivity.myStartActivity(MainActivity.this, which);
-					}
-				});
-				altDlgBuilder.show();
-			}
-		});*/
-		iBtnSignIn.setOnClickListener(new OnClickListener() {			
+		mibtnSignIn.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
 				altDlgBuilder.setTitle("请选择工单类型 ");
@@ -94,7 +77,7 @@ public class MainActivity extends BaseActivity {
 			}
 		});
 		
-		btnWorkOrderFeedback.setOnClickListener(new OnClickListener() {			
+		mibtnWorkOrderFeedback.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
 				altDlgBuilder.setTitle("请选择工单类型 ");
@@ -109,14 +92,7 @@ public class MainActivity extends BaseActivity {
 			}
 		});
 		
-		/*btnTakePhotos.setOnClickListener(new OnClickListener() {			
-			@Override
-			public void onClick(View v) {
-				Toast.makeText(MainActivity.this, "拍照上传被点击", Toast.LENGTH_SHORT).show();
-			}
-		});*/
-		
-		btnElevatorRecord.setOnClickListener(new OnClickListener() {			
+		mibtnElevatorRecord.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
 				Intent actIntent = new Intent(MainActivity.this, ElevatorRecordSearchActivity.class);
@@ -124,7 +100,7 @@ public class MainActivity extends BaseActivity {
 			}
 		});
 		
-		btnUserInfo.setOnClickListener(new OnClickListener() {			
+		mibtnUserInfo.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
 //				Toast.makeText(MainActivity.this, "员工信息被点击", Toast.LENGTH_SHORT).show();

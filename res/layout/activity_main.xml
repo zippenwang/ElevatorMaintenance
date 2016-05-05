@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#AFEEEE"
 	android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -14,89 +15,54 @@
 	    android:stretchColumns="*" >
 
 	    <TableRow>
-	        <Button 
-	            android:id="@+id/btn_workOrderSearch"
+	        <wzp.project.android.elvtmtn.util.MyImageButton 
+	            android:id="@+id/mibtn_workOrderSearch"
 	            android:layout_height="wrap_content"
-	            android:background="@drawable/main_btn_bg"
+	            android:src="@drawable/order_search"
+	            android:scaleType="fitXY"
+	            android:background="@drawable/main_mibtn_bg"
 	            android:text="工单查询"
-	            android:gravity="bottom|center" />
-
-            <!-- <Button 
-	            android:id="@+id/btn_signIn"
-	            android:layout_height="wrap_content"
-	            android:background="@drawable/sign_in"
-	            android:text="一键签到"
-	            android:gravity="bottom|center" /> -->
+	            android:textSize="18sp"/>	        
 	        
-	        <!-- ImageButton默认文字信息不会显示 -->
-	        <ImageButton 
-		            android:id="@+id/iBtn_signIn"
-		            android:layout_height="wrap_content"
-		            android:src="@drawable/sign_in"
-		            android:background="@drawable/sign_in_ibtn_bg" />
-	       <!--  <LinearLayout 
+	        <wzp.project.android.elvtmtn.util.MyImageButton
+	            android:id="@+id/mibtn_signIn"
 	            android:layout_height="wrap_content"
-	            android:orientation="vertical">
-		        
-		        <TextView 
-		            android:layout_height="wrap_content"
-		            android:text="一键签到"
-		            android:gravity="center|top"/>
-		    </LinearLayout> -->
+	            android:src="@drawable/sign_in"
+	            android:scaleType="fitXY"
+	            android:background="@drawable/main_mibtn_bg"
+	            android:text="一键签到"
+	            android:textSize="18sp" />
 	    </TableRow>
-	    
-	    <!-- <TableRow>
-	        <Button 
-	            android:id="@+id/btn_workOrderFeedback"
-	            android:layout_height="wrap_content"
-	            android:background="@drawable/feedback"
-	            android:text="工单反馈"
-	            android:gravity="bottom|center" />
-	        <Button 
-	            android:id="@+id/btn_takePhotos"
-	            android:layout_height="wrap_content"
-	            android:background="@drawable/photo"
-	            android:text="拍照上传"
-	            android:gravity="bottom|center" />
-	    </TableRow>
-	    
+    
 	    <TableRow>
-	        <Button 
-	            android:id="@+id/btn_elevatorRecord"
+	        <wzp.project.android.elvtmtn.util.MyImageButton 
+	            android:id="@+id/mibtn_workOrderFeedback"
 	            android:layout_height="wrap_content"
-	            android:background="@drawable/elevator_record"
-	            android:text="电梯档案"
-	            android:gravity="bottom|center" />
-	        <Button 
-	            android:id="@+id/btn_userInfo"
-	            android:layout_height="wrap_content"
-	            android:background="@drawable/user_info"
-	            android:text="员工信息"
-	            android:gravity="bottom|center" />
-	    </TableRow> -->
-	    
-	    <TableRow>
-	        <Button 
-	            android:id="@+id/btn_workOrderFeedback"
-	            android:layout_height="wrap_content"
-	            android:background="@drawable/feedback"
+	            android:src="@drawable/feedback"
+	            android:scaleType="fitXY"
+	            android:background="@drawable/main_mibtn_bg"
 	            android:text="工单反馈"
-	            android:gravity="bottom|center" />
-	        <Button 
-	            android:id="@+id/btn_elevatorRecord"
+	            android:textSize="18sp"/>	        
+	        
+	        <wzp.project.android.elvtmtn.util.MyImageButton
+	            android:id="@+id/mibtn_elevatorRecord"
 	            android:layout_height="wrap_content"
-	            android:background="@drawable/elevator_record"
+	            android:src="@drawable/elevator_record"
+	            android:scaleType="fitXY"
+	            android:background="@drawable/main_mibtn_bg"
 	            android:text="电梯档案"
-	            android:gravity="bottom|center" />
+	            android:textSize="18sp" />
 	    </TableRow>
 	    
 	    <TableRow>     
-	        <Button 
-	            android:id="@+id/btn_userInfo"
+	        <wzp.project.android.elvtmtn.util.MyImageButton 
+	            android:id="@+id/mibtn_userInfo"
 	            android:layout_height="wrap_content"
-	            android:background="@drawable/user_info"
+	            android:src="@drawable/user_info"
+	            android:scaleType="fitXY"
+	            android:background="@drawable/main_mibtn_bg"
 	            android:text="员工信息"
-	            android:gravity="bottom|center" />
+	            android:textSize="18sp"/>
 	    </TableRow>
     </TableLayout>
 </RelativeLayout>

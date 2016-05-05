@@ -23,8 +23,11 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import wzp.project.android.elvtmtn.R;
@@ -38,8 +41,13 @@ import wzp.project.android.elvtmtn.util.MyApplication;
 
 public class ElevatorRecordSearchActivity extends BaseActivity implements IElevatorRecordSearchActivity {
 
+	private RelativeLayout relativeBase;
 	private Button btnBack;
-	private Button btnSearchRecord;
+	private ImageButton ibtnSearchRecord;
+	private RelativeLayout relativeSearch;
+	private ImageButton ibtnBackToPrevious;
+	private EditText edtCondition;
+	private Button btnSearchByCondition;
 	private PullToRefreshListView ptrlvElevatorRecord;
 	private LinearLayout linearTipInfo;						// 提示网络异常、或当前工单不存在的LinearLayout控件
 	private TextView tvTipInfo;								// 当ListView中传入的List为空，该控件用于提示数据为空
@@ -94,8 +102,13 @@ public class ElevatorRecordSearchActivity extends BaseActivity implements IEleva
 	}
 	
 	private void initWidget() {
+		relativeBase = (RelativeLayout) findViewById(R.id.relative_base);
 		btnBack = (Button) findViewById(R.id.btn_back);
-		btnSearchRecord = (Button) findViewById(R.id.btn_searchElevatorRecord);
+		ibtnSearchRecord = (ImageButton) findViewById(R.id.ibtn_searchElevatorRecord);
+		relativeSearch = (RelativeLayout) findViewById(R.id.relative_search);
+		ibtnBackToPrevious = (ImageButton) findViewById(R.id.ibtn_backToPrevious);
+		edtCondition = (EditText) findViewById(R.id.edt_condition);
+		btnSearchByCondition = (Button) findViewById(R.id.btn_searchByCondition);
 		ptrlvElevatorRecord = (PullToRefreshListView) findViewById(R.id.ptrlv_elevatorRecord);
 		linearTipInfo = (LinearLayout) findViewById(R.id.linear_tipInfo);
 		tvTipInfo = (TextView) findViewById(R.id.tv_tipInfo);
@@ -108,10 +121,26 @@ public class ElevatorRecordSearchActivity extends BaseActivity implements IEleva
 			}
 		});
 		
-		btnSearchRecord.setOnClickListener(new OnClickListener() {
+		ibtnSearchRecord.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				
+				relativeBase.setVisibility(View.GONE);
+				relativeSearch.setVisibility(View.VISIBLE);
+			}
+		});
+		
+		ibtnBackToPrevious.setOnClickListener(new OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+				relativeBase.setVisibility(View.VISIBLE);
+				relativeSearch.setVisibility(View.GONE);
+			}
+		});
+		
+		btnSearchByCondition.setOnClickListener(new OnClickListener() {		
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(ElevatorRecordSearchActivity.this, "搜索", Toast.LENGTH_SHORT).show();
 			}
 		});
 		

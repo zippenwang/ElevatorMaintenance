@@ -34,6 +34,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -51,7 +52,8 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 		implements IWorkOrderFeedbackActivity, OnGetGeoCoderResultListener {
 
 	private Button btnBack;
-	private Button btnRefreshCurAddress;
+//	private Button btnRefreshCurAddress;
+	private ImageButton ibtnRefreshCurAddress;
 	private TextView tvWorkOrderId;
 	private TextView tvElevatorAddress;
 	private TextView tvSignInTime;
@@ -144,7 +146,7 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 	
 	private void initWidget() {
 		btnBack = (Button) findViewById(R.id.btn_back);
-		btnRefreshCurAddress = (Button) findViewById(R.id.btn_refreshCurAddress);
+		ibtnRefreshCurAddress = (ImageButton) findViewById(R.id.ibtn_refreshCurAddress);
 		tvWorkOrderId = (TextView) findViewById(R.id.tv_workOrderId);
 		tvElevatorAddress = (TextView) findViewById(R.id.tv_elevatorAddress);
 		tvSignInTime = (TextView) findViewById(R.id.tv_signInTime);
@@ -175,7 +177,7 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 			}
 		});
 		
-		btnRefreshCurAddress.setOnClickListener(new OnClickListener() {		
+		ibtnRefreshCurAddress.setOnClickListener(new OnClickListener() {		
 			@Override
 			public void onClick(View v) {
 				// 刷新当前位置
@@ -399,7 +401,7 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 					tvFeedbackState.setText("部分反馈");
 				}
 				locationClient.unRegisterLocationListener(locationListener);
-				btnRefreshCurAddress.setVisibility(View.GONE);
+				ibtnRefreshCurAddress.setVisibility(View.GONE);
 			}
 		});
 	}

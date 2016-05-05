@@ -1,6 +1,7 @@
 package wzp.project.android.elvtmtn.biz.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -712,6 +713,43 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				listener.onAfter();
 			}
 		});
+	}
+
+	@Override
+	public void sortMaintainOrderByFinalTime(
+			List<MaintainOrder> maintainOrderList) {
+		if (maintainOrderList.size() == 0) {
+			return;
+		}
+		
+		MaintainOrder[] maintainOrders = (MaintainOrder[]) maintainOrderList.toArray();
+		long dateI;
+		long dateJ;
+		MaintainOrder temp;
+		
+		for (int i=0; i<maintainOrders.length-1; i++) {
+			if (maintainOrders[i].getFinalTime() != null) {
+				dateI = maintainOrders[i].getFinalTime().getTime();
+			} else {
+				dateI = 0;
+			}
+			
+			for (int j=maintainOrders.length; j>i; j--) {				
+				if (maintainOrders[j].getFinalTime() != null) {
+					dateJ = maintainOrders[j].getFinalTime().getTime();
+				} else {
+					dateJ = 0;
+				}
+				
+				if (dateI > dateJ) {
+					temp = maintainOrders[i];
+					maintainOrders[i] = maintainOrders[j];
+					maintainOrders[j] = temp;
+				}
+			}
+			
+			maintainOrderList.add(maintainOrders[i]);
+		}
 	}
 
 }

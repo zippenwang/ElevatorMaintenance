@@ -65,4 +65,6 @@ public interface IWorkOrderBiz {
 	void feedbackOrder(int workOrderType, Long workOrderId, Long employeeId, String faultReason, 
 			boolean isDone, String remark, String signOutAddress, 
 			String finishedItems, IWorkOrderFeedbackListener listener);
+	
+	void sortMaintainOrderByFinalTime(List<MaintainOrder> maintainOrderList);
 }
