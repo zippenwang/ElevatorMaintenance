@@ -1,12 +1,11 @@
 package wzp.project.android.elvtmtn.entity;
 
-import java.io.Serializable;
 import java.util.Date;
 
 public class FaultOrder {
 
-	private long id;
-	private String no;
+	private long id;						// 工单id
+	private String no;						// 工单编号
 	private Date occuredTime;				// 故障发生时间
 	private String description;				// 故障描述
 	private String reason;					// 故障原因

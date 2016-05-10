@@ -121,7 +121,8 @@ public class MaintainOrderDetailActivity extends BaseActivity implements IWorkOr
 		/*
 		 * 为未完成、已完成、超期的保养工单均需要显示的控件设置数值
 		 */
-		tvWorkOrderId.setText(String.valueOf(maintainOrder.getId()));
+//		tvWorkOrderId.setText(String.valueOf(maintainOrder.getId()));
+		tvWorkOrderId.setText(String.valueOf(maintainOrder.getNo()));
 		tvElevatorAddress.setText(maintainOrder.getElevatorRecord().getAddress().trim());
 		tvMaintainType.setText(maintainOrder.getMaintainType().getName().trim());
 		tvMaintainItem.setText("");

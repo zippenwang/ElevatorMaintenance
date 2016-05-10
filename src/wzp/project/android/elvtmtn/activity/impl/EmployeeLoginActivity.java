@@ -1,6 +1,7 @@
 package wzp.project.android.elvtmtn.activity.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.igexin.sdk.PushManager;
 
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.activity.IEmployeeLoginActivity;
@@ -30,11 +31,14 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 //	private Button btnExit;
 	private CheckBox cbIsRemember;
 	
+	// 用于测试的跳转按钮
 	private Button btnIntoNext;
 	
 	private ProgressDialog progressDialog;
 	
 	private EmployeeLoginPresenter userLoginPresenter = new EmployeeLoginPresenter(this);
+	
+	private PushManager pushManager = PushManager.getInstance();
 	
 	private static final String tag = "EmployeeLoginActivity";
 	
@@ -51,6 +55,8 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 	 * UI控件初始化
 	 */
 	private void initWidget() {
+		pushManager.initialize(this);
+		
 		edtUsername = (EditText) findViewById(R.id.edt_username);
 		edtPassword = (EditText) findViewById(R.id.edt_password);
 		btnLogin = (Button) findViewById(R.id.btn_login);

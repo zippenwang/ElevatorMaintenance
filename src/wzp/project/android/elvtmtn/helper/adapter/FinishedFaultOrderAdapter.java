@@ -48,7 +48,8 @@ public class FinishedFaultOrderAdapter extends ArrayAdapter<FaultOrder> {
 			subViewHolder = (SubViewHolder) view.getTag();
 		}
 		
-		subViewHolder.tvWorkOrderId.setText(faultOrder.getId() + "");
+//		subViewHolder.tvWorkOrderId.setText(faultOrder.getId() + "");
+		subViewHolder.tvWorkOrderId.setText(faultOrder.getNo());
 		
 		if (faultOrder.getEmployee() != null) {
 			if (!TextUtils.isEmpty(faultOrder.getEmployee().getName())) {

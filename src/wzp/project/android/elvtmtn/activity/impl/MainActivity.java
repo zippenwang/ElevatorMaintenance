@@ -50,7 +50,6 @@ public class MainActivity extends BaseActivity {
 				altDlgBuilder.setItems(items, new DialogInterface.OnClickListener() {			
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-//						WorkOrderSearchActivity.myStartActivity(MainActivity.this, which);
 						if (WorkOrderType.FAULT_ORDER == which) {
 							FaultOrderSearchActivity.myStartActivity(MainActivity.this);
 						} else if (WorkOrderType.MAINTAIN_ORDER == which) {
@@ -103,7 +102,6 @@ public class MainActivity extends BaseActivity {
 		mibtnUserInfo.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-//				Toast.makeText(MainActivity.this, "员工信息被点击", Toast.LENGTH_SHORT).show();
 				Intent intent = new Intent(MainActivity.this, EmployeeInfoActivity.class);
 				startActivity(intent);
 			}

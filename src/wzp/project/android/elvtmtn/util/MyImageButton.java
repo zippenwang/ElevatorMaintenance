@@ -62,6 +62,8 @@ public class MyImageButton extends ImageButton {
         paint.setTextAlign(Align.CENTER);
         paint.setColor(Color.parseColor(color));
         paint.setTextSize(textsize * density);        
+        
+        // 文字的坐标还未搞懂什么意思
         canvas.drawText(text, canvas.getWidth()/2, canvas.getHeight() - 5, paint);
     }
 }

@@ -45,7 +45,6 @@ public class FaultOrderSearchActivity extends FragmentActivity {
 	private Button btnBack;
 	
 	private int currentSelectedId = 0;
-//	private int workOrderType = 0;						// 工单类型
 	private static final String tag = "WorkOrderSearchActivity";
 	
 	
@@ -55,7 +54,6 @@ public class FaultOrderSearchActivity extends FragmentActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_fault_order_search);		
 		
-//		workOrderType = WorkOrderType.FAULT_ORDER;
 		initWidget();
 		initParam();
 	}
@@ -70,7 +68,7 @@ public class FaultOrderSearchActivity extends FragmentActivity {
 		tvFinished = (TextView) findViewById(R.id.tv_finished);
 	
 		vpFaultOrder = (ViewPager) findViewById(R.id.vp_faultOrder);
-		// 设置ViewPager的预加载值，即让ViewPager维护以当前Fragment为中心，左右各2个Fragment
+		// 设置ViewPager的预加载值，即让ViewPager维护以当前Fragment为中心，左右各1个Fragment
 		vpFaultOrder.setOffscreenPageLimit(1);
 		
 		btnBack = (Button) findViewById(R.id.btn_back);
@@ -169,18 +167,8 @@ public class FaultOrderSearchActivity extends FragmentActivity {
 		}
 	};
 	
-	/*public static void myStartActivity(Context context, int workOrderType) {
-		Intent actIntent = new Intent(context, FaultOrderSearchActivity.class);
-		actIntent.putExtra("workOrderType", workOrderType);
-		context.startActivity(actIntent);
-	}*/
-	
 	public static void myStartActivity(Context context) {
 		Intent actIntent = new Intent(context, FaultOrderSearchActivity.class);
 		context.startActivity(actIntent);
 	}
-
-	/*public int getWorkOrderType() {
-		return workOrderType;
-	}*/
 }

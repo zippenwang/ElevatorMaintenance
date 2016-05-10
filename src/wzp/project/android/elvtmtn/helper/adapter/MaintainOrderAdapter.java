@@ -44,7 +44,8 @@ public class MaintainOrderAdapter extends ArrayAdapter<MaintainOrder> {
 			subViewHolder = (SubViewHolder) view.getTag();
 		}
 		
-		subViewHolder.tvWorkOrderId.setText(String.valueOf(maintainOrder.getId()));
+//		subViewHolder.tvWorkOrderId.setText(String.valueOf(maintainOrder.getId()));
+		subViewHolder.tvWorkOrderId.setText(maintainOrder.getNo());
 		if (maintainOrder.getElevatorRecord() != null) {
 			if (maintainOrder.getElevatorRecord().getAddress() == null) {
 				subViewHolder.tvAddress.setText("暂无地址信息");

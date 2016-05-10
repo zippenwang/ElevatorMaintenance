@@ -5,7 +5,7 @@ import java.util.Date;
 public class MaintainOrder {
 	
 	private long id;							// 工单id
-	private String no;
+	private String no;							// 工单编号
 	private Date finalTime;						// 截止日期
 	private Date receivingTime;					// 接单时间
 	private Date signInTime;					// 签到时间

@@ -2,7 +2,7 @@ package wzp.project.android.elvtmtn.helper.contant;
 
 public interface ProjectContants {
 
-	String basePath = "http://192.168.1.104:8080/ElevatorMaintainSystem/api";		// Web服务器的域名
+	String basePath = "http://192.168.1.101:8080/ElevatorMaintainSystem/api";		// Web服务器的域名
 	
 	int ORDER_IS_NULL = 0x50;				// 符合要求的工单不存在
 	int ORDER_SHOW_COMPLETE = 0x51;			// 工单已经全部被显示出来了

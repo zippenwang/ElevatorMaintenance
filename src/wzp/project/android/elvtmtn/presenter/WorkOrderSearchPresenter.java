@@ -20,152 +20,52 @@ public class WorkOrderSearchPresenter implements IWorkOrderSearchListener {
 	public WorkOrderSearchPresenter(IWorkOrderSearchFragment workOrderSearchFragment) {
 		this.workOrderSearchFragment = workOrderSearchFragment;
 	}
-
-	/*public <T> void searchWorkOrder(int workOrderType, int workOrderState, 
-			int page, int pageSize, List<T> dataList) {
-		workOrderSearchFragment.showProgressDialog();
-		
-		workOrderBiz.getWorkOrdersByCondition(workOrderType, workOrderState, page, 
-				pageSize, dataList, new IWorkOrderSearchListener() {		
-			@Override
-			public void onServerException(String tipInfo) {
-				workOrderSearchFragment.closeProgressDialog();
-				workOrderSearchFragment.showToast(tipInfo);
-				workOrderSearchFragment.hidePtrlvAndShowLinearLayout("服务器正在打盹，请检查网络后重试...");
-			}
-			
-			@Override
-			public void onSearchSuccess(int successType) {
-				workOrderSearchFragment.closeProgressDialog();
-				
-				if (successType == ProjectContants.ORDER_SHOW_COMPLETE) {
-					workOrderSearchFragment.showToast("当前已经显示出所有工单了");
-					workOrderSearchFragment.closePullUpToRefresh();		// 关闭上拉加载功能，只提供下拉刷新功能
-				} else if (successType == ProjectContants.ORDER_SHOW_UNCOMPLETE) {
-					workOrderSearchFragment.openPullUpToRefresh();		// 打开上拉加载功能，此时包含上拉和下拉两种功能
-				} else if (successType == ProjectContants.ORDER_IS_NULL) {
-					// 该条件下的工单不存在
-					workOrderSearchFragment.hidePtrlvAndShowLinearLayout("当前不存在未完成的工单");
-					return;
-				}
-				
-				workOrderSearchFragment.updateInterface();
-			}
-			
-			@Override
-			public void onSearchFailure(String tipInfo) {
-				workOrderSearchFragment.closeProgressDialog();
-				
-				if (failType == ProjectContants.ORDER_IS_NULL) {
-					// 该条件下的工单不存在
-					workOrderSearchFragment.hidePtrlvAndShowLinearLayout("当前不存在未完成的工单");
-				} else if (failType == ProjectContants.ORDER_SHOW_COMPLETE) {
-					// 所有工单都已经查询完了
-					workOrderSearchFragment.showToast("当前已经显示出所有工单了");
-					
-					 * 关闭上拉加载的功能，只提供下拉刷新的功能
-					 
-					workOrderSearchFragment.closePullUpToRefresh();
-				}
-				
-				workOrderSearchFragment.closeProgressDialog();
-				workOrderSearchFragment.showToast(tipInfo);
-				workOrderSearchFragment.hidePtrlvAndShowLinearLayout("服务器正在打盹，请检查网络后重试...");
-			}
-		});
-	}*/
 	
-	public void searchMaintainOrder(long groupId, int workOrderState, int pageNumber, int pageSize, List<MaintainOrder> dataList) {
+	public void searchMaintainOrder(long groupId, int workOrderState, 
+			int pageNumber, int pageSize, List<MaintainOrder> dataList) {
 		workOrderSearchFragment.showProgressDialog();
-		workOrderBiz.getMaintainOrdersByCondition(groupId, workOrderState, pageNumber, pageSize, dataList, this);
-		/*workOrderBiz.getMaintainOrdersByCondition(workOrderState, page, 
-				pageSize, dataList, new IWorkOrderSearchListener() {			
-			@Override
-			public void onSearchSuccess(int successType) {
-				workOrderSearchFragment.closeProgressDialog();
-				
-				if (successType == ProjectContants.ORDER_SHOW_COMPLETE) {
-					workOrderSearchFragment.showToast("当前已经显示出所有工单了");
-					workOrderSearchFragment.closePullUpToRefresh();		// 关闭上拉加载功能，只提供下拉刷新功能
-				} else if (successType == ProjectContants.ORDER_SHOW_UNCOMPLETE) {
-					workOrderSearchFragment.openPullUpToRefresh();		// 打开上拉加载功能，此时包含上拉和下拉两种功能
-				} else if (successType == ProjectContants.ORDER_IS_NULL) {
-					// 该条件下的工单不存在
-					workOrderSearchFragment.hidePtrlvAndShowLinearLayout("当前不存在未完成的工单");
-					return;
-				}
-				
-				workOrderSearchFragment.updateInterface();
-			}
-			
-			@Override
-			public void onSearchFailure(String tipInfo) {				
-				workOrderSearchFragment.closeProgressDialog();
-				workOrderSearchFragment.showToast(tipInfo);
-				workOrderSearchFragment.hidePtrlvAndShowLinearLayout("服务器正在打盹，请检查网络后重试...");
-			}
-		});*/
+		workOrderBiz.getMaintainOrdersByCondition(groupId, workOrderState, 
+				pageNumber, pageSize, dataList, this);
 	}
 	
-	public void searchFaultOrder(long groupId, int workOrderState, int pageNumber, int pageSize, List<FaultOrder> dataList) {
+	public void searchFaultOrder(long groupId, int workOrderState, 
+			int pageNumber, int pageSize, List<FaultOrder> dataList) {
 		workOrderSearchFragment.showProgressDialog();
-		
-		/*workOrderBiz.getFaultOrdersByCondition(workOrderState, page, 
-				pageSize, dataList, new IWorkOrderSearchListener() {			
-			@Override
-			public void onSearchSuccess(int successType) {
-				workOrderSearchFragment.closeProgressDialog();
-				
-				if (successType == ProjectContants.ORDER_SHOW_COMPLETE) {
-					workOrderSearchFragment.showToast("当前已经显示出所有工单了");
-					workOrderSearchFragment.closePullUpToRefresh();		// 关闭上拉加载功能，只提供下拉刷新功能
-				} else if (successType == ProjectContants.ORDER_SHOW_UNCOMPLETE) {
-					workOrderSearchFragment.openPullUpToRefresh();		// 打开上拉加载功能，此时包含上拉和下拉两种功能
-				} else if (successType == ProjectContants.ORDER_IS_NULL) {
-					// 该条件下的工单不存在
-					workOrderSearchFragment.hidePtrlvAndShowLinearLayout("当前不存在未完成的工单");
-					return;
-				}
-				
-				workOrderSearchFragment.updateInterface();
-			}
-			
-			@Override
-			public void onSearchFailure(String tipInfo) {				
-				workOrderSearchFragment.closeProgressDialog();
-				workOrderSearchFragment.showToast(tipInfo);
-				workOrderSearchFragment.hidePtrlvAndShowLinearLayout("服务器正在打盹，请检查网络后重试...");
-			}
-		});*/
-		
-		workOrderBiz.getFaultOrdersByCondition(groupId, workOrderState, pageNumber, pageSize, dataList, this);
+		workOrderBiz.getFaultOrdersByCondition(groupId, workOrderState, 
+				pageNumber, pageSize, dataList, this);
 	}
 	
-	public void searchReceivedMaintainOrders(long employeeId, int pageNumber, int pageSize, List<MaintainOrder> dataList) {
+	public void searchReceivedMaintainOrders(long employeeId, int pageNumber, 
+			int pageSize, List<MaintainOrder> dataList) {
 		workOrderSearchFragment.showProgressDialog();
-		workOrderBiz.getReceivedMaintainOrdersByCondition(employeeId, pageNumber, pageSize, dataList, this);
+		workOrderBiz.getReceivedMaintainOrdersByCondition(employeeId, pageNumber, 
+				pageSize, dataList, this);
 	}
 	
-	public void searchReceivedFaultOrders(long employeeId, int pageNumber, int pageSize, List<FaultOrder> dataList) {
+	public void searchReceivedFaultOrders(long employeeId, int pageNumber, 
+			int pageSize, List<FaultOrder> dataList) {
 		workOrderSearchFragment.showProgressDialog();
-		workOrderBiz.getReceivedFaultOrdersByCondition(employeeId, pageNumber, pageSize, dataList, this);	
+		workOrderBiz.getReceivedFaultOrdersByCondition(employeeId, pageNumber, 
+				pageSize, dataList, this);	
 	}
 	
-	public void searchSignedInFaultOrders(long employeeId, int pageNumber, int pageSize, List<FaultOrder> faultOrderList) {
+	public void searchSignedInFaultOrders(long employeeId, int pageNumber, 
+			int pageSize, List<FaultOrder> faultOrderList) {
 		workOrderSearchFragment.showProgressDialog();
-		workOrderBiz.getSignedInFaultOrdersByCondition(employeeId, pageNumber, pageSize, faultOrderList, this);
+		workOrderBiz.getSignedInFaultOrdersByCondition(employeeId, pageNumber, 
+				pageSize, faultOrderList, this);
 	}
 	
 	public void searchSignedInMaintainOrders(long employeeId, int pageNumber, 
 			int pageSize, List<MaintainOrder> maintainOrderList) {
 		workOrderSearchFragment.showProgressDialog();
-		workOrderBiz.getSignedInMaintainOrdersByCondition(employeeId, pageNumber, pageSize, maintainOrderList, this);
+		workOrderBiz.getSignedInMaintainOrdersByCondition(employeeId, pageNumber, 
+				pageSize, maintainOrderList, this);
 	}
 	
 
 	@Override
 	public void onSearchSuccess(int successType) {
-//		workOrderSearchFragment.closeProgressDialog();
 		workOrderSearchFragment.setIsPtrlvHidden(false);
 		
 		if (successType == ProjectContants.ORDER_SHOW_COMPLETE) {
@@ -175,7 +75,7 @@ public class WorkOrderSearchPresenter implements IWorkOrderSearchListener {
 			workOrderSearchFragment.openPullUpToRefresh();		// 打开上拉加载功能，此时包含上拉和下拉两种功能
 		} else if (successType == ProjectContants.ORDER_IS_NULL) {
 			// 该条件下的工单不存在
-			workOrderSearchFragment.hidePtrlvAndShowLinearLayout("符合条件的工单不存在");
+			workOrderSearchFragment.hidePtrlvAndShowLinearLayout("符合条件的工单不存在...");
 			return;
 		}
 		
@@ -184,7 +84,6 @@ public class WorkOrderSearchPresenter implements IWorkOrderSearchListener {
 
 	@Override
 	public void onSearchFailure(String tipInfo) {
-//		workOrderSearchFragment.closeProgressDialog();
 		workOrderSearchFragment.showToast(tipInfo);
 		workOrderSearchFragment.hidePtrlvAndShowLinearLayout("服务器正在打盹，请检查网络后重试...");
 	}

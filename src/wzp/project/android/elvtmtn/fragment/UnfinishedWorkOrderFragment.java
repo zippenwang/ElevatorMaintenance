@@ -53,13 +53,13 @@ import android.widget.Toast;
 
 public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrderSearchFragment {
 
-	private PullToRefreshListView ptrlvUnfinished;			// 提供下拉刷新功能的ListView
+	private PullToRefreshListView ptrlvUnfinished;			// 提供下拉刷新、上拉加载功能的ListView
 	private LinearLayout linearTipInfo;						// 提示网络异常、或当前工单不存在的LinearLayout控件
 	private TextView tvTipInfo;								// 当ListView中传入的List为空，该控件用于提示数据为空
 	private Button btnRefreshAgain;							// 重试按钮
 	private ProgressDialog progressDialog;					// 进度对话框
 		
-	private int workOrderType;
+	private int workOrderType;								// 工单类型
 	private ArrayAdapter<?> mAdapter;
 	
 	/*
@@ -76,12 +76,15 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 	private boolean isPtrlvHidden = false;			// PullToRefreshListView控件是否被隐藏
 	private String tipInfo;							// PullToRefreshListView控件被隐藏时的提示信息
 	
-	private int listIndex;
+	private int listIndex;							// 查询工单详情时，所选中的list集合的元素的编号
 	private static final int REQUEST_REFRESH = 0x30;
 	
 	private SharedPreferences preferences 
 		= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
 	private long groupId;
+	
+	// 记录当前PullToRefreshListView控件显示的是否是下拉刷新的提示消息
+	private boolean isShowPullDownInfo = true;		
 	
 	private static final String tag = "UnfinishedWorkOrderFragment";
 	
@@ -117,8 +120,6 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 		if (groupId == -1) {
 			throw new IllegalArgumentException("小组ID有误！");
 		}
-		
-//		employee = JSON.parseObject(preferences.getString("employeeJson", ""), Employee.class);
 		
 		/*
 		 * 根据工单类型判断Adapter应该选用MaintainOrder还是FaultOrder
@@ -190,15 +191,18 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 					int visibleItemCount, int totalItemCount) {
 				Log.i(tag, "onScroll#" + firstVisibleItem + "," + visibleItemCount + "," + totalItemCount);
 				
-				// 此处可以进行一下优化，没必要每次滑动时都执行如下操作
-				if (0 == firstVisibleItem) {
+				if (0 == firstVisibleItem
+						&& !isShowPullDownInfo) {
 					ptrlvUnfinished.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
 					ptrlvUnfinished.getLoadingLayoutProxy().setPullLabel("下拉刷新...");
 					ptrlvUnfinished.getLoadingLayoutProxy().setReleaseLabel("释放开始刷新...");
-				} else if ((totalItemCount - visibleItemCount) == firstVisibleItem) {
+					isShowPullDownInfo = true;
+				} else if ((totalItemCount - visibleItemCount) == firstVisibleItem
+						&& isShowPullDownInfo) {
 					ptrlvUnfinished.getLoadingLayoutProxy().setRefreshingLabel("正在加载");
 					ptrlvUnfinished.getLoadingLayoutProxy().setPullLabel("上拉加载更多...");
 					ptrlvUnfinished.getLoadingLayoutProxy().setReleaseLabel("释放开始加载...");
+					isShowPullDownInfo = false;
 				}
 			}
 		});

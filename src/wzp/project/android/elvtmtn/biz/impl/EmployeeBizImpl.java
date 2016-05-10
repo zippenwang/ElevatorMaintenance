@@ -23,6 +23,7 @@ import wzp.project.android.elvtmtn.biz.IEmployeeSignInListener;
 import wzp.project.android.elvtmtn.entity.Employee;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
+import wzp.project.android.elvtmtn.util.MyApplication;
 
 public class EmployeeBizImpl implements IEmployeeBiz {
 	
@@ -50,6 +51,7 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 		OkHttpUtils.post().url(strUrl)
 			.addParams("username", employee.getUsername())
 			.addParams("password", employee.getPassword())
+			.addParams("cid", MyApplication.getCid())
 			.build()
 			.execute(new StringCallback() {
 				@Override
@@ -77,7 +79,7 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 				@Override
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
-					listener.onServerException("访问服务器失败\n请检查网络连接后重试");					
+					listener.onServerException("访问服务器失败，请\n检查网络连接后重试");					
 				}
 			});
 	}

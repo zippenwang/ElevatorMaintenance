@@ -82,6 +82,9 @@ public class FinishedWorkOrderFragment extends Fragment implements IWorkOrderSea
 		= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
 	private long groupId;
 	
+	// 记录当前PullToRefreshListView控件显示的是否是下拉刷新的提示消息
+	private boolean isShowPullDownInfo = true;
+	
 	private static final String tag = "FinishedWorkOrderFragment";
 	
 	// 该方法只会被回调一次
@@ -184,15 +187,18 @@ public class FinishedWorkOrderFragment extends Fragment implements IWorkOrderSea
 					int visibleItemCount, int totalItemCount) {
 				Log.i(tag, "onScroll#" + firstVisibleItem + "," + visibleItemCount + "," + totalItemCount);
 				
-				// 此处可以进行一下优化，没必要每次滑动时都执行如下操作
-				if (0 == firstVisibleItem) {
+				if (0 == firstVisibleItem
+						&& !isShowPullDownInfo) {
 					ptrlvFinished.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
 					ptrlvFinished.getLoadingLayoutProxy().setPullLabel("下拉刷新...");
 					ptrlvFinished.getLoadingLayoutProxy().setReleaseLabel("释放开始刷新...");
-				} else if ((totalItemCount - visibleItemCount) == firstVisibleItem) {
+					isShowPullDownInfo = true;
+				} else if ((totalItemCount - visibleItemCount) == firstVisibleItem
+						&& isShowPullDownInfo) {
 					ptrlvFinished.getLoadingLayoutProxy().setRefreshingLabel("正在加载");
 					ptrlvFinished.getLoadingLayoutProxy().setPullLabel("上拉加载更多...");
 					ptrlvFinished.getLoadingLayoutProxy().setReleaseLabel("释放开始加载...");
+					isShowPullDownInfo = false;
 				}
 			}
 		});

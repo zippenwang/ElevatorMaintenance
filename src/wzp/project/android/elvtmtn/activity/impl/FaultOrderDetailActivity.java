@@ -119,7 +119,8 @@ public class FaultOrderDetailActivity extends BaseActivity implements IWorkOrder
 		/*
 		 * 为未完成、已完成的故障工单均需要显示的控件设置数值
 		 */
-		tvWorkOrderId.setText(String.valueOf(faultOrder.getId()));
+//		tvWorkOrderId.setText(String.valueOf(faultOrder.getId()));
+		tvWorkOrderId.setText(String.valueOf(faultOrder.getNo()));
 		tvElevatorAddress.setText(faultOrder.getElevatorRecord().getAddress());
 		tvFaultOccuredTime.setText(sdf.format(faultOrder.getOccuredTime()));
 		tvFaultDescription.setText(faultOrder.getDescription());
@@ -137,7 +138,7 @@ public class FaultOrderDetailActivity extends BaseActivity implements IWorkOrder
 			tvReceiveTime.setText(sdf2.format(faultOrder.getReceivingTime()));
 			// 正常情况下，receivingTime为null，employee也一定为空
 			if (faultOrder.getEmployee() != null) {
-				Log.i(tag, "进入if");
+//				Log.i(tag, "进入if");
 				if (employeeId == faultOrder.getEmployee().getId()) {
 					btnReceiveOrder.setVisibility(View.GONE);
 					btnCancelReceiveOrder.setVisibility(View.VISIBLE);
@@ -183,11 +184,13 @@ public class FaultOrderDetailActivity extends BaseActivity implements IWorkOrder
 					tvFixGroup.setText(faultOrder.getEmployee().getGroup().getName().trim());
 				} else {
 					tvFixGroup.setText("暂无组信息");
+					tvFixGroup.setTextColor(Color.RED);
 				}
 			} else {
 				tvFixEmployee.setText("暂无员工信息");
 				tvFixEmployee.setTextColor(Color.RED);
 				tvFixGroup.setText("暂无组信息");
+				tvFixGroup.setTextColor(Color.RED);
 			}
 				
 			if (faultOrder.getSignInTime() != null) {

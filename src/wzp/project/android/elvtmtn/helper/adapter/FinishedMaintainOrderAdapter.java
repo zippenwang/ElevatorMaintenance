@@ -46,7 +46,8 @@ public class FinishedMaintainOrderAdapter extends ArrayAdapter<MaintainOrder> {
 			subViewHolder = (SubViewHolder) view.getTag();
 		}
 		
-		subViewHolder.tvWorkOrderId.setText(maintainOrder.getId() + "");
+//		subViewHolder.tvWorkOrderId.setText(maintainOrder.getId() + "");
+		subViewHolder.tvWorkOrderId.setText(maintainOrder.getNo());
 		
 		if (maintainOrder.getEmployee() != null) {
 			if (!TextUtils.isEmpty(maintainOrder.getEmployee().getName())) {

@@ -11,6 +11,7 @@ import android.content.Context;
 public class MyApplication extends Application {
 
 	private static Context context;
+	private static String cid;
 
 	@Override
 	public void onCreate() {
@@ -19,5 +20,13 @@ public class MyApplication extends Application {
 	
 	public static Context getContext() {
 		return context;
-	}	
+	}
+	
+	public static void setCid(String cid) {
+		MyApplication.cid = cid;
+	}
+	
+	public static String getCid() {
+		return cid;
+	}
 }

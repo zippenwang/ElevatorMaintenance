@@ -83,6 +83,9 @@ public class OverdueWorkOrderFragment extends Fragment implements IWorkOrderSear
 	private int listIndex;
 	private static final int REQUEST_REFRESH = 0x30;
 	
+	// 记录当前PullToRefreshListView控件显示的是否是下拉刷新的提示消息
+	private boolean isShowPullDownInfo = true;		
+	
 	private static final String tag = "OverdueWorkOrderFragment";
 	
 	@Override
@@ -197,14 +200,18 @@ public class OverdueWorkOrderFragment extends Fragment implements IWorkOrderSear
 				Log.i(tag, "onScroll#" + firstVisibleItem + "," + visibleItemCount + "," + totalItemCount);
 				
 				// 此处可以进行一下优化，没必要每次滑动时都执行如下操作
-				if (0 == firstVisibleItem) {
+				if (0 == firstVisibleItem
+						&& !isShowPullDownInfo) {
 					ptrlvOverdue.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
 					ptrlvOverdue.getLoadingLayoutProxy().setPullLabel("下拉刷新...");
 					ptrlvOverdue.getLoadingLayoutProxy().setReleaseLabel("释放开始刷新...");
-				} else if ((totalItemCount - visibleItemCount) == firstVisibleItem) {
+					isShowPullDownInfo = true;
+				} else if ((totalItemCount - visibleItemCount) == firstVisibleItem
+						&& isShowPullDownInfo) {
 					ptrlvOverdue.getLoadingLayoutProxy().setRefreshingLabel("正在加载");
 					ptrlvOverdue.getLoadingLayoutProxy().setPullLabel("上拉加载更多...");
 					ptrlvOverdue.getLoadingLayoutProxy().setReleaseLabel("释放开始加载...");
+					isShowPullDownInfo = false;
 				}
 			}
 		});

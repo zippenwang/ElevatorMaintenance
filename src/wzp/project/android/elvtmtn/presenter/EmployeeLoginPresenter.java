@@ -24,19 +24,16 @@ public class EmployeeLoginPresenter {
 		employeeBiz.login(employee, new IEmployeeLoginListener() {
 			@Override
 			public void onLoginSuccess(Employee employee) {
-//				employeeLoginActivity.closeProgressDialog();
 				employeeLoginActivity.loginSuccess(employee);
 			}
 
 			@Override
 			public void onLoginFailure() {
-//				employeeLoginActivity.closeProgressDialog();
 				employeeLoginActivity.loginFail();
 			}
 
 			@Override
 			public void onServerException(String tipInfo) {
-//				employeeLoginActivity.closeProgressDialog();
 				employeeLoginActivity.showToast(tipInfo);
 			}
 

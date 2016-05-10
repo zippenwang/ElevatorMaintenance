@@ -6,7 +6,10 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Request;
+import okhttp3.Response;
 
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -18,6 +21,8 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.builder.PostFormBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import wzp.project.android.elvtmtn.activity.impl.FaultOrderDetailActivity;
+import wzp.project.android.elvtmtn.biz.ISignleOrderSearchListener;
 import wzp.project.android.elvtmtn.biz.IWorkOrderBiz;
 import wzp.project.android.elvtmtn.biz.IWorkOrderCancelListener;
 import wzp.project.android.elvtmtn.biz.IWorkOrderFeedbackListener;
@@ -27,6 +32,7 @@ import wzp.project.android.elvtmtn.entity.Employee;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
+import wzp.project.android.elvtmtn.helper.contant.WorkOrderState;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 
 public class WorkOrderBizImpl implements IWorkOrderBiz {
@@ -150,7 +156,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 						List<MaintainOrder> respDataList = JSON.parseObject(response, 
 								new TypeReference<List<MaintainOrder>>() {});
 						if (respDataList != null && respDataList.size() > 0) {							
-							if (1 == pageNumber) {
+							/*if (1 == pageNumber) {
 								dataList.clear();
 								for (int i=0; i<respDataList.size(); i++) {
 									Log.d(tag, respDataList.get(i).getClass().getSimpleName());
@@ -158,7 +164,11 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 								}
 							} else if (pageNumber > 1) {
 								dataList.addAll(respDataList);
+							}*/
+							if (1 == pageNumber) {
+								dataList.clear();
 							}
+							dataList.addAll(respDataList);
 							
 							if (respDataList.size() % ProjectContants.PAGE_SIZE == 0) {
 								listener.onSearchSuccess(ProjectContants.ORDER_SHOW_UNCOMPLETE);
@@ -224,16 +234,11 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 					if (!TextUtils.isEmpty(response)) {
 						List<FaultOrder> respDataList = JSON.parseObject(response, 
 								new TypeReference<List<FaultOrder>>() {});
-						if (respDataList != null && respDataList.size() > 0) {							
+						if (respDataList != null && respDataList.size() > 0) {
 							if (1 == pageNumber) {
 								dataList.clear();
-								for (int i=0; i<respDataList.size(); i++) {
-									Log.d(tag, respDataList.get(i).getClass().getSimpleName());
-									dataList.add(respDataList.get(i));
-								}
-							} else if (pageNumber > 1) {
-								dataList.addAll(respDataList);
 							}
+							dataList.addAll(respDataList);
 							
 							if (respDataList.size() % ProjectContants.PAGE_SIZE == 0) {
 								listener.onSearchSuccess(ProjectContants.ORDER_SHOW_UNCOMPLETE);
@@ -270,6 +275,56 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				}
 			});
 	}
+	
+	@Override
+	public String getMaintainOrderById(String id) {
+		StringBuilder strUrl = new StringBuilder(ProjectContants.basePath);
+		strUrl.append("/maintainOrder/detail");
+		
+		try {
+			Response response = OkHttpUtils.get().url(strUrl.toString())
+				.addParams("id", id)
+				.build()
+				.execute();
+			
+			if (response.isSuccessful()) {
+				return response.body().string();				
+			}
+		} catch (IOException e) {
+			Log.w(tag, Log.getStackTraceString(e));
+		}
+		
+		return null;
+	}
+	
+	@Override
+	public void getFaultOrderById(final String id, final ISignleOrderSearchListener listener) {
+		StringBuilder strUrl = new StringBuilder(ProjectContants.basePath);
+		strUrl.append("/faultOrder/detail");
+		
+		OkHttpUtils.get().url(strUrl.toString())
+			.addParams("id", id)
+			.build()
+			.execute(new StringCallback() {
+				@Override
+				public void onResponse(String response) {
+					Log.i(tag, response);
+					
+					if (!TextUtils.isEmpty(response)) {
+						listener.onSearchSuccess(response);
+					} else {
+						listener.onSearchFailure("服务器故障，响应数据有误！");
+					}
+				}
+				
+				@Override
+				public void onError(Call call, Exception e) {
+					Log.e(tag, Log.getStackTraceString(e));
+					listener.onSearchFailure("服务器正在打盹\n请检查网络连接后重试");	
+				}
+			});
+	}
+	
 	
 	@Override
 	public void getReceivedMaintainOrdersByCondition(long employeeId,
