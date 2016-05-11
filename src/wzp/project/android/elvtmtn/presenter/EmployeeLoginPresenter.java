@@ -27,7 +27,7 @@ public class EmployeeLoginPresenter {
 				employeeLoginActivity.loginSuccess(employee);
 			}
 
-			@Override
+			/*@Override
 			public void onLoginFailure() {
 				employeeLoginActivity.loginFail();
 			}
@@ -35,11 +35,16 @@ public class EmployeeLoginPresenter {
 			@Override
 			public void onServerException(String tipInfo) {
 				employeeLoginActivity.showToast(tipInfo);
-			}
+			}*/
 
 			@Override
 			public void onAfter() {
 				employeeLoginActivity.closeProgressDialog();
+			}
+
+			@Override
+			public void onLoginFailure(String tipInfo) {
+				employeeLoginActivity.showToast(tipInfo);
 			}
 		});
 	}

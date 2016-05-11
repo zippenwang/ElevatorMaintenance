@@ -201,7 +201,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				@Override
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
-					listener.onSearchFailure("服务器正在打盹\n请检查网络连接后重试");
+					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
 				}
 			});		
 	}
@@ -271,30 +271,9 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				@Override
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
-					listener.onSearchFailure("服务器正在打盹\n请检查网络连接后重试");	
+					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");	
 				}
 			});
-	}
-	
-	@Override
-	public String getMaintainOrderById(String id) {
-		StringBuilder strUrl = new StringBuilder(ProjectContants.basePath);
-		strUrl.append("/maintainOrder/detail");
-		
-		try {
-			Response response = OkHttpUtils.get().url(strUrl.toString())
-				.addParams("id", id)
-				.build()
-				.execute();
-			
-			if (response.isSuccessful()) {
-				return response.body().string();				
-			}
-		} catch (IOException e) {
-			Log.w(tag, Log.getStackTraceString(e));
-		}
-		
-		return null;
 	}
 	
 	@Override
@@ -320,7 +299,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				@Override
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
-					listener.onSearchFailure("服务器正在打盹\n请检查网络连接后重试");	
+					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");	
 				}
 			});
 	}
@@ -396,7 +375,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				@Override
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
-					listener.onSearchFailure("服务器正在打盹\n请检查网络连接后重试");	
+					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");	
 				}
 			});
 		
@@ -472,7 +451,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				@Override
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
-					listener.onSearchFailure("服务器正在打盹\n请检查网络连接后重试");	
+					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");	
 				}
 			});
 	}
@@ -538,7 +517,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				@Override
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
-					listener.onSearchFailure("服务器正在打盹\n请检查网络连接后重试");	
+					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");	
 				}
 			});
 		
@@ -605,7 +584,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				@Override
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
-					listener.onSearchFailure("服务器正在打盹\n请检查网络连接后重试");	
+					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");	
 				}
 			});
 	}
@@ -653,7 +632,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				@Override
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
-					listener.onReceiveFailure("服务器正在打盹\n请检查网络连接后重试");					
+					listener.onReceiveFailure("服务器正在打盹，请\n检查网络连接后重试");					
 				}
 			});
 	}
@@ -703,7 +682,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				@Override
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
-					listener.onCancelFailure("服务器正在打盹\n请检查网络连接后重试");			
+					listener.onCancelFailure("服务器正在打盹，请\n检查网络连接后重试");			
 				}				
 			});
 	}
@@ -760,7 +739,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 			@Override
 			public void onError(Call call, Exception e) {
 				Log.e(tag, Log.getStackTraceString(e));
-				listener.onFeedbackFailure("服务器正在打盹\n请检查网络连接后重试");
+				listener.onFeedbackFailure("服务器正在打盹，请\n检查网络连接后重试");
 			}
 			
 			@Override

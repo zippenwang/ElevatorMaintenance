@@ -48,7 +48,8 @@ public class MaintainOrderFeedbackAdapter extends ArrayAdapter<MaintainOrder> {
 			subViewHolder = (SubViewHolder) view.getTag();
 		}
 		
-		subViewHolder.tvWorkOrderNo.setText(maintainOrder.getId() + "");
+//		subViewHolder.tvWorkOrderNo.setText(maintainOrder.getId() + "");
+		subViewHolder.tvWorkOrderNo.setText(maintainOrder.getNo());
 		
 		if (maintainOrder.getElevatorRecord() != null) {
 			if (maintainOrder.getElevatorRecord().getAddress() == null) {

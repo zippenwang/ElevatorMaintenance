@@ -5,4 +5,5 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="work_order_detail">18sp</dimen>
+    <dimen name="exception_tip">18sp</dimen>
 </resources>

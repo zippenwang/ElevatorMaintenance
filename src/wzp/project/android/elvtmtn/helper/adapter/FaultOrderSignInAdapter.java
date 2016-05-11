@@ -48,7 +48,8 @@ public class FaultOrderSignInAdapter extends ArrayAdapter<FaultOrder> {
 			subViewHolder = (SubViewHolder) view.getTag();
 		}
 		
-		subViewHolder.tvWorkOrderId.setText(faultOrder.getId() + "");
+//		subViewHolder.tvWorkOrderId.setText(faultOrder.getId() + "");
+		subViewHolder.tvWorkOrderId.setText(faultOrder.getNo());
 		if (faultOrder.getElevatorRecord() != null) {
 			if (faultOrder.getElevatorRecord().getAddress() == null) {
 				subViewHolder.tvAddress.setText("暂无地址信息");

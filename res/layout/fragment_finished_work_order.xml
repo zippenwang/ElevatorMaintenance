@@ -29,7 +29,7 @@
 	        android:id="@+id/tv_tipInfo"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
-	        android:textSize="20sp"
+	        android:textSize="@dimen/exception_tip"
 	        android:gravity="center" />
         <Button 
             android:id="@+id/btn_refreshAgain"
@@ -37,7 +37,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/try_again_btn_bg"
-            android:text="重试"/>
+            android:text="重试"
+            android:textColor="#FFFFFF"/>
     </LinearLayout>
 
 </LinearLayout>

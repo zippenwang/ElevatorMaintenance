@@ -71,7 +71,13 @@ public class ElevatorRecordDetailActivity extends BaseActivity {
 	}
 	
 	private void showRecord(ElevatorRecord elevatorRecord) {
-		tvElevatorNumber.setText(String.valueOf(elevatorRecord.getId()));
+//		tvElevatorNumber.setText(String.valueOf(elevatorRecord.getId()));
+		if (!TextUtils.isEmpty(elevatorRecord.getNo())) {
+			tvElevatorNumber.setText(elevatorRecord.getNo());
+		} else {
+			tvElevatorNumber.setText("暂无该信息");
+			tvElevatorNumber.setTextColor(Color.RED);
+		}
 		if (!TextUtils.isEmpty(elevatorRecord.getModelNumber())) {
 			tvModelNumber.setText(elevatorRecord.getModelNumber());
 		} else {

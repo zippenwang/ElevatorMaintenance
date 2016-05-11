@@ -95,7 +95,7 @@
             android:layout_height="wrap_content"
             android:gravity="left"
             android:text="001"
-            android:textSize="@dimen/work_order_detail" />        
+            android:textSize="16sp" />        
     </LinearLayout>
 
     <!-- 接单时间 -->

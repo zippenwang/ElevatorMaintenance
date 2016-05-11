@@ -34,8 +34,6 @@ public interface IWorkOrderBiz {
 	void getFaultOrdersByCondition(long groupId, int workOrderState, int pageNumber, 
 			int pageSize, List<FaultOrder> dataList, IWorkOrderSearchListener listener);
 	
-	String getMaintainOrderById(String id);
-	
 	void getFaultOrderById(String id, ISignleOrderSearchListener listener);
 	
 	void getReceivedMaintainOrdersByCondition(long employeeId, int pageNumber, 
@@ -55,6 +53,7 @@ public interface IWorkOrderBiz {
 	void cancelReceiveOrder(int workOrderType, Long workOrderId, Long employeeId, IWorkOrderCancelListener listener);
 
 	/**
+	 * 工单反馈
 	 * 
 	 * @param workOrderType
 	 * @param workOrderId

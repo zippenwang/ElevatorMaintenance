@@ -9,6 +9,17 @@
             <corners android:radius="10dp" />  
         </shape>  
     </item>  
+    
+    <!-- Disabled时的背景 -->
+    <item android:state_enabled="false">
+        <shape>  
+             <!-- <gradient android:startColor="#DDDDDD" android:endColor="#EEEEEE"/>   -->
+            <solid android:color="#CDCDC1"/>
+            <!--圆角-->  
+            <corners android:radius="10dp" />  
+        </shape>  
+    </item>
+    
     <!--默认背景-->  
     <item>  
         <shape>  

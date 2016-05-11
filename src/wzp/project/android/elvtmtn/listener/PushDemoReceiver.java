@@ -1,29 +1,23 @@
 package wzp.project.android.elvtmtn.listener;
 
-import wzp.project.android.elvtmtn.activity.impl.EmployeeLoginActivity;
 import wzp.project.android.elvtmtn.activity.impl.FaultOrderDetailActivity;
-import wzp.project.android.elvtmtn.activity.impl.TestActivity;
+import wzp.project.android.elvtmtn.activity.impl.MaintainOrderSearchActivity;
 import wzp.project.android.elvtmtn.biz.ISignleOrderSearchListener;
 import wzp.project.android.elvtmtn.biz.IWorkOrderBiz;
 import wzp.project.android.elvtmtn.biz.impl.WorkOrderBizImpl;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderState;
-import wzp.project.android.elvtmtn.presenter.WorkOrderSearchPresenter;
 import wzp.project.android.elvtmtn.util.MyApplication;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.ViewDebug.FlagToString;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.igexin.sdk.PushConsts;
-import com.igexin.sdk.PushManager;
 
 public class PushDemoReceiver extends BroadcastReceiver {
 
@@ -36,14 +30,11 @@ public class PushDemoReceiver extends BroadcastReceiver {
 	
     private static final String tag = "PushDemoReceiver";
     
-    private Context context;
     private Handler handler = new Handler();
     
     
     @Override
-    public void onReceive(final Context context, Intent intent) {
-    	this.context = context;
-    	
+    public void onReceive(final Context context, Intent intent) {    	
         Bundle bundle = intent.getExtras();
         Log.d("GetuiSdkDemo", "onReceive() action=" + bundle.getInt("action"));
 
@@ -51,28 +42,12 @@ public class PushDemoReceiver extends BroadcastReceiver {
             case PushConsts.GET_MSG_DATA:
             	Log.i(tag, "GET_MSG_DATA");
             	
-                /*Intent actIntent = new Intent(context, TargetActivity.class);
-                actIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(actIntent);*/
-            	
             	byte[] payload = bundle.getByteArray("payload");
-
-//                String taskid = bundle.getString("taskid");
-//                String messageid = bundle.getString("messageid");
-
-                // smartPush第三方回执调用接口，actionid范围为90000-90999，可根据业务场景执行
-//                boolean result = PushManager.getInstance().sendFeedbackMessage(context, taskid, messageid, 90001);
-//                System.out.println("第三方回执接口调用" + (result ? "成功" : "失败"));
 
                 if (payload != null) {
                     String data = new String(payload);
 
                     Log.d(tag, "receiver payload : " + data);
-
-//                    payloadData.append(data);
-//                    payloadData.append("\n");
-
-//                    Toast.makeText(context, data, Toast.LENGTH_SHORT).show();
                     
                     JSONObject js = JSON.parseObject(data);
                     String strOrderType = js.getString("orderType");
@@ -101,15 +76,12 @@ public class PushDemoReceiver extends BroadcastReceiver {
 							}
 						});
 					} else if (strOrderType.equals("maintainOrder")) {
-						
+//						MaintainOrderSearchActivity.myStartActivity(context);
+						Intent actIntent = new Intent(context, MaintainOrderSearchActivity.class);
+						actIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						context.startActivity(actIntent);
 					}
-                    
-                }
-                
-//                Intent actIntent = new Intent(context, TestActivity.class);
-//                actIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                context.startActivity(actIntent);
-                
+                }    
                 break;
 
             case PushConsts.GET_CLIENTID:
@@ -117,7 +89,6 @@ public class PushDemoReceiver extends BroadcastReceiver {
                 // 第三方应用需要将CID上传到第三方服务器，并且将当前用户帐号和CID进行关联，以便日后通过用户帐号查找CID进行消息推送
                 String cid = bundle.getString("clientid");
                 MyApplication.setCid(cid);
-                
                 Log.d(tag, "cid=" + cid);
                 break;
 

@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.igexin.sdk.PushManager;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -44,7 +45,13 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 				}
 			}
 		}, 3000);*/
-
+		
+		String cid = MyApplication.getCid();
+		if (cid.equals("")) {
+			listener.onAfter();
+			listener.onLoginFailure("还在初始化参数，请重试...");
+			return;
+		}
 		
 		String strUrl = ProjectContants.basePath + "/login";
 		
@@ -69,17 +76,19 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 						if (result.equals("success")) {
 							listener.onLoginSuccess((JSON.toJavaObject((JSONObject) jo.get("employee"), Employee.class)));
 						} else if (result.equals("failed")) {
-							listener.onLoginFailure();
+							listener.onLoginFailure("用户名或密码错误！");
 						}
 					} else {
-						listener.onServerException("服务器故障，响应数据有误！");
+//						listener.onServerException("服务器故障，响应数据有误！");
+						listener.onLoginFailure("服务器故障，响应数据有误！");
 					}
 				}
 				
 				@Override
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
-					listener.onServerException("访问服务器失败，请\n检查网络连接后重试");					
+//					listener.onServerException("访问服务器失败，请\n检查网络连接后重试");
+					listener.onLoginFailure("访问服务器失败，请\n检查网络连接后重试");
 				}
 			});
 	}
@@ -97,7 +106,6 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 		}
 		
 		OkHttpUtils.post().url(url)
-			.addHeader("Content-Type", "multipart/form-data;charset=utf-8")
 			.addParams("id", String.valueOf(workOrderId))
 			.addParams("signInAddress", signInAddress)
 			.build()

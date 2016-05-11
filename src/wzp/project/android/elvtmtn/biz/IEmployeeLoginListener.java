@@ -8,7 +8,7 @@ public interface IEmployeeLoginListener {
 
 	void onLoginSuccess(Employee employee);
 	
-	void onLoginFailure();
+	void onLoginFailure(String tipInfo);
 	
-	void onServerException(String tipInfo);
+//	void onServerException();
 }

@@ -68,7 +68,7 @@ public class ElevatorRecordBizImpl implements IElevatorRecordBiz {
 				@Override
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
-					listener.onSearchFailure("服务器正在打盹\n请检查网络连接后重试");
+					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
 				}
 			});
 	}
@@ -121,7 +121,7 @@ public class ElevatorRecordBizImpl implements IElevatorRecordBiz {
 				@Override
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
-					listener.onSearchFailure("服务器正在打盹\n请检查网络连接后重试");
+					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
 				}
 			});
 	}

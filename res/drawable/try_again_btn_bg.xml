@@ -4,7 +4,7 @@
     <item android:state_pressed="true">  
         <shape>  
              <!--色值-->  
-            <solid android:color="#e79429" />  
+            <solid android:color="@color/actionBarFocusedColor" />  
             <!--圆角-->  
             <corners android:radius="10dp" />  
         </shape>  
@@ -13,7 +13,7 @@
     <!--默认背景-->  
     <item>  
         <shape>  
-            <solid android:color="#f6aa3e" />  
+            <solid android:color="@color/actionBarNormalColor" />  
             <corners android:radius="10dp" />  
         </shape>  
     </item>  

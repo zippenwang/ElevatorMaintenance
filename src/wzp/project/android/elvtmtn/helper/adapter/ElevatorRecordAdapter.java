@@ -50,7 +50,8 @@ public class ElevatorRecordAdapter extends ArrayAdapter<ElevatorRecord> {
 			subViewHolder = (SubViewHolder) view.getTag();
 		}
 		
-		subViewHolder.tvElevatorNumber.setText(elevatorRecord.getId() + "");
+//		subViewHolder.tvElevatorNumber.setText(elevatorRecord.getId() + "");
+		subViewHolder.tvElevatorNumber.setText(elevatorRecord.getNo());
 		subViewHolder.tvElevatorType.setText(elevatorRecord.getType());		
 		subViewHolder.tvAddress.setText(elevatorRecord.getAddress());
 		subViewHolder.tvPhone.setText(elevatorRecord.getPhone());

@@ -48,7 +48,8 @@ public class FaultOrderFeedbackAdapter extends ArrayAdapter<FaultOrder> {
 			subViewHolder = (SubViewHolder) view.getTag();
 		}
 		
-		subViewHolder.tvWorkOrderNo.setText(faultOrder.getId() + "");
+//		subViewHolder.tvWorkOrderNo.setText(faultOrder.getId() + "");
+		subViewHolder.tvWorkOrderNo.setText(faultOrder.getNo());
 		
 		if (faultOrder.getElevatorRecord() != null) {
 			if (faultOrder.getElevatorRecord().getAddress() == null) {

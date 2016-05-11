@@ -11,7 +11,7 @@ import android.content.Context;
 public class MyApplication extends Application {
 
 	private static Context context;
-	private static String cid;
+	private static String cid = "";
 
 	@Override
 	public void onCreate() {

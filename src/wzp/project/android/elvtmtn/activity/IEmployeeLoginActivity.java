@@ -10,7 +10,10 @@ public interface IEmployeeLoginActivity {
 	
 	void showProgressDialog();
 	
+	void showProgressDialog(String title, String message);
+	
 	void closeProgressDialog();
 	
 	void showToast(String text);
+	
 }

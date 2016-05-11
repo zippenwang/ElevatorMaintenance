@@ -141,7 +141,8 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 		
 		if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
 			tvWorkOrderType.setText("保养工单 ");
-			tvWorkOrderId.setText(String.valueOf(maintainOrder.getId()));
+//			tvWorkOrderId.setText(String.valueOf(maintainOrder.getId()));
+			tvWorkOrderId.setText((maintainOrder.getNo()));
 			tvReceivingTime.setText(sdf.format(maintainOrder.getReceivingTime()));
 			elevatorAddress = maintainOrder.getElevatorRecord().getAddress();
 			tvElevatorAddress.setText(elevatorAddress);
@@ -167,7 +168,8 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 			}
 		} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
 			tvWorkOrderType.setText("故障工单 ");
-			tvWorkOrderId.setText(String.valueOf(faultOrder.getId()));
+//			tvWorkOrderId.setText(String.valueOf(faultOrder.getId()));
+			tvWorkOrderId.setText((faultOrder.getNo()));
 			tvReceivingTime.setText(sdf.format(faultOrder.getReceivingTime()));
 			elevatorAddress = faultOrder.getElevatorRecord().getAddress();
 			tvElevatorAddress.setText(elevatorAddress);

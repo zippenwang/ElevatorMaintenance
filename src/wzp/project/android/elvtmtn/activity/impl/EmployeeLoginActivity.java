@@ -131,7 +131,8 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 	public void loginFail() {
 		showToast("用户名或密码错误！");
 	}
-
+	
+	
 	@Override
 	public void showProgressDialog() {
 		runOnUiThread(new Runnable() {		
@@ -139,6 +140,20 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 			public void run() {
 				progressDialog.setTitle("正在验证用户名和密码，请稍后...");
 				progressDialog.setMessage("Loading...");
+				progressDialog.setCancelable(true);
+				
+				progressDialog.show();
+			}
+		});
+	}
+	
+	@Override
+	public void showProgressDialog(final String title, final String message) {
+		runOnUiThread(new Runnable() {		
+			@Override
+			public void run() {
+				progressDialog.setTitle(title);
+				progressDialog.setMessage(message);
 				progressDialog.setCancelable(true);
 				
 				progressDialog.show();

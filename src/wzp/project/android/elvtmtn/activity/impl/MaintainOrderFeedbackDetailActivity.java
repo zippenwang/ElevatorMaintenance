@@ -260,7 +260,8 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 		/*
 		 * 为控件设值
 		 */
-		tvWorkOrderId.setText(String.valueOf(maintainOrder.getId()));
+//		tvWorkOrderId.setText(String.valueOf(maintainOrder.getId()));
+		tvWorkOrderId.setText(maintainOrder.getNo());
 		tvElevatorAddress.setText(maintainOrder.getElevatorRecord().getAddress());
 		tvSignInTime.setText(sdf.format(maintainOrder.getSignInTime()));
 		tvSignInAddress.setText(maintainOrder.getSignInAddress());

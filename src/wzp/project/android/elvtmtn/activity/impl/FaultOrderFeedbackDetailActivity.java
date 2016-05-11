@@ -232,7 +232,8 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 		/*
 		 * 为控件设值
 		 */
-		tvWorkOrderId.setText(String.valueOf(faultOrder.getId()));
+//		tvWorkOrderId.setText(String.valueOf(faultOrder.getId()));
+		tvWorkOrderId.setText(faultOrder.getNo());
 		tvElevatorAddress.setText(faultOrder.getElevatorRecord().getAddress());
 		tvSignInTime.setText(sdf.format(faultOrder.getSignInTime()));
 		tvSignInAddress.setText(faultOrder.getSignInAddress());

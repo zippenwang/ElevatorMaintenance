@@ -48,7 +48,8 @@ public class MaintainOrderSignInAdapter extends ArrayAdapter<MaintainOrder> {
 			subViewHolder = (SubViewHolder) view.getTag();
 		}
 		
-		subViewHolder.tvWorkOrderId.setText(maintainOrder.getId() + "");
+//		subViewHolder.tvWorkOrderId.setText(maintainOrder.getId() + "");
+		subViewHolder.tvWorkOrderId.setText(maintainOrder.getNo());
 		if (maintainOrder.getElevatorRecord() != null) {
 			if (maintainOrder.getElevatorRecord().getAddress() == null) {
 				subViewHolder.tvAddress.setText("暂无地址信息");

@@ -153,6 +153,7 @@ public class FinishedWorkOrderFragment extends Fragment implements IWorkOrderSea
 		btnRefreshAgain.setOnClickListener(new OnClickListener() {		
 			@Override
 			public void onClick(View v) {
+				tvTipInfo.setText("尝试访问服务器");
 				new RefreshDataTask().execute();
 			}
 		});
