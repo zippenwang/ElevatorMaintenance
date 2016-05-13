@@ -17,7 +17,8 @@ import android.widget.TextView;
 public class FinishedMaintainOrderAdapter extends ArrayAdapter<MaintainOrder> {
 
 	private int resourceId;
-	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static final SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH时");
 	
 	private static final String tag = "FinishedMaintainOrderAdapter";
 	
@@ -40,6 +41,7 @@ public class FinishedMaintainOrderAdapter extends ArrayAdapter<MaintainOrder> {
 			subViewHolder.tvWorkOrderId = (TextView) view.findViewById(R.id.tv_workOrderId);
 			subViewHolder.tvAddress = (TextView) view.findViewById(R.id.tv_address);
 			subViewHolder.tvFixEmployee = (TextView) view.findViewById(R.id.tv_fixEmployee);
+			subViewHolder.tvFinishedTime = (TextView) view.findViewById(R.id.tv_finishedTime);
 			view.setTag(subViewHolder);
 		} else {
 			view = convertView;
@@ -59,6 +61,12 @@ public class FinishedMaintainOrderAdapter extends ArrayAdapter<MaintainOrder> {
 		} else {
 			subViewHolder.tvFixEmployee.setText("暂无员工信息");
 			subViewHolder.tvFixEmployee.setTextColor(Color.RED);
+		}
+		
+		if (maintainOrder.getSignOutTime() != null) {
+			subViewHolder.tvFinishedTime.setText(sdf2.format(maintainOrder.getSignOutTime()));
+		} else {
+			subViewHolder.tvFinishedTime.setText("暂无");
 		}
 		
 		if (maintainOrder.getElevatorRecord() != null) {
@@ -83,6 +91,7 @@ public class FinishedMaintainOrderAdapter extends ArrayAdapter<MaintainOrder> {
 		TextView tvWorkOrderId;
 		TextView tvAddress;
 		TextView tvFixEmployee;
+		TextView tvFinishedTime;
 	}
 
 }

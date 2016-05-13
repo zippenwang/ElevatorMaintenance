@@ -20,6 +20,7 @@ public class FinishedFaultOrderAdapter extends ArrayAdapter<FaultOrder> {
 
 	private int resourceId;
 	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static final SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH时");
 	
 	private static final String tag = "FinishedFaultOrderAdapter";
 	
@@ -42,6 +43,7 @@ public class FinishedFaultOrderAdapter extends ArrayAdapter<FaultOrder> {
 			subViewHolder.tvWorkOrderId = (TextView) view.findViewById(R.id.tv_workOrderId);
 			subViewHolder.tvAddress = (TextView) view.findViewById(R.id.tv_address);
 			subViewHolder.tvFixEmployee = (TextView) view.findViewById(R.id.tv_fixEmployee);
+			subViewHolder.tvFixedTime = (TextView) view.findViewById(R.id.tv_fixedTime);
 			view.setTag(subViewHolder);
 		} else {
 			view = convertView;
@@ -54,6 +56,7 @@ public class FinishedFaultOrderAdapter extends ArrayAdapter<FaultOrder> {
 		if (faultOrder.getEmployee() != null) {
 			if (!TextUtils.isEmpty(faultOrder.getEmployee().getName())) {
 				subViewHolder.tvFixEmployee.setText(faultOrder.getEmployee().getName());
+				subViewHolder.tvFixEmployee.setTextColor(Color.BLACK);
 			} else {
 				subViewHolder.tvFixEmployee.setText("姓名未知");
 				subViewHolder.tvFixEmployee.setTextColor(Color.RED);
@@ -61,6 +64,12 @@ public class FinishedFaultOrderAdapter extends ArrayAdapter<FaultOrder> {
 		} else {
 			subViewHolder.tvFixEmployee.setText("暂无员工信息");
 			subViewHolder.tvFixEmployee.setTextColor(Color.RED);
+		}
+		
+		if (faultOrder.getSignOutTime() != null) {
+			subViewHolder.tvFixedTime.setText(sdf2.format(faultOrder.getSignOutTime()));
+		} else {
+			subViewHolder.tvFixedTime.setText("暂无");
 		}
 		
 		if (faultOrder.getElevatorRecord() != null) {
@@ -85,6 +94,7 @@ public class FinishedFaultOrderAdapter extends ArrayAdapter<FaultOrder> {
 		TextView tvWorkOrderId;
 		TextView tvAddress;
 		TextView tvFixEmployee;
+		TextView tvFixedTime;
 	}
 
 }

@@ -2,6 +2,7 @@ package wzp.project.android.elvtmtn.biz.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.Call;
@@ -749,8 +750,8 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 		});
 	}
 
-	@Override
-	public void sortMaintainOrderByFinalTime(
+	/*@Override
+	public void sortMaintainOrderByFinalTimeIncrease(
 			List<MaintainOrder> maintainOrderList) {
 		if (maintainOrderList.size() == 0) {
 			return;
@@ -784,6 +785,688 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 			
 			maintainOrderList.add(maintainOrders[i]);
 		}
+	}*/
+
+	
+	@Override
+	public void sortMaintainOrderByFinalTimeIncrease(
+			List<MaintainOrder> maintainOrderList) {
+		int length = maintainOrderList.size();
+		
+		if (length == 0) {
+			return;
+		}
+		
+		/*
+		 * 按id号的顺序排列
+		 */
+		MaintainOrder maintainOrderA = null;
+		MaintainOrder maintainOrderB = null;
+		long idA;
+		long idB;
+		int minElementIndex;
+		
+		/*
+		 * 冒泡排序
+		 */
+		/*for (int i=0; i<length; i++) {			
+			for (int j=length-1; j>i; j--) {
+				maintainOrderI = maintainOrderList.get(i);
+				idI =  maintainOrderI.getId();
+				
+				maintainOrderJ = maintainOrderList.get(j);
+				idJ = maintainOrderJ.getId();
+				
+				if (idI < idJ) {
+					temp = maintainOrderI;
+					maintainOrderI = maintainOrderJ;
+					maintainOrderJ = temp;
+					
+					maintainOrderList.remove(i);
+					maintainOrderList.add(i, maintainOrderI);
+					maintainOrderList.remove(j);
+					maintainOrderList.add(j, maintainOrderJ);
+				}
+				
+				maintainOrderJ = null;
+				maintainOrderI = null;
+			}
+		}*/
+		
+		/*
+		 * 选择排序
+		 */
+		for (int i=0; i<length; i++) {
+			minElementIndex = i;
+			idA =  maintainOrderList.get(minElementIndex).getId();
+			for (int j=length-1; j>i; j--) {
+				idB = maintainOrderList.get(j).getId();
+				
+				if (idA > idB) {
+					minElementIndex = j;
+					idA =  maintainOrderList.get(minElementIndex).getId();
+				}
+			}
+			
+			maintainOrderA = maintainOrderList.get(i);
+			maintainOrderB = maintainOrderList.get(minElementIndex);
+			
+			maintainOrderList.remove(i);
+			maintainOrderList.add(i, maintainOrderB);
+			maintainOrderList.remove(minElementIndex);
+			maintainOrderList.add(minElementIndex, maintainOrderA);
+			
+			maintainOrderA = null;
+			maintainOrderB = null;
+		}
+	}
+	
+	@Override
+	public void sortMaintainOrderByFinalTimeDecrease(
+			List<MaintainOrder> maintainOrderList) {
+		int length = maintainOrderList.size();
+		
+		if (length == 0) {
+			return;
+		}
+		
+		/*
+		 * 按id号的逆序排列
+		 */
+		MaintainOrder maintainOrderA = null;
+		MaintainOrder maintainOrderB = null;
+		long idA;
+		long idB;
+		int maxElementIndex;
+		
+		for (int i=0; i<length; i++) {
+			maxElementIndex = i;
+			idA =  maintainOrderList.get(maxElementIndex).getId();
+			for (int j=length-1; j>i; j--) {
+				idB = maintainOrderList.get(j).getId();
+				
+				if (idA < idB) {
+					maxElementIndex = j;
+					idA =  maintainOrderList.get(maxElementIndex).getId();
+				}
+			}
+			
+			maintainOrderA = maintainOrderList.get(i);
+			maintainOrderB = maintainOrderList.get(maxElementIndex);
+			
+			maintainOrderList.remove(i);
+			maintainOrderList.add(i, maintainOrderB);
+			maintainOrderList.remove(maxElementIndex);
+			maintainOrderList.add(maxElementIndex, maintainOrderA);
+			
+			maintainOrderA = null;
+			maintainOrderB = null;
+		}
 	}
 
+	@Override
+	public void sortFaultOrderByOccurredTimeIncrease(
+			List<FaultOrder> faultOrderList) {
+		int length = faultOrderList.size();
+		
+		if (length == 0) {
+			return;
+		}
+		
+		/*
+		 * 按id号的顺序排列
+		 */
+		FaultOrder faultOrderA = null;
+		FaultOrder faultOrderB = null;
+		long idA;
+		long idB;
+		int minElementIndex;
+
+		
+		/*
+		 * 选择排序
+		 */
+		for (int i=0; i<length; i++) {
+			minElementIndex = i;
+			idA =  faultOrderList.get(minElementIndex).getId();
+			for (int j=length-1; j>i; j--) {
+				idB = faultOrderList.get(j).getId();
+				
+				if (idA > idB) {
+					minElementIndex = j;
+					idA =  faultOrderList.get(minElementIndex).getId();
+				}
+			}
+			
+			faultOrderA = faultOrderList.get(i);
+			faultOrderB = faultOrderList.get(minElementIndex);
+			
+			faultOrderList.remove(i);
+			faultOrderList.add(i, faultOrderB);
+			faultOrderList.remove(minElementIndex);
+			faultOrderList.add(minElementIndex, faultOrderA);
+			
+			faultOrderA = null;
+			faultOrderB = null;
+		}
+	}
+
+	@Override
+	public void sortFaultOrderByOccurredTimeDecrease(
+			List<FaultOrder> faultOrderList) {
+		int length = faultOrderList.size();
+		
+		if (length == 0) {
+			return;
+		}
+		
+		/*
+		 * 按id号的逆序排列
+		 */
+		FaultOrder faultOrderA = null;
+		FaultOrder faultOrderB = null;
+		long idA;
+		long idB;
+		int minElementIndex;
+
+		
+		/*
+		 * 选择排序
+		 */
+		for (int i=0; i<length; i++) {
+			minElementIndex = i;
+			idA =  faultOrderList.get(minElementIndex).getId();
+			for (int j=length-1; j>i; j--) {
+				idB = faultOrderList.get(j).getId();
+				
+				if (idA < idB) {
+					minElementIndex = j;
+					idA =  faultOrderList.get(minElementIndex).getId();
+				}
+			}
+			
+			faultOrderA = faultOrderList.get(i);
+			faultOrderB = faultOrderList.get(minElementIndex);
+			
+			faultOrderList.remove(i);
+			faultOrderList.add(i, faultOrderB);
+			faultOrderList.remove(minElementIndex);
+			faultOrderList.add(minElementIndex, faultOrderA);
+			
+			faultOrderA = null;
+			faultOrderB = null;
+		}
+	}
+
+	@Override
+	public void sortMaintainOrderByReceivingTime(
+			List<MaintainOrder> maintainOrderList) {
+		int length = maintainOrderList.size();
+		
+		if (length == 0) {
+			return;
+		}
+		
+		MaintainOrder maintainOrderA = null;
+		MaintainOrder maintainOrderB = null;
+		long receivingTimeA;
+		long receivingTimeB;
+		Date tempDate;
+		int maxElementIndex;
+		
+		for (int i=0; i<length; i++) {
+			maxElementIndex = i;
+			tempDate = maintainOrderList.get(maxElementIndex).getReceivingTime();
+			if (tempDate != null) {
+				receivingTimeA = tempDate.getTime();
+			} else {
+				receivingTimeA = 0;
+			}
+			tempDate = null;
+			for (int j=length-1; j>i; j--) {
+				tempDate = maintainOrderList.get(j).getReceivingTime();
+				if (tempDate != null) {
+					receivingTimeB = tempDate.getTime();
+				} else {
+					receivingTimeB = 0;
+				}
+				tempDate = null;
+				
+				if (receivingTimeA < receivingTimeB) {
+					maxElementIndex = j;
+					tempDate = maintainOrderList.get(maxElementIndex).getReceivingTime();
+					if (tempDate != null) {
+						receivingTimeA = tempDate.getTime();
+					} else {
+						receivingTimeA = 0;
+					}
+					tempDate = null;
+				}
+			}
+			
+			maintainOrderA = maintainOrderList.get(i);
+			maintainOrderB = maintainOrderList.get(maxElementIndex);
+			
+			maintainOrderList.remove(i);
+			maintainOrderList.add(i, maintainOrderB);
+			maintainOrderList.remove(maxElementIndex);
+			maintainOrderList.add(maxElementIndex, maintainOrderA);
+			
+			maintainOrderA = null;
+			maintainOrderB = null;
+		}
+		
+	}
+
+	@Override
+	public void sortFaultOrderByReceivingTime(List<FaultOrder> faultOrderList) {
+		int length = faultOrderList.size();
+		
+		if (length == 0) {
+			return;
+		}
+		
+		FaultOrder faultOrderA = null;
+		FaultOrder faultOrderB = null;
+		long receivingTimeA;
+		long receivingTimeB;
+		Date tempDate;
+		int maxElementIndex;
+		
+		for (int i=0; i<length; i++) {
+			maxElementIndex = i;
+			tempDate = faultOrderList.get(maxElementIndex).getReceivingTime();
+			if (tempDate != null) {
+				receivingTimeA = tempDate.getTime();
+			} else {
+				receivingTimeA = 0;
+			}
+			tempDate = null;
+			for (int j=length-1; j>i; j--) {
+				tempDate = faultOrderList.get(j).getReceivingTime();
+				if (tempDate != null) {
+					receivingTimeB = tempDate.getTime();
+				} else {
+					receivingTimeB = 0;
+				}
+				tempDate = null;
+				
+				if (receivingTimeA < receivingTimeB) {
+					maxElementIndex = j;
+					tempDate = faultOrderList.get(maxElementIndex).getReceivingTime();
+					if (tempDate != null) {
+						receivingTimeA = tempDate.getTime();
+					} else {
+						receivingTimeA = 0;
+					}
+					tempDate = null;
+				}
+			}
+			
+			faultOrderA = faultOrderList.get(i);
+			faultOrderB = faultOrderList.get(maxElementIndex);
+			
+			faultOrderList.remove(i);
+			faultOrderList.add(i, faultOrderB);
+			faultOrderList.remove(maxElementIndex);
+			faultOrderList.add(maxElementIndex, faultOrderA);
+			
+			faultOrderA = null;
+			faultOrderB = null;
+		}
+	}
+
+	@Override
+	public void sortMaintainOrderByFinishedTimeIncrease(
+			List<MaintainOrder> maintainOrderList) {
+		int length = maintainOrderList.size();
+		
+		if (length == 0) {
+			return;
+		}
+		
+		MaintainOrder maintainOrderA = null;
+		MaintainOrder maintainOrderB = null;
+		long finishedTimeA;
+		long finishedTimeB;
+		Date tempDate;
+		int minElementIndex;
+		
+		for (int i=0; i<length; i++) {
+			minElementIndex = i;
+			tempDate = maintainOrderList.get(minElementIndex).getSignOutTime();
+			if (tempDate != null) {
+				finishedTimeA = tempDate.getTime();
+			} else {
+				finishedTimeA = 0;
+			}
+			tempDate = null;
+			for (int j=length-1; j>i; j--) {
+				tempDate = maintainOrderList.get(j).getSignOutTime();
+				if (tempDate != null) {
+					finishedTimeB = tempDate.getTime();
+				} else {
+					finishedTimeB = 0;
+				}
+				tempDate = null;
+				
+				if (finishedTimeA > finishedTimeB) {
+					minElementIndex = j;
+					tempDate = maintainOrderList.get(minElementIndex).getSignOutTime();
+					if (tempDate != null) {
+						finishedTimeA = tempDate.getTime();
+					} else {
+						finishedTimeA = 0;
+					}
+					tempDate = null;
+				}
+			}
+			
+			maintainOrderA = maintainOrderList.get(i);
+			maintainOrderB = maintainOrderList.get(minElementIndex);
+			
+			maintainOrderList.remove(i);
+			maintainOrderList.add(i, maintainOrderB);
+			maintainOrderList.remove(minElementIndex);
+			maintainOrderList.add(minElementIndex, maintainOrderA);
+			
+			maintainOrderA = null;
+			maintainOrderB = null;
+		}
+	}
+
+	@Override
+	public void sortMaintainOrderByFinishedTimeDecrease(
+			List<MaintainOrder> maintainOrderList) {
+		int length = maintainOrderList.size();
+		
+		if (length == 0) {
+			return;
+		}
+		
+		MaintainOrder maintainOrderA = null;
+		MaintainOrder maintainOrderB = null;
+		long finishedTimeA;
+		long finishedTimeB;
+		Date tempDate;
+		int maxElementIndex;
+		
+		for (int i=0; i<length; i++) {
+			maxElementIndex = i;
+			tempDate = maintainOrderList.get(maxElementIndex).getSignOutTime();
+			if (tempDate != null) {
+				finishedTimeA = tempDate.getTime();
+			} else {
+				finishedTimeA = 0;
+			}
+			tempDate = null;
+			for (int j=length-1; j>i; j--) {
+				tempDate = maintainOrderList.get(j).getSignOutTime();
+				if (tempDate != null) {
+					finishedTimeB = tempDate.getTime();
+				} else {
+					finishedTimeB = 0;
+				}
+				tempDate = null;
+				
+				if (finishedTimeA < finishedTimeB) {
+					maxElementIndex = j;
+					tempDate = maintainOrderList.get(maxElementIndex).getSignOutTime();
+					if (tempDate != null) {
+						finishedTimeA = tempDate.getTime();
+					} else {
+						finishedTimeA = 0;
+					}
+					tempDate = null;
+				}
+			}
+			
+			maintainOrderA = maintainOrderList.get(i);
+			maintainOrderB = maintainOrderList.get(maxElementIndex);
+			
+			maintainOrderList.remove(i);
+			maintainOrderList.add(i, maintainOrderB);
+			maintainOrderList.remove(maxElementIndex);
+			maintainOrderList.add(maxElementIndex, maintainOrderA);
+			
+			maintainOrderA = null;
+			maintainOrderB = null;
+		}
+	}
+
+	@Override
+	public void sortFaultOrderByFinishedTimeIncrease(
+			List<FaultOrder> faultOrderList) {
+		int length = faultOrderList.size();
+		
+		if (length == 0) {
+			return;
+		}
+		
+		FaultOrder faultOrderA = null;
+		FaultOrder faultOrderB = null;
+		long finishedTimeA;
+		long finishedTimeB;
+		Date tempDate;
+		int minElementIndex;
+		
+		for (int i=0; i<length; i++) {
+			minElementIndex = i;
+			tempDate = faultOrderList.get(minElementIndex).getSignOutTime();
+			if (tempDate != null) {
+				finishedTimeA = tempDate.getTime();
+			} else {
+				finishedTimeA = 0;
+			}
+			tempDate = null;
+			for (int j=length-1; j>i; j--) {
+				tempDate = faultOrderList.get(j).getSignOutTime();
+				if (tempDate != null) {
+					finishedTimeB = tempDate.getTime();
+				} else {
+					finishedTimeB = 0;
+				}
+				tempDate = null;
+				
+				if (finishedTimeA > finishedTimeB) {
+					minElementIndex = j;
+					tempDate = faultOrderList.get(minElementIndex).getSignOutTime();
+					if (tempDate != null) {
+						finishedTimeA = tempDate.getTime();
+					} else {
+						finishedTimeA = 0;
+					}
+					tempDate = null;
+				}
+			}
+			
+			faultOrderA = faultOrderList.get(i);
+			faultOrderB = faultOrderList.get(minElementIndex);
+			
+			faultOrderList.remove(i);
+			faultOrderList.add(i, faultOrderB);
+			faultOrderList.remove(minElementIndex);
+			faultOrderList.add(minElementIndex, faultOrderA);
+			
+			faultOrderA = null;
+			faultOrderB = null;
+		}
+		
+	}
+
+	@Override
+	public void sortFaultOrderByFinishedTimeDecrease(
+			List<FaultOrder> faultOrderList) {
+		int length = faultOrderList.size();
+		
+		if (length == 0) {
+			return;
+		}
+		
+		FaultOrder faultOrderA = null;
+		FaultOrder faultOrderB = null;
+		long finishedTimeA;
+		long finishedTimeB;
+		Date tempDate;
+		int maxElementIndex;
+		
+		for (int i=0; i<length; i++) {
+			maxElementIndex = i;
+			tempDate = faultOrderList.get(maxElementIndex).getSignOutTime();
+			if (tempDate != null) {
+				finishedTimeA = tempDate.getTime();
+			} else {
+				finishedTimeA = 0;
+			}
+			tempDate = null;
+			for (int j=length-1; j>i; j--) {
+				tempDate = faultOrderList.get(j).getSignOutTime();
+				if (tempDate != null) {
+					finishedTimeB = tempDate.getTime();
+				} else {
+					finishedTimeB = 0;
+				}
+				tempDate = null;
+				
+				if (finishedTimeA < finishedTimeB) {
+					maxElementIndex = j;
+					tempDate = faultOrderList.get(maxElementIndex).getSignOutTime();
+					if (tempDate != null) {
+						finishedTimeA = tempDate.getTime();
+					} else {
+						finishedTimeA = 0;
+					}
+					tempDate = null;
+				}
+			}
+			
+			faultOrderA = faultOrderList.get(i);
+			faultOrderB = faultOrderList.get(maxElementIndex);
+			
+			faultOrderList.remove(i);
+			faultOrderList.add(i, faultOrderB);
+			faultOrderList.remove(maxElementIndex);
+			faultOrderList.add(maxElementIndex, faultOrderA);
+			
+			faultOrderA = null;
+			faultOrderB = null;
+		}
+	}
+
+	@Override
+	public void sortMaintainOrderBySignInTime(
+			List<MaintainOrder> maintainOrderList) {
+		int length = maintainOrderList.size();
+		
+		if (length == 0) {
+			return;
+		}
+		
+		MaintainOrder maintainOrderA = null;
+		MaintainOrder maintainOrderB = null;
+		long signInTimeA;
+		long signInTimeB;
+		Date tempDate;
+		int maxElementIndex;
+		
+		for (int i=0; i<length; i++) {
+			maxElementIndex = i;
+			tempDate = maintainOrderList.get(maxElementIndex).getSignInTime();
+			if (tempDate != null) {
+				signInTimeA = tempDate.getTime();
+			} else {
+				signInTimeA = 0;
+			}
+			tempDate = null;
+			for (int j=length-1; j>i; j--) {
+				tempDate = maintainOrderList.get(j).getSignInTime();
+				if (tempDate != null) {
+					signInTimeB = tempDate.getTime();
+				} else {
+					signInTimeB = 0;
+				}
+				tempDate = null;
+				
+				if (signInTimeA < signInTimeB) {
+					maxElementIndex = j;
+					tempDate = maintainOrderList.get(maxElementIndex).getSignInTime();
+					if (tempDate != null) {
+						signInTimeA = tempDate.getTime();
+					} else {
+						signInTimeA = 0;
+					}
+					tempDate = null;
+				}
+			}
+			
+			maintainOrderA = maintainOrderList.get(i);
+			maintainOrderB = maintainOrderList.get(maxElementIndex);
+			
+			maintainOrderList.remove(i);
+			maintainOrderList.add(i, maintainOrderB);
+			maintainOrderList.remove(maxElementIndex);
+			maintainOrderList.add(maxElementIndex, maintainOrderA);
+			
+			maintainOrderA = null;
+			maintainOrderB = null;
+		}
+	}
+
+	@Override
+	public void sortFaultOrderBySignInTime(List<FaultOrder> faultOrderList) {
+		int length = faultOrderList.size();
+		
+		if (length == 0) {
+			return;
+		}
+		
+		FaultOrder faultOrderA = null;
+		FaultOrder faultOrderB = null;
+		long signInTimeA;
+		long signInTimeB;
+		Date tempDate;
+		int maxElementIndex;
+		
+		for (int i=0; i<length; i++) {
+			maxElementIndex = i;
+			tempDate = faultOrderList.get(maxElementIndex).getSignInTime();
+			if (tempDate != null) {
+				signInTimeA = tempDate.getTime();
+			} else {
+				signInTimeA = 0;
+			}
+			tempDate = null;
+			for (int j=length-1; j>i; j--) {
+				tempDate = faultOrderList.get(j).getSignInTime();
+				if (tempDate != null) {
+					signInTimeB = tempDate.getTime();
+				} else {
+					signInTimeB = 0;
+				}
+				tempDate = null;
+				
+				if (signInTimeA < signInTimeB) {
+					maxElementIndex = j;
+					tempDate = faultOrderList.get(maxElementIndex).getSignInTime();
+					if (tempDate != null) {
+						signInTimeA = tempDate.getTime();
+					} else {
+						signInTimeA = 0;
+					}
+					tempDate = null;
+				}
+			}
+			
+			faultOrderA = faultOrderList.get(i);
+			faultOrderB = faultOrderList.get(maxElementIndex);
+			
+			faultOrderList.remove(i);
+			faultOrderList.add(i, faultOrderB);
+			faultOrderList.remove(maxElementIndex);
+			faultOrderList.add(maxElementIndex, faultOrderA);
+			
+			faultOrderA = null;
+			faultOrderB = null;
+		}
+	}
 }

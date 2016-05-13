@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item 
+        android:id="@+id/item_sortByFinalTime"
+        android:title="按截止日期排序">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item 
+                    android:id="@+id/item_finalTimeIncrease"
+        			android:title="顺序排列" />
+                <item 
+                    android:id="@+id/item_finalTimeDecrease"
+        			android:title="逆序排列" />
+            </group>
+        </menu>
+    </item>
+    	
+    <item 
+        android:id="@+id/item_sortByReceiveTime"
+        android:title="按接单日期排序"/>
+    
+    <item 
+        android:id="@+id/item_sortByFinishTime"
+        android:title="按完成日期排序">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item 
+                    android:id="@+id/item_finishTimeIncrease"
+        			android:title="顺序排列" />
+                <item 
+                    android:id="@+id/item_finishTimeDecrease"
+        			android:title="逆序排列" />
+            </group>
+        </menu>
+    </item>
+
+</menu>

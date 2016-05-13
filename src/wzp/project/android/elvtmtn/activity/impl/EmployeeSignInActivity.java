@@ -34,6 +34,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import wzp.project.android.elvtmtn.R;
+import wzp.project.android.elvtmtn.activity.IEmployeeSignInActivity;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
@@ -43,9 +44,11 @@ import wzp.project.android.elvtmtn.helper.adapter.MaintainOrderSignInAdapter;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 import wzp.project.android.elvtmtn.presenter.WorkOrderSearchPresenter;
+import wzp.project.android.elvtmtn.presenter.WorkOrderSortPresenter;
 import wzp.project.android.elvtmtn.util.MyApplication;
 
-public class EmployeeSignInActivity extends BaseActivity implements IWorkOrderSearchFragment {
+public class EmployeeSignInActivity extends BaseActivity 
+		implements IWorkOrderSearchFragment, IEmployeeSignInActivity {
 	
 	private Button btnBack;
 	private TextView tvWorkOrderType;
@@ -65,6 +68,7 @@ public class EmployeeSignInActivity extends BaseActivity implements IWorkOrderSe
 	private List<FaultOrder> faultOrderList = new ArrayList<FaultOrder>();				// 故障工单集合
 	
 	private WorkOrderSearchPresenter workOrderSearchPresenter = new WorkOrderSearchPresenter(this);
+	private WorkOrderSortPresenter workOrderSortPresenter = new WorkOrderSortPresenter(this);
 	
 	private volatile int curPage = 1;				// 当前需要访问的页码
 	
@@ -378,4 +382,5 @@ public class EmployeeSignInActivity extends BaseActivity implements IWorkOrderSe
 	public void setIsPtrlvHidden(boolean isPtrlvHidden) {
 		this.isPtrlvHidden = isPtrlvHidden;
 	}
+
 }

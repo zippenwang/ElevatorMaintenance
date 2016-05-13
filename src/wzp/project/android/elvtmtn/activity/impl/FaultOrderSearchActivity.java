@@ -1,5 +1,8 @@
 package wzp.project.android.elvtmtn.activity.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -11,15 +14,22 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.view.ViewPager.SimpleOnPageChangeListener;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.PopupMenu.OnMenuItemClickListener;
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.fragment.FinishedWorkOrderFragment;
+import wzp.project.android.elvtmtn.fragment.IFinishedOrderSortFragment;
+import wzp.project.android.elvtmtn.fragment.IOrderSortFragment;
+import wzp.project.android.elvtmtn.fragment.IUnfOvdOrderSortFragment;
 import wzp.project.android.elvtmtn.fragment.OverdueWorkOrderFragment;
 import wzp.project.android.elvtmtn.fragment.UnfinishedWorkOrderFragment;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
@@ -44,7 +54,12 @@ public class FaultOrderSearchActivity extends FragmentActivity {
 	
 	private Button btnBack;
 	
+	private TextView tvWorkOrderType;
+	private PopupMenu pmSort;
+	private Menu menu;
+	
 	private int currentSelectedId = 0;
+	private List<Fragment> fragmentList = new ArrayList<Fragment>();
 	private static final String tag = "WorkOrderSearchActivity";
 	
 	
@@ -78,6 +93,90 @@ public class FaultOrderSearchActivity extends FragmentActivity {
 				finish();
 			}
 		});
+		
+		tvWorkOrderType = (TextView) findViewById(R.id.tv_workOrderType);
+		pmSort = new PopupMenu(this, tvWorkOrderType);
+		getMenuInflater().inflate(R.menu.fault_order_search_sort_menu, pmSort.getMenu());
+		menu = pmSort.getMenu();
+		
+		pmSort.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem mi) {
+//				IOrderSortFragment fragment = null;
+				IUnfOvdOrderSortFragment unfOvdOrderFragment = null;
+				IFinishedOrderSortFragment finishedOrderFragment = null;
+				
+				switch (currentSelectedId) {
+					case 0:
+						unfOvdOrderFragment = (UnfinishedWorkOrderFragment) fragmentList.get(0);
+						break;
+					case 1:
+						finishedOrderFragment = (FinishedWorkOrderFragment) fragmentList.get(1);
+						break;
+					default:
+						break;
+				}
+				
+				switch (mi.getItemId()) {
+					case R.id.item_occuredTimeIncrease:					
+						if (unfOvdOrderFragment != null) {
+							unfOvdOrderFragment.sortFaultOrderByOccurredTimeIncrease();
+						}
+						break;
+					case R.id.item_occuredTimeDecrease:		
+						if (unfOvdOrderFragment != null) {
+							unfOvdOrderFragment.sortFaultOrderByOccurredTimeDecrease();
+						}
+						break;
+					case R.id.item_sortByReceiveTime:	
+						if (unfOvdOrderFragment != null) {
+							unfOvdOrderFragment.sortFaultOrderByReceivingTime();
+						}
+						break;
+					case R.id.item_fixedTimeIncrease:	
+						if (finishedOrderFragment != null) {
+							finishedOrderFragment.sortFaultOrderByFixedTimeIncrease();
+						}
+						break;
+					case R.id.item_fixedTimeDecrease:	
+						if (finishedOrderFragment != null) {
+							finishedOrderFragment.sortFaultOrderByFixedTimeDecrease();
+						}
+						break;
+				default:
+					break;
+				}
+				
+				
+				return false;
+			}
+		});
+		
+		tvWorkOrderType.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				pmSort.show();
+				switch (currentSelectedId) {
+				case 0:
+					menu.findItem(R.id.item_sortByFaultOccuredTime).setVisible(true);
+					menu.findItem(R.id.item_sortByReceiveTime).setVisible(true);
+					menu.findItem(R.id.item_sortByFixedTime).setVisible(false);
+					break;
+				case 1:
+					menu.findItem(R.id.item_sortByFaultOccuredTime).setVisible(false);
+					menu.findItem(R.id.item_sortByReceiveTime).setVisible(false);
+					menu.findItem(R.id.item_sortByFixedTime).setVisible(true);
+					break;
+				case 2:
+					menu.findItem(R.id.item_sortByFaultOccuredTime).setVisible(true);
+					menu.findItem(R.id.item_sortByReceiveTime).setVisible(true);
+					menu.findItem(R.id.item_sortByFixedTime).setVisible(false);
+					break;
+				default:
+					break;
+			}
+			}
+		});
 	}
 	
 	private void initParam() {
@@ -102,10 +201,12 @@ public class FaultOrderSearchActivity extends FragmentActivity {
 					case 0:
 						Log.d(tag, "case 0");
 						fragment = new UnfinishedWorkOrderFragment();
+						fragmentList.add(0, fragment);
 						break;
 					case 1:
 						Log.d(tag, "case 1");
 						fragment = new FinishedWorkOrderFragment();
+						fragmentList.add(1, fragment);
 						break;
 					default:
 						break;
@@ -116,7 +217,6 @@ public class FaultOrderSearchActivity extends FragmentActivity {
 		
 		vpFaultOrder.setOnPageChangeListener(new SimpleOnPageChangeListener(){
 			public void onPageSelected(int position) {
-//				Toast.makeText(WorkOrderSearchActivity.this, "页面更改", 0).show();
 				setSelectedTitle(position);
 			}
 		});		

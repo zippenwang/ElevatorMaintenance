@@ -21,6 +21,7 @@ import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderState;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 import wzp.project.android.elvtmtn.presenter.WorkOrderSearchPresenter;
+import wzp.project.android.elvtmtn.presenter.WorkOrderSortPresenter;
 import wzp.project.android.elvtmtn.util.MyApplication;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -52,7 +53,8 @@ import android.widget.Toast;
  * @author Zippen
  *
  */
-public class OverdueWorkOrderFragment extends Fragment implements IWorkOrderSearchFragment {
+public class OverdueWorkOrderFragment extends Fragment 
+		implements IWorkOrderSearchFragment, IUnfOvdOrderSortFragment {
 	
 	private PullToRefreshListView ptrlvOverdue;			// 提供下拉刷新功能的ListView
 	private LinearLayout linearTipInfo;						// 提示网络异常、或当前工单不存在的LinearLayout控件
@@ -68,6 +70,7 @@ public class OverdueWorkOrderFragment extends Fragment implements IWorkOrderSear
 	private List<MaintainOrder> maintainOrderList = new ArrayList<MaintainOrder>();		// 保养工单集合
 	
 	private WorkOrderSearchPresenter workOrderSearchPresenter = new WorkOrderSearchPresenter(this);
+	private WorkOrderSortPresenter workOrderSortPresenter = new WorkOrderSortPresenter(this);
 	private MaintainOrderSearchActivity workOrderSearchActivity;
 	
 	private volatile int curPage = 1;				// 当前需要访问的页码
@@ -348,8 +351,37 @@ public class OverdueWorkOrderFragment extends Fragment implements IWorkOrderSear
 	public void setIsPtrlvHidden(boolean isPtrlvHidden) {
 		this.isPtrlvHidden = isPtrlvHidden;
 	}
-	
-	public void sortOrderByFinalTime() {
+
+	@Override
+	public void sortMaintainOrderByFinalTimeIncrease() {
+		workOrderSortPresenter.sortMaintainOrderByFinalTimeIncrease(maintainOrderList);
+	}
+
+	@Override
+	public void sortMaintainOrderByFinalTimeDecrease() {
+		workOrderSortPresenter.sortMaintainOrderByFinalTimeDecrease(maintainOrderList);		
+	}
+
+	@Override
+	public void sortFaultOrderByOccurredTimeIncrease() {
+		
+	}
+
+	@Override
+	public void sortFaultOrderByOccurredTimeDecrease() {
+		
+	}
+
+	@Override
+	public void sortMaintainOrderByReceivingTime() {
+		workOrderSortPresenter.sortMaintainOrderByReceivingTime(maintainOrderList);
+	}
+
+	/**
+	 * 不存在超期的故障工单，因此不需要为该方法编写方法体
+	 */
+	@Override
+	public void sortFaultOrderByReceivingTime() {
 		
 	}
 	

@@ -25,6 +25,7 @@ import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderState;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 import wzp.project.android.elvtmtn.presenter.WorkOrderSearchPresenter;
+import wzp.project.android.elvtmtn.presenter.WorkOrderSortPresenter;
 import wzp.project.android.elvtmtn.util.MyApplication;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -48,10 +49,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrderSearchFragment {
+public class UnfinishedWorkOrderFragment extends Fragment 
+		implements IWorkOrderSearchFragment, IUnfOvdOrderSortFragment {
 
 	private PullToRefreshListView ptrlvUnfinished;			// 提供下拉刷新、上拉加载功能的ListView
 	private LinearLayout linearTipInfo;						// 提示网络异常、或当前工单不存在的LinearLayout控件
@@ -69,6 +72,7 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 	private List<FaultOrder> faultOrderList = new ArrayList<FaultOrder>();				// 故障工单集合
 	
 	private WorkOrderSearchPresenter workOrderSearchPresenter = new WorkOrderSearchPresenter(this);
+	private WorkOrderSortPresenter workOrderSortPresenter = new WorkOrderSortPresenter(this);
 	private Activity workOrderSearchActivity;
 	
 	private volatile int curPage = 1;				// 当前需要访问的页码
@@ -224,6 +228,8 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 				}
 			}
 		});
+		
+		
 		
 		if (isPtrlvHidden) {
 			hidePtrlvAndShowLinearLayout(tipInfo);
@@ -414,4 +420,35 @@ public class UnfinishedWorkOrderFragment extends Fragment  implements IWorkOrder
 	public void setIsPtrlvHidden(boolean isPtrlvHidden) {
 		this.isPtrlvHidden = isPtrlvHidden;
 	}
+
+	@Override
+	public void sortMaintainOrderByFinalTimeIncrease() {
+		workOrderSortPresenter.sortMaintainOrderByFinalTimeIncrease(maintainOrderList);
+	}
+
+	@Override
+	public void sortMaintainOrderByFinalTimeDecrease() {
+		workOrderSortPresenter.sortMaintainOrderByFinalTimeDecrease(maintainOrderList);
+	}
+
+	@Override
+	public void sortFaultOrderByOccurredTimeIncrease() {
+		workOrderSortPresenter.sortFaultOrderByOccurredTimeIncrease(faultOrderList);
+	}
+
+	@Override
+	public void sortFaultOrderByOccurredTimeDecrease() {
+		workOrderSortPresenter.sortFaultOrderByOccurredTimeDecrease(faultOrderList);
+	}
+
+	@Override
+	public void sortMaintainOrderByReceivingTime() {
+		workOrderSortPresenter.sortMaintainOrderByReceivingTime(maintainOrderList);
+	}
+
+	@Override
+	public void sortFaultOrderByReceivingTime() {
+		workOrderSortPresenter.sortFaultOrderByReceivingTime(faultOrderList);
+	}
+
 }

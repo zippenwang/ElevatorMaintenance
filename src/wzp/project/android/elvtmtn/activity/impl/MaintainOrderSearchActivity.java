@@ -1,5 +1,6 @@
 package wzp.project.android.elvtmtn.activity.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.baidu.platform.comapi.map.m;
@@ -16,6 +17,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.view.ViewPager.SimpleOnPageChangeListener;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,9 +31,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.fragment.FinishedWorkOrderFragment;
+import wzp.project.android.elvtmtn.fragment.IFinishedOrderSortFragment;
+import wzp.project.android.elvtmtn.fragment.IOrderSortFragment;
+import wzp.project.android.elvtmtn.fragment.IUnfOvdOrderSortFragment;
+import wzp.project.android.elvtmtn.fragment.IWorkOrderSearchFragment;
 import wzp.project.android.elvtmtn.fragment.OverdueWorkOrderFragment;
 import wzp.project.android.elvtmtn.fragment.UnfinishedWorkOrderFragment;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
+import wzp.project.android.elvtmtn.presenter.WorkOrderSortPresenter;
 
 /**
  * 主控界面
@@ -56,12 +63,14 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 	
 	private TextView tvWorkOrderType;
 	private PopupMenu pmSort;
+	private Menu menu;
 	
 	private Button btnBack;
-//	private ImageButton ibtnBack;
 	
 	private int currentSelectedId = 0;
-//	private int workOrderType = 0;						// 工单类型
+	
+	private List<Fragment> fragmentList = new ArrayList<Fragment>();
+	
 	private static final String tag = "WorkOrderSearchActivity";
 	
 	
@@ -89,7 +98,69 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 		
 		tvWorkOrderType = (TextView) findViewById(R.id.tv_workOrderType);
 		pmSort = new PopupMenu(this, tvWorkOrderType);
-		getMenuInflater().inflate(R.menu.sort_way_menu, pmSort.getMenu());
+		getMenuInflater().inflate(R.menu.maintain_order_search_sort_menu, pmSort.getMenu());
+		menu = pmSort.getMenu();
+		
+		pmSort.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem mi) {
+				IUnfOvdOrderSortFragment unfOvdOrderFragment = null;
+				IFinishedOrderSortFragment finishedOrderFragment = null;
+				
+				switch (currentSelectedId) {
+					case 0:
+						unfOvdOrderFragment = (UnfinishedWorkOrderFragment) fragmentList.get(0);
+						break;
+					case 1:
+						finishedOrderFragment = (FinishedWorkOrderFragment) fragmentList.get(1);
+						break;
+					case 2:
+						unfOvdOrderFragment = (OverdueWorkOrderFragment) fragmentList.get(2);
+						break;
+					default:
+						break;
+				}
+				
+				switch (mi.getItemId()) {
+					case R.id.item_finalTimeIncrease:				
+						if (unfOvdOrderFragment != null) {
+							unfOvdOrderFragment.sortMaintainOrderByFinalTimeIncrease();
+						}
+						break;
+					case R.id.item_finalTimeDecrease:			
+						if (unfOvdOrderFragment != null) {
+							unfOvdOrderFragment.sortMaintainOrderByFinalTimeDecrease();
+						}
+						break;
+						
+					case R.id.item_sortByReceiveTime:	
+						if (unfOvdOrderFragment != null) {
+							unfOvdOrderFragment.sortMaintainOrderByReceivingTime();
+						}
+						break;
+						
+					case R.id.item_finishTimeIncrease:	
+						if (finishedOrderFragment != null) {
+							finishedOrderFragment.sortMaintainOrderByFinishedTimeIncrease();
+						}
+						break;
+						
+					case R.id.item_finishTimeDecrease:	
+						if (finishedOrderFragment != null) {
+							finishedOrderFragment.sortMaintainOrderByFinishedTimeDecrease();
+						}
+						break;
+						
+					default:
+						break;
+				}
+				
+				
+				return false;
+			}
+		});
+		
+		
 	
 		vpMaintainOrder = (ViewPager) findViewById(R.id.vp_maintainOrder);
 		// 设置ViewPager的预加载值，即让ViewPager维护以当前Fragment为中心，左右各2个Fragment
@@ -108,6 +179,25 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 			@Override
 			public void onClick(View v) {
 				pmSort.show();
+				switch (currentSelectedId) {
+					case 0:
+						menu.findItem(R.id.item_sortByFinalTime).setVisible(true);
+						menu.findItem(R.id.item_sortByReceiveTime).setVisible(true);
+						menu.findItem(R.id.item_sortByFinishTime).setVisible(false);
+						break;
+					case 1:
+						menu.findItem(R.id.item_sortByFinalTime).setVisible(false);
+						menu.findItem(R.id.item_sortByReceiveTime).setVisible(false);
+						menu.findItem(R.id.item_sortByFinishTime).setVisible(true);
+						break;
+					case 2:
+						menu.findItem(R.id.item_sortByFinalTime).setVisible(true);
+						menu.findItem(R.id.item_sortByReceiveTime).setVisible(true);
+						menu.findItem(R.id.item_sortByFinishTime).setVisible(false);
+						break;
+					default:
+						break;
+				}
 			}
 		});
 		
@@ -115,7 +205,7 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
 				switch (item.getItemId()) {
-				case R.id.item_sortByFinalTime:
+				case R.id.item_increase:
 					FragmentManager manager = getSupportFragmentManager();
 					List<Fragment> fragmentList = manager.getFragments();
 					for (Fragment fragment : fragmentList) {
@@ -159,14 +249,17 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 					case 0:
 						Log.d(tag, "case 0");
 						fragment = new UnfinishedWorkOrderFragment();
+						fragmentList.add(0, fragment);
 						break;
 					case 1:
 						Log.d(tag, "case 1");
 						fragment = new FinishedWorkOrderFragment();
+						fragmentList.add(1, fragment);
 						break;
 					case 2:
 						Log.d(tag, "case 2");
 						fragment = new OverdueWorkOrderFragment();
+						fragmentList.add(2, fragment);
 						break;
 					default:
 						break;
@@ -239,8 +332,4 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 		Intent actIntent = new Intent(context, MaintainOrderSearchActivity.class);
 		context.startActivity(actIntent);
 	}
-
-	/*public int getWorkOrderType() {
-		return workOrderType;
-	}*/
 }

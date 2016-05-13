@@ -69,5 +69,31 @@ public interface IWorkOrderBiz {
 			boolean isDone, String remark, String signOutAddress, 
 			String finishedItems, IWorkOrderFeedbackListener listener);
 	
-	void sortMaintainOrderByFinalTime(List<MaintainOrder> maintainOrderList);
+	/*
+	 * 工单排序
+	 */
+	
+	void sortMaintainOrderByFinalTimeIncrease(List<MaintainOrder> maintainOrderList);
+	
+	void sortMaintainOrderByFinalTimeDecrease(List<MaintainOrder> maintainOrderList);
+	
+	void sortFaultOrderByOccurredTimeIncrease(List<FaultOrder> faultOrderList);
+	
+	void sortFaultOrderByOccurredTimeDecrease(List<FaultOrder> faultOrderList);
+	
+	void sortMaintainOrderByReceivingTime(List<MaintainOrder> maintainOrderList);
+	
+	void sortFaultOrderByReceivingTime(List<FaultOrder> faultOrderList);
+	
+	void sortMaintainOrderByFinishedTimeIncrease(List<MaintainOrder> maintainOrderList);
+	
+	void sortMaintainOrderByFinishedTimeDecrease(List<MaintainOrder> maintainOrderList);
+	
+	void sortFaultOrderByFinishedTimeIncrease(List<FaultOrder> faultOrderList);
+	
+	void sortFaultOrderByFinishedTimeDecrease(List<FaultOrder> faultOrderList);
+	
+	void sortMaintainOrderBySignInTime(List<MaintainOrder> maintainOrderList);
+	
+	void sortFaultOrderBySignInTime(List<FaultOrder> faultOrderList);
 }

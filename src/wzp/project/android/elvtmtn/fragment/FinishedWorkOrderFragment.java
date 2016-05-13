@@ -25,6 +25,7 @@ import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderState;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 import wzp.project.android.elvtmtn.presenter.WorkOrderSearchPresenter;
+import wzp.project.android.elvtmtn.presenter.WorkOrderSortPresenter;
 import wzp.project.android.elvtmtn.util.MyApplication;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -51,7 +52,8 @@ import android.widget.Toast;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class FinishedWorkOrderFragment extends Fragment implements IWorkOrderSearchFragment {
+public class FinishedWorkOrderFragment extends Fragment 
+		implements IWorkOrderSearchFragment, IFinishedOrderSortFragment {
 	
 	private PullToRefreshListView ptrlvFinished;			// 提供下拉刷新功能的ListView
 	private LinearLayout linearTipInfo;						// 提示网络异常、或当前工单不存在的LinearLayout控件
@@ -69,6 +71,7 @@ public class FinishedWorkOrderFragment extends Fragment implements IWorkOrderSea
 	private List<FaultOrder> faultOrderList = new ArrayList<FaultOrder>();				// 故障工单集合
 	
 	private WorkOrderSearchPresenter workOrderSearchPresenter = new WorkOrderSearchPresenter(this);
+	private WorkOrderSortPresenter workOrderSortPresenter = new WorkOrderSortPresenter(this);
 	private Activity workOrderSearchActivity;
 	
 	private volatile int curPage = 1;				// 当前需要访问的页码
@@ -362,4 +365,25 @@ public class FinishedWorkOrderFragment extends Fragment implements IWorkOrderSea
 	public void setIsPtrlvHidden(boolean isPtrlvHidden) {
 		this.isPtrlvHidden = isPtrlvHidden;
 	}
+
+	@Override
+	public void sortMaintainOrderByFinishedTimeIncrease() {
+		workOrderSortPresenter.sortMaintainOrderByFinishedTimeIncrease(maintainOrderList);
+	}
+
+	@Override
+	public void sortMaintainOrderByFinishedTimeDecrease() {
+		workOrderSortPresenter.sortMaintainOrderByFinishedTimeDecrease(maintainOrderList);
+	}
+
+	@Override
+	public void sortFaultOrderByFixedTimeIncrease() {
+		workOrderSortPresenter.sortFaultOrderByFinishedTimeIncrease(faultOrderList);
+	}
+
+	@Override
+	public void sortFaultOrderByFixedTimeDecrease() {
+		workOrderSortPresenter.sortFaultOrderByFinishedTimeDecrease(faultOrderList);
+	}
+
 }

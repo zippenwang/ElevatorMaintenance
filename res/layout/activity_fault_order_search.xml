@@ -40,9 +40,10 @@
 	        android:layout_centerVertical="true"/>
         
 		<TextView 
+		    android:id="@+id/tv_workOrderType"
 	        android:layout_width="wrap_content"
 	        android:text="故障"
-	        android:layout_height="wrap_content"
+	        android:layout_height="match_parent"
 	        android:textSize="18sp"
 	        android:textColor="#FFFFFF"
 	        android:gravity="center"

@@ -23,4 +23,8 @@ public interface IWorkOrderSearchFragment {
 //	void hideLinearLayoutAndShowPtrlv();
 	
 	void setIsPtrlvHidden(boolean isPtrlvHidden);
+	
+//	void sortMaintainOrderByFinalTimeIncrease();
+//	
+//	void sortMaintainOrderByFinalTimeDecrease();
 }
