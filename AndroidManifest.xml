@@ -100,7 +100,8 @@
         </activity>
         
         <activity 
-            android:name="wzp.project.android.elvtmtn.activity.impl.MaintainOrderSearchActivity">
+            android:name="wzp.project.android.elvtmtn.activity.impl.MaintainOrderSearchActivity"
+            android:theme="@style/AppTheme">
         </activity>
         
         <activity 
@@ -149,6 +150,10 @@
         
         <activity 
             android:name="wzp.project.android.elvtmtn.activity.impl.TestActivity">
+        </activity>
+        
+        <activity 
+            android:name="wzp.project.android.elvtmtn.activity.impl.FaultHistorySearchActivity">
         </activity>
         
         <!-- 个推SDK配置开始 -->

@@ -534,7 +534,19 @@
 		            android:layout_weight="1"
 		            android:layout_height="wrap_content"
 		            android:background="@drawable/check_elevator_record_btn_bg"
-		            android:text="查询电梯档案" />
+		            android:text="查询电梯档案"
+		            android:textSize="13sp" />
+		        <TextView 
+		            android:layout_width="5dp"
+		            android:layout_height="wrap_content"/>
+		        <Button 
+		            android:id="@+id/btn_destNavi"
+		            android:layout_width="0dp"
+		            android:layout_weight="1"
+		            android:layout_height="wrap_content"
+		            android:background="@drawable/destination_navigation_btn_bg"
+		            android:text="目的地导航"
+		            android:textSize="13sp" />
 		        <TextView 
 		            android:layout_width="5dp"
 		            android:layout_height="wrap_content"/>
@@ -544,7 +556,8 @@
 		            android:layout_weight="1"
 		            android:layout_height="wrap_content"
 		            android:background="@drawable/receive_order_btn_bg"
-		            android:text="接单" />
+		            android:text="接单"
+		            android:textSize="13sp" />
 		        <Button 
 		            android:id="@+id/btn_cancelReceiveOrder"
 		            android:layout_width="0dp"
@@ -552,6 +565,7 @@
 		            android:layout_height="wrap_content"
 		             android:background="@drawable/receive_order_btn_bg"
 		            android:text="取消接单"
+		            android:textSize="13sp"
 		            android:visibility="gone" />
 		    </LinearLayout>
 		            

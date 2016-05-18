@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+     <!--点击背景-->  
+    <item android:state_pressed="true">  
+        <shape>  
+             <!--色值-->  
+            <solid android:color="#00C5CD" />  
+            <!--圆角-->  
+            <corners android:radius="10dp" />  
+        </shape>  
+    </item>  
+    
+    <!-- Disabled时的背景 -->
+    <item android:state_enabled="false">
+        <shape>  
+             <gradient android:startColor="#DDDDDD" android:endColor="#EEEEEE"/>  
+            <!--圆角-->  
+            <corners android:radius="10dp" />  
+        </shape>  
+    </item>
+    
+    <!--默认背景-->  
+    <item>  
+        <shape>  
+            <solid android:color="#40E0D0" />  
+            <corners android:radius="10dp" />  
+        </shape>  
+    </item>
+    
+
+</selector>

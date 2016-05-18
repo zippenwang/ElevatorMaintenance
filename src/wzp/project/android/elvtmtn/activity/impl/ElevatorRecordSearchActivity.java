@@ -126,6 +126,8 @@ public class ElevatorRecordSearchActivity extends BaseActivity implements IEleva
 			public void onClick(View v) {
 				relativeBase.setVisibility(View.GONE);
 				relativeSearch.setVisibility(View.VISIBLE);
+				edtCondition.setFocusable(true);
+				edtCondition.setSelectAllOnFocus(true);
 			}
 		});
 		

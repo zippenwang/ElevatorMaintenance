@@ -5,12 +5,33 @@ import java.util.Date;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
+import com.baidu.mapapi.SDKInitializer;
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
+import com.baidu.mapapi.navi.BaiduMapNavigation;
+import com.baidu.mapapi.navi.NaviPara;
+import com.baidu.mapapi.search.core.SearchResult;
+import com.baidu.mapapi.search.geocode.GeoCodeOption;
+import com.baidu.mapapi.search.geocode.GeoCodeResult;
+import com.baidu.mapapi.search.geocode.GeoCoder;
+import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -35,12 +56,14 @@ import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 import wzp.project.android.elvtmtn.presenter.WorkOrderReceivePresenter;
 import wzp.project.android.elvtmtn.util.MyApplication;
 
-public class MaintainOrderDetailActivity extends BaseActivity implements IWorkOrderDetailActivity {
+public class MaintainOrderDetailActivity extends BaseActivity 
+	implements IWorkOrderDetailActivity, OnGetGeoCoderResultListener {
 
 	private Button btnBack;
 	private Button btnQueryElevatorRecord;
 	private Button btnReceiveOrder;
 	private Button btnCancelReceiveOrder;
+	private Button btnDestNavi;								// 目的地导航按钮
 	private TextView tvWorkOrderId;
 	private TextView tvElevatorAddress;
 	private TextView tvMaintainType;
@@ -58,6 +81,8 @@ public class MaintainOrderDetailActivity extends BaseActivity implements IWorkOr
 	private TextView tvIsFinished;
 	private TextView tvRemark;
 	
+	private ProgressDialog progressDialog;
+	
 	
 	private WorkOrderReceivePresenter workOrderReceivePresenter 
 		= new WorkOrderReceivePresenter(this);
@@ -74,16 +99,51 @@ public class MaintainOrderDetailActivity extends BaseActivity implements IWorkOr
 	
 	private boolean isReceiveOrCancelOrder = false;
 	
+	private GeoCoder mSearch;
+	private LocationClient locationClient;
+	private MyLocationListener locationListener = new MyLocationListener();
+	
+	private LatLng elvtAddressLatLng;
+	private LatLng curAddressLatLng;
+	
+	private ConnectivityManager mConnectivityManager;
+	
 	private static final String tag = "WorkOrderDetailActivity";
 	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		// 在使用百度地图之前，一定要调用该方法，用于初始化参数！！
+		SDKInitializer.initialize(getApplicationContext());
 		setContentView(R.layout.activity_maintain_order_detail);
 		
 		initData();
 		initWidget();
+	}
+	
+	@Override
+	protected void onStart() {
+		Log.d(tag, "开启定位功能");
+		if (locationClient != null
+				&& !locationClient.isStarted())
+		{
+			locationClient.start();
+		}
+		
+		super.onStart();
+	}
+
+	@Override
+	protected void onStop() {
+		Log.d(tag, "关闭定位功能");
+		if (locationClient != null
+				&& locationClient.isStarted()) {
+			locationClient.stop();
+		}
+//		BaiduMapNavigation.finish(this);
+		super.onStop();
 	}
 	
 	private void initData() {
@@ -99,7 +159,15 @@ public class MaintainOrderDetailActivity extends BaseActivity implements IWorkOr
 		employeeId = preferences.getLong("employeeId", -1);
 		if (-1 == employeeId) {
 			throw new IllegalArgumentException("员工id有误");
+		}		
+		
+		if (workOrderState != WorkOrderState.FINISHED) {
+			initLocationClient();
+			mSearch = GeoCoder.newInstance();
+			mSearch.setOnGetGeoCodeResultListener(this);
 		}
+		
+		mConnectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 	}
 	
 	private void initWidget() {
@@ -116,14 +184,21 @@ public class MaintainOrderDetailActivity extends BaseActivity implements IWorkOr
 		btnQueryElevatorRecord = (Button) findViewById(R.id.btn_queryElevatorRecord);
 		btnReceiveOrder = (Button) findViewById(R.id.btn_receiveOrder);
 		btnCancelReceiveOrder = (Button) findViewById(R.id.btn_cancelReceiveOrder);
+		btnDestNavi = (Button) findViewById(R.id.btn_destNavi);
 		
+		progressDialog = new ProgressDialog(this);
+		
+		// btnDestNavi按钮需要等待获取了电梯对应的经纬度之后，才能起作用
+		btnDestNavi.setEnabled(false);		
 
 		/*
 		 * 为未完成、已完成、超期的保养工单均需要显示的控件设置数值
 		 */
 //		tvWorkOrderId.setText(String.valueOf(maintainOrder.getId()));
 		tvWorkOrderId.setText(String.valueOf(maintainOrder.getNo()));
-		tvElevatorAddress.setText(maintainOrder.getElevatorRecord().getAddress().trim());
+		
+		String elevatorAddress = maintainOrder.getElevatorRecord().getAddress().trim();
+		tvElevatorAddress.setText(elevatorAddress);		
 		tvMaintainType.setText(maintainOrder.getMaintainType().getName().trim());
 		tvMaintainItem.setText("");
 		List<MaintainItem> items = maintainOrder.getMaintainType().getMaintainItems();
@@ -136,12 +211,6 @@ public class MaintainOrderDetailActivity extends BaseActivity implements IWorkOr
 		}
 		
 		tvFinalTime.setText(sdf.format(maintainOrder.getFinalTime()));
-		
-		/*if (maintainOrder.getEmployee() != null) {
-			Log.i(tag, "Employee不为空");			
-		} else {
-			Log.i(tag, "Employee为空");
-		}*/
 		
 		// 接单时间若不为空，对应的Employee实例也一定不为空
 		if (maintainOrder.getReceivingTime() != null) {
@@ -180,6 +249,8 @@ public class MaintainOrderDetailActivity extends BaseActivity implements IWorkOr
 			linearFinished.setVisibility(View.VISIBLE);
 			btnReceiveOrder.setVisibility(View.GONE);
 			btnCancelReceiveOrder.setVisibility(View.GONE);
+			btnDestNavi.setVisibility(View.GONE);
+			btnQueryElevatorRecord.setTextSize(18);
 			
 			if (maintainOrder.getEmployee() != null) {
 				if (!TextUtils.isEmpty(maintainOrder.getEmployee().getName())) {
@@ -213,8 +284,9 @@ public class MaintainOrderDetailActivity extends BaseActivity implements IWorkOr
 
 			tvIsFinished.setText(maintainOrder.getFinished() ? "已修好" : "未修好");
 			tvRemark.setText(maintainOrder.getRemark());
+		} else {
+			mSearch.geocode(new GeoCodeOption().city("").address(elevatorAddress));
 		}
-		
 		
 		btnBack.setOnClickListener(new OnClickListener() {
 			@Override
@@ -257,6 +329,47 @@ public class MaintainOrderDetailActivity extends BaseActivity implements IWorkOr
 
 				workOrderReceivePresenter.cancelReceiveOrder(WorkOrderType.MAINTAIN_ORDER, 
 						maintainOrder.getId(), employeeId);
+			}
+		});
+		
+		btnDestNavi.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				NetworkInfo networkInfo = mConnectivityManager.getActiveNetworkInfo(); 
+				if (networkInfo == null) { 
+					Toast.makeText(MaintainOrderDetailActivity.this, "网络异常，检查网络后重试", Toast.LENGTH_SHORT).show();
+					return;
+				} 
+				
+				showProgressDialog();
+				
+				NaviPara naviPara = new NaviPara();
+				naviPara.startPoint = curAddressLatLng;
+				naviPara.startName = "从这里开始";
+				naviPara.endPoint = elvtAddressLatLng;
+				naviPara.endName = "到这里结束";				
+				
+				try {
+					BaiduMapNavigation.openBaiduMapNavi(naviPara, 
+							MaintainOrderDetailActivity.this);
+				} catch (BaiduMapAppNotSupportNaviException e) {
+					closeProgressDialog();
+					Log.e(tag, Log.getStackTraceString(e));
+					AlertDialog.Builder builder = new AlertDialog.Builder(MaintainOrderDetailActivity.this);
+					builder.setMessage("您尚未安装百度地图app或app版本过低，请安装或更新app后重试 ！");
+					builder.setTitle("提示消息");
+					builder.setCancelable(true);
+					builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							
+						}
+					});
+					builder.create().show();
+					return;
+				}
+
+				closeProgressDialog();
 			}
 		});
 	}
@@ -319,6 +432,42 @@ public class MaintainOrderDetailActivity extends BaseActivity implements IWorkOr
 		});
 	}
 	
+	private class MyLocationListener implements BDLocationListener {
+		@Override
+		public void onReceiveLocation(BDLocation location) {
+			Log.d(tag, "进入MyLocationListener");
+			
+			// MapView销毁后不再处理新接收的位置
+			if (location == null)
+				return;
+			
+			/*NetworkInfo networkInfo = mConnectivityManager.getActiveNetworkInfo(); 
+			if (networkInfo == null) { 
+				Toast.makeText(MaintainOrderDetailActivity.this, 
+						"网络异常，定位失败，检查网络后重试", Toast.LENGTH_SHORT).show();
+				return;
+			} */
+			
+			curAddressLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+			Log.i(tag, "当前位置，纬度：" + curAddressLatLng.latitude 
+					+ ",经度：" + curAddressLatLng.longitude);
+		}
+	}
+	
+	private void initLocationClient() {		
+		locationClient = new LocationClient(this);
+		
+		// 利用 LocationClientOption类为LocationClient设定参数
+		LocationClientOption option = new LocationClientOption();
+		option.setOpenGps(true);		// 打开gps导航
+		option.setCoorType("bd09ll"); 	// 设置坐标类型
+		option.setScanSpan(2000);		// 扫描的时间间隔为2s
+		
+		locationClient.setLocOption(option);
+		
+		locationClient.registerLocationListener(locationListener);
+	}
+	
 	public static void myStartActivity(Context context, 
 			int workOrderState, String jsonWorkOrder) {
 		Intent actIntent = new Intent(context, MaintainOrderDetailActivity.class);
@@ -335,4 +484,43 @@ public class MaintainOrderDetailActivity extends BaseActivity implements IWorkOr
 		fragment.startActivityForResult(actIntent, requestCode);
 	}
 
+	@Override
+	public void onGetGeoCodeResult(GeoCodeResult result) {
+		if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
+			Toast.makeText(this, "抱歉，未能找到结果", Toast.LENGTH_LONG)
+					.show();
+			return;
+		}
+		
+		Log.d(tag, "成功编码地理位置");
+		
+		elvtAddressLatLng = null;
+		elvtAddressLatLng = result.getLocation();
+		
+		Log.i(tag, "电梯地址,纬度：" + elvtAddressLatLng.latitude + ",经度：" + elvtAddressLatLng.longitude);
+		
+		
+		btnDestNavi.setEnabled(true);
+	}
+
+	@Override
+	public void onGetReverseGeoCodeResult(ReverseGeoCodeResult result) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void showProgressDialog() {
+		progressDialog.setTitle("正在启动导航功能，请稍后...");
+		progressDialog.setMessage("Loading...");
+		progressDialog.setCancelable(false);
+		
+		progressDialog.show();
+	}
+	
+	public void closeProgressDialog() {
+		if (progressDialog != null
+				&& progressDialog.isShowing()) {
+			progressDialog.dismiss();
+		}
+	}
 }

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
@@ -16,5 +16,16 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+    
+    <!-- PopupMenu theme -->
+    <style name="Theme.PopupMenu" 
+       parent="@android:style/Widget.Holo.Light.ListPopupWindow">
+       <item name="android:popupBackground">@color/popupMenuBgColor</item>
+	</style>
+	
+    <style name="Theme.InCallScreen"
+        parent="AppTheme">
+        <item name="android:popupMenuStyle">@style/Theme.PopupMenu</item>
+	</style>
 
 </resources>

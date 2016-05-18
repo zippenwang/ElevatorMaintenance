@@ -10,6 +10,7 @@ public class ElevatorRecord {
 	private String address;					// 设备地址
 	private String unit;					// 使用单位
 	private String buildingNumber;			// 所在楼号
+	private String elevatorNumger;			// 电梯中文编号
 	private String type;					// 电梯类型
 	private String modelNumber;				// 型号
 	private Integer maxWeight;				// 载重
@@ -49,6 +50,12 @@ public class ElevatorRecord {
 	}
 	public void setBuildingNumber(String buildingNumber) {
 		this.buildingNumber = buildingNumber;
+	}
+	public String getElevatorNumger() {
+		return elevatorNumger;
+	}
+	public void setElevatorNumger(String elevatorNumger) {
+		this.elevatorNumger = elevatorNumger;
 	}
 	public String getType() {
 		return type;

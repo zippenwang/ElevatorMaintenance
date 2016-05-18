@@ -9,4 +9,6 @@
 	<color name="actionBarNormalColor">#484E61</color>
 	<color name="actionBarFocusedColor">#000000</color>
 	<color name="actionBarPressedColor">#000000</color>
+	
+	<color name="popupMenuBgColor">#484E61</color>
 </resources>

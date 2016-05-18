@@ -21,16 +21,20 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 import wzp.project.android.elvtmtn.R;
@@ -38,7 +42,12 @@ import wzp.project.android.elvtmtn.activity.IEmployeeSignInActivity;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
+import wzp.project.android.elvtmtn.fragment.FinishedWorkOrderFragment;
+import wzp.project.android.elvtmtn.fragment.IFinishedOrderSortFragment;
+import wzp.project.android.elvtmtn.fragment.IUnfOvdOrderSortFragment;
 import wzp.project.android.elvtmtn.fragment.IWorkOrderSearchFragment;
+import wzp.project.android.elvtmtn.fragment.OverdueWorkOrderFragment;
+import wzp.project.android.elvtmtn.fragment.UnfinishedWorkOrderFragment;
 import wzp.project.android.elvtmtn.helper.adapter.FaultOrderSignInAdapter;
 import wzp.project.android.elvtmtn.helper.adapter.MaintainOrderSignInAdapter;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
@@ -57,6 +66,9 @@ public class EmployeeSignInActivity extends BaseActivity
 	private TextView tvTipInfo;								// 当ListView中传入的List为空，该控件用于提示数据为空
 	private Button btnRefreshAgain;							// 重试按钮
 	private ProgressDialog progressDialog;					// 进度对话框
+	
+	private PopupMenu pmSort;
+	private Menu menu;
 	
 	private int workOrderType;
 	private ArrayAdapter<?> mAdapter;
@@ -236,6 +248,35 @@ public class EmployeeSignInActivity extends BaseActivity
 					EmployeeSignInDetailActivity.myStartActivityForResult(EmployeeSignInActivity.this, REQUEST_REFRESH, 
 							workOrderType, JSON.toJSONString(faultOrderList.get(listIndex)));
 				}
+			}
+		});
+		
+		pmSort = new PopupMenu(this, tvWorkOrderType);
+		getMenuInflater().inflate(R.menu.order_sign_in_sort_menu, pmSort.getMenu());
+		
+		pmSort.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem mi) {				
+				switch (mi.getItemId()) {
+					case R.id.item_sortBySignInTime:
+						if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
+							workOrderSortPresenter.sortMaintainOrderBySignInTime(maintainOrderList);
+						} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
+							workOrderSortPresenter.sortFaultOrderBySignInTime(faultOrderList);
+						}
+						break;
+						
+					default:
+						break;
+				}
+				return false;
+			}
+		});
+		
+		tvWorkOrderType.setOnClickListener(new OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+				pmSort.show();
 			}
 		});
 		

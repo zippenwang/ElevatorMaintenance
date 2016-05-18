@@ -138,7 +138,7 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 		btnSignIn = (Button) findViewById(R.id.btn_signIn);
 		
 		progressDialog = new ProgressDialog(this);
-		
+				
 		if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
 			tvWorkOrderType.setText("保养工单 ");
 //			tvWorkOrderId.setText(String.valueOf(maintainOrder.getId()));
@@ -162,6 +162,8 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 				
 				mSearch = GeoCoder.newInstance();
 				mSearch.setOnGetGeoCodeResultListener(this);
+//				showProgressDialog();
+//				mSearch.geocode(new GeoCodeOption().city("").address(elevatorAddress));
 				
 				// 初始化用于定位的类LocationClient的对象
 				initLocationClient();
@@ -189,6 +191,8 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 				
 				mSearch = GeoCoder.newInstance();
 				mSearch.setOnGetGeoCodeResultListener(this);
+//				showProgressDialog();
+//				mSearch.geocode(new GeoCodeOption().city("").address(elevatorAddress));
 				
 				// 初始化用于定位的类LocationClient的对象
 				initLocationClient();
@@ -218,14 +222,23 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 		btnSignIn.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-//				Toast.makeText(EmployeeSignInDetailActivity.this, "一键签到", Toast.LENGTH_SHORT).show();
 				if (mSearch == null) {
 					throw new IllegalArgumentException("mSearch为null");
 				}
 				
-				if (TextUtils.isEmpty(currentAddress)) {
-					Toast.makeText(EmployeeSignInDetailActivity.this, "百度地图定位失败，无法进行签到操作，\n检查网络后重试", Toast.LENGTH_SHORT).show();
-					Log.e(tag, "currentAddress is null");
+				if (curAddressLatLng == null) {
+					Toast.makeText(EmployeeSignInDetailActivity.this, 
+							"百度地图定位失败，无法进行\n" +
+							"签到操作，检查网络后重试", 
+							Toast.LENGTH_SHORT).show();
+					Log.e(tag, "curAddressLatLng is null");
+					return;
+				}
+				
+				if (elvtAddressLatLng == null) {
+					Toast.makeText(EmployeeSignInDetailActivity.this, 
+							"解析电梯地址失败，刷新网络后重试", Toast.LENGTH_SHORT).show();
+					Log.e(tag, "elvtAddressLatLng is null");
 					return;
 				}
 								
@@ -237,10 +250,16 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 				
 				// mSearch在编码过程中，不允许同时执行解码的操作，很容易造成空指针异常，因此
 				// 在这个过程中，先将解码的操作关闭，编码结束后，再打开允许解码的操作。
-//				btnRefreshCurAddress.setEnabled(false);
-				ibtnRefreshCurAddress.setEnabled(false);
+				/*ibtnRefreshCurAddress.setEnabled(false);
 				showProgressDialog();
-				mSearch.geocode(new GeoCodeOption().city("").address(elevatorAddress));
+				mSearch.geocode(new GeoCodeOption().city("").address(elevatorAddress));*/
+				
+				// 误差范围定为200米
+				if (isInDistanceScope(elvtAddressLatLng, curAddressLatLng, 200)) {
+					employeeSignInPresenter.signIn(workOrderType, workOrderId, currentAddress);			
+				} else {
+					Toast.makeText(EmployeeSignInDetailActivity.this, "超出误差范围，签到失败", Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
 	}
@@ -363,29 +382,6 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 		elvtAddressLatLng = result.getLocation();
 		
 		Log.i(tag, "电梯地址,纬度：" + elvtAddressLatLng.latitude + ",经度：" + elvtAddressLatLng.longitude);
-		
-		if (elvtAddressLatLng == null
-				|| curAddressLatLng == null) {
-//			throw new IllegalArgumentException("电梯经纬度或当前经纬度为null");
-			Toast.makeText(EmployeeSignInDetailActivity.this, "百度地图定位失败，检查网络后重试", Toast.LENGTH_SHORT).show();
-			Log.e(tag, "电梯经纬度或当前经纬度为null");
-			return;
-		}
-		
-		// 误差范围定为200米
-		if (isInDistanceScope(elvtAddressLatLng, curAddressLatLng, 200)) {
-			employeeSignInPresenter.signIn(workOrderType, workOrderId, currentAddress);			
-		} else {
-			Toast.makeText(EmployeeSignInDetailActivity.this, "超出误差范围，签到失败", Toast.LENGTH_SHORT).show();
-		}
-		
-		runOnUiThread(new Runnable() {			
-			@Override
-			public void run() {
-//				btnRefreshCurAddress.setEnabled(true);
-				ibtnRefreshCurAddress.setEnabled(true);
-			}
-		});
 		closeProgressDialog();
 	}
 
@@ -402,7 +398,8 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 		curAddressLatLng = result.getLocation();
 		currentAddress = result.getAddress();
 		tvCurrentAddress.setText(currentAddress);
-		closeProgressDialog();
+		
+		mSearch.geocode(new GeoCodeOption().city("").address(elevatorAddress));
 	}
 
 	@Override
@@ -414,7 +411,6 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 				Toast.makeText(EmployeeSignInDetailActivity.this, "签到成功", Toast.LENGTH_SHORT).show();
 				btnSignIn.setEnabled(false);
 				tvSignInState.setText("已签到");
-//				btnRefreshCurAddress.setVisibility(View.GONE);
 				ibtnRefreshCurAddress.setVisibility(View.GONE);
 				locationClient.unRegisterLocationListener(locationListener);
 			}

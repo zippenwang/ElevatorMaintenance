@@ -49,6 +49,7 @@
 	<string name="elevatorNumber">电梯编码</string>
 	<string name="modelNumber">电梯型号</string>
 	<string name="elevatorType">电梯类型</string>
+	<string name="elevatorDescription">电梯描述</string>
 	<string name="maxWeight">载重</string>
 	<string name="speed">速度</string>
 	<string name="manufacturingDate">生产日期</string>

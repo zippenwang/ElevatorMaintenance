@@ -129,6 +129,36 @@
 		            android:text="001"
 		            android:textSize="@dimen/work_order_detail" />        
 		    </LinearLayout>
+		    
+		    <!-- 电梯描述 -->
+		    <LinearLayout 
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">        
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/elevatorDescription"
+		            android:textSize="@dimen/work_order_detail"/>
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:textSize="@dimen/work_order_detail"
+		            android:layout_marginRight="5dp" />
+		        <TextView 
+		            android:id="@+id/tv_elevatorDescription"
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="厦大学生公寓2号楼4号梯"
+		            android:textSize="@dimen/work_order_detail" />        
+		    </LinearLayout>
 		
 		    <!-- 载重 -->
 		    <LinearLayout 
@@ -368,6 +398,23 @@
 		            android:gravity="left"
 		            android:text="001"
 		            android:textSize="@dimen/work_order_detail" />        
+		    </LinearLayout>
+		    
+		    
+		    <LinearLayout 
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:layout_marginBottom="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp"
+		        android:gravity="center">
+		        <Button 
+		            android:id="@+id/btn_queryFaultHistory"
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:background="@drawable/check_elevator_record_btn_bg"
+		            android:text="查询故障历史" />
 		    </LinearLayout>
     	</LinearLayout>
     </ScrollView>

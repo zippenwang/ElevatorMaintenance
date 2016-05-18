@@ -24,6 +24,7 @@ public class ElevatorRecordDetailActivity extends BaseActivity {
 	private TextView tvElevatorNumber;
 	private TextView tvModelNumber;
 	private TextView tvElevatorType;
+	private TextView tvElevatorDescription;
 	private TextView tvMaxWeight;
 	private TextView tvSpeed;
 	private TextView tvManufacturingDate;
@@ -32,6 +33,7 @@ public class ElevatorRecordDetailActivity extends BaseActivity {
 	private TextView tvBuildingNumber;
 	private TextView tvUserUnit;
 	private TextView tvPhone;
+	private Button btnQueryFaultHistory;
 	
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
 	
@@ -52,6 +54,7 @@ public class ElevatorRecordDetailActivity extends BaseActivity {
 		tvElevatorNumber = (TextView) findViewById(R.id.tv_elevatorNumber);
 		tvModelNumber = (TextView) findViewById(R.id.tv_modelNumber);
 		tvElevatorType = (TextView) findViewById(R.id.tv_elevatorType);
+		tvElevatorDescription = (TextView) findViewById(R.id.tv_elevatorDescription);
 		tvMaxWeight = (TextView) findViewById(R.id.tv_maxWeight);
 		tvSpeed = (TextView) findViewById(R.id.tv_speed);
 		tvManufacturingDate = (TextView) findViewById(R.id.tv_manufacturingDate);
@@ -60,12 +63,21 @@ public class ElevatorRecordDetailActivity extends BaseActivity {
 		tvBuildingNumber = (TextView) findViewById(R.id.tv_buildingNumber);
 		tvUserUnit = (TextView) findViewById(R.id.tv_userUnit);
 		tvPhone = (TextView) findViewById(R.id.tv_phone);
-		
 		btnBack = (Button) findViewById(R.id.btn_back);
+		btnQueryFaultHistory = (Button) findViewById(R.id.btn_queryFaultHistory);
+		
+		
 		btnBack.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				finish();
+			}
+		});
+		
+		btnQueryFaultHistory.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				FaultHistorySearchActivity.myStartActivivty(ElevatorRecordDetailActivity.this);
 			}
 		});
 	}
@@ -90,6 +102,9 @@ public class ElevatorRecordDetailActivity extends BaseActivity {
 			tvElevatorType.setText("暂无该信息");
 			tvElevatorType.setTextColor(Color.RED);
 		}
+		tvElevatorDescription.setText(elevatorRecord.getUnit() 
+				+ elevatorRecord.getBuildingNumber() + "号楼" 
+				+ elevatorRecord.getElevatorNumger() + "号梯");
 		if (elevatorRecord.getMaxWeight() != null) {
 			tvMaxWeight.setText(String.valueOf(elevatorRecord.getMaxWeight()));
 		} else {

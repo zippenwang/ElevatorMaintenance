@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item 
-        android:id="@+id/item_sortByReceiveTime"
+        android:id="@+id/item_sortBySignInTime"
         android:title="按签到日期排序"/>
 
 </menu>
