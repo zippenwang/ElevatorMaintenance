@@ -107,6 +107,7 @@ public class MaintainOrderDetailActivity extends BaseActivity
 	private LatLng curAddressLatLng;
 	
 	private ConnectivityManager mConnectivityManager;
+	private boolean isNetworkActive = true;
 	
 	private static final String tag = "WorkOrderDetailActivity";
 	
@@ -159,15 +160,21 @@ public class MaintainOrderDetailActivity extends BaseActivity
 		employeeId = preferences.getLong("employeeId", -1);
 		if (-1 == employeeId) {
 			throw new IllegalArgumentException("员工id有误");
-		}		
+		}
 		
+		mConnectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		
+		NetworkInfo networkInfo = mConnectivityManager.getActiveNetworkInfo(); 
+		if (networkInfo == null) { 
+			Toast.makeText(MaintainOrderDetailActivity.this, "网络异常，检查网络后重试", Toast.LENGTH_SHORT).show();
+			isNetworkActive = false;
+			return;
+		}
 		if (workOrderState != WorkOrderState.FINISHED) {
 			initLocationClient();
 			mSearch = GeoCoder.newInstance();
 			mSearch.setOnGetGeoCodeResultListener(this);
 		}
-		
-		mConnectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 	}
 	
 	private void initWidget() {
@@ -284,7 +291,7 @@ public class MaintainOrderDetailActivity extends BaseActivity
 
 			tvIsFinished.setText(maintainOrder.getFinished() ? "已修好" : "未修好");
 			tvRemark.setText(maintainOrder.getRemark());
-		} else {
+		} else if (isNetworkActive) {
 			mSearch.geocode(new GeoCodeOption().city("").address(elevatorAddress));
 		}
 		
@@ -339,7 +346,23 @@ public class MaintainOrderDetailActivity extends BaseActivity
 				if (networkInfo == null) { 
 					Toast.makeText(MaintainOrderDetailActivity.this, "网络异常，检查网络后重试", Toast.LENGTH_SHORT).show();
 					return;
-				} 
+				}
+				
+				if (curAddressLatLng == null) {
+					Toast.makeText(MaintainOrderDetailActivity.this, 
+							"百度地图定位失败，无法进行\n" +
+							"签到操作，检查网络后重试", 
+							Toast.LENGTH_SHORT).show();
+					Log.e(tag, "curAddressLatLng is null");
+					return;
+				}
+				
+				if (elvtAddressLatLng == null) {
+					Toast.makeText(MaintainOrderDetailActivity.this, 
+							"解析电梯地址失败，刷新网络后重试", Toast.LENGTH_SHORT).show();
+					Log.e(tag, "elvtAddressLatLng is null");
+					return;
+				}
 				
 				showProgressDialog();
 				
@@ -441,13 +464,6 @@ public class MaintainOrderDetailActivity extends BaseActivity
 			if (location == null)
 				return;
 			
-			/*NetworkInfo networkInfo = mConnectivityManager.getActiveNetworkInfo(); 
-			if (networkInfo == null) { 
-				Toast.makeText(MaintainOrderDetailActivity.this, 
-						"网络异常，定位失败，检查网络后重试", Toast.LENGTH_SHORT).show();
-				return;
-			} */
-			
 			curAddressLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 			Log.i(tag, "当前位置，纬度：" + curAddressLatLng.latitude 
 					+ ",经度：" + curAddressLatLng.longitude);
@@ -464,7 +480,7 @@ public class MaintainOrderDetailActivity extends BaseActivity
 		option.setScanSpan(2000);		// 扫描的时间间隔为2s
 		
 		locationClient.setLocOption(option);
-		
+
 		locationClient.registerLocationListener(locationListener);
 	}
 	

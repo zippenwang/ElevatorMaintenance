@@ -71,24 +71,26 @@
         
 		<EditText 
 		    android:id="@+id/edt_condition"
-            android:layout_width="200dp"
+            android:layout_width="240dp"
             android:layout_height="45dp"
             android:layout_centerInParent="true"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:hint="输入查询信息..."
             android:textColor="#FFFFFF"
-            android:drawableLeft="@android:drawable/ic_menu_search" />
-	
-		<Button
-		    android:id="@+id/btn_searchByCondition"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:text="搜索"
-		    android:textColor="#FFFFFF"
-		    android:layout_alignParentRight="true"
-		    android:layout_marginRight="5dp"
-            android:layout_centerVertical="true" />
+            android:drawableLeft="@android:drawable/ic_menu_search" />	
+
+		<ImageButton 
+            android:id="@+id/ibtn_searchByCondition"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/elevator_record_search_by_condition"
+            android:scaleType="centerInside"
+            android:background="@drawable/search_elevator_record_ibtn_bg"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+            android:layout_centerVertical="true"/>
     </RelativeLayout>
 	
 	<com.handmark.pulltorefresh.library.PullToRefreshListView  
@@ -115,6 +117,7 @@
             android:id="@+id/btn_refreshAgain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/try_again_btn_bg"
             android:text="重试"

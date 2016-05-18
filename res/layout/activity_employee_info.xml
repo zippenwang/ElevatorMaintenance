@@ -70,7 +70,7 @@
 		            android:textSize="@dimen/work_order_detail" />        
 		    </LinearLayout>
 		
-		    <!-- 姓名 -->
+		    <!-- 员工姓名 -->
 		    <LinearLayout 
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
@@ -96,11 +96,35 @@
 		            android:layout_weight="3"
 		            android:layout_height="wrap_content"
 		            android:gravity="left"
-		            android:singleLine="true"
-		            android:ellipsize="marquee"
-		            android:marqueeRepeatLimit="marquee_forever"
-		            android:focusableInTouchMode="true"
-		            android:focusable="true"
+		            android:textSize="@dimen/work_order_detail" />   
+		    </LinearLayout>
+		    
+		    <!-- 联系方式 -->
+		    <LinearLayout 
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp">        
+		        <TextView 
+		            android:layout_width="0dp"
+		            android:layout_weight="2"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
+		            android:text="@string/employeePhone"
+		            android:textSize="@dimen/work_order_detail" />
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/:"
+		            android:layout_marginRight="5dp"
+		            android:textSize="@dimen/work_order_detail" />
+		        <TextView 
+		            android:id="@+id/tv_phone"
+		            android:layout_width="0dp"
+		            android:layout_weight="3"
+		            android:layout_height="wrap_content"
+		            android:gravity="left"
 		            android:textSize="@dimen/work_order_detail" />   
 		    </LinearLayout>
 		    

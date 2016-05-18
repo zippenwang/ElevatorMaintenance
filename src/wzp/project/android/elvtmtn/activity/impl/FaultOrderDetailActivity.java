@@ -105,6 +105,7 @@ public class FaultOrderDetailActivity extends BaseActivity
 	private LatLng curAddressLatLng;
 	
 	private ConnectivityManager mConnectivityManager;
+	private boolean isNetworkActive = true;
 	
 	private static final String tag = "WorkOrderDetailActivity";
 	
@@ -158,13 +159,20 @@ public class FaultOrderDetailActivity extends BaseActivity
 			throw new IllegalArgumentException("员工id有误");
 		}
 		
+		mConnectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		
+		NetworkInfo networkInfo = mConnectivityManager.getActiveNetworkInfo(); 
+		if (networkInfo == null) {
+			isNetworkActive = false;
+			Toast.makeText(FaultOrderDetailActivity.this, 
+					"网络异常，检查网络后重试", Toast.LENGTH_SHORT).show();
+			return;
+		} 
 		if (workOrderState != WorkOrderState.FINISHED) {
 			mSearch = GeoCoder.newInstance();
 			mSearch.setOnGetGeoCodeResultListener(this);
 			initLocationClient();
 		}
-		
-		mConnectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 	}
 	
 	private void initWidget() {
@@ -197,12 +205,6 @@ public class FaultOrderDetailActivity extends BaseActivity
 		tvFaultOccuredTime.setText(sdf.format(faultOrder.getOccuredTime()));
 		tvFaultDescription.setText(faultOrder.getDescription());
 		
-		/*if (faultOrder.getEmployee() != null) {
-			Log.i(tag, "Employee不为空");			
-		} else {
-			Log.i(tag, "Employee为空");
-		}*/
-		
 		if (faultOrder.getReceivingTime() != null) {
 			tvReceiveState.setText("已接单");
 			tvReceiveState.setTextColor(Color.BLACK);
@@ -210,7 +212,6 @@ public class FaultOrderDetailActivity extends BaseActivity
 			tvReceiveTime.setText(sdf2.format(faultOrder.getReceivingTime()));
 			// 正常情况下，receivingTime为null，employee也一定为空
 			if (faultOrder.getEmployee() != null) {
-//				Log.i(tag, "进入if");
 				if (employeeId == faultOrder.getEmployee().getId()) {
 					btnReceiveOrder.setVisibility(View.GONE);
 					btnCancelReceiveOrder.setVisibility(View.VISIBLE);
@@ -282,8 +283,7 @@ public class FaultOrderDetailActivity extends BaseActivity
 			tvFaultReason.setText(faultOrder.getReason().trim());
 			tvIsFixed.setText(faultOrder.getFixed() ? "已修好" : "未修好");
 			tvRemark.setText(faultOrder.getRemark());
-		} else {
-			Log.i(tag, elevatorAddress);
+		} else if (isNetworkActive) {
 			mSearch.geocode(new GeoCodeOption().city("").address(elevatorAddress));
 		}
 		
@@ -345,6 +345,22 @@ public class FaultOrderDetailActivity extends BaseActivity
 							"网络异常，检查网络后重试", Toast.LENGTH_SHORT).show();
 					return;
 				} 
+				
+				if (curAddressLatLng == null) {
+					Toast.makeText(FaultOrderDetailActivity.this, 
+							"百度地图定位失败，无法进行\n" +
+							"签到操作，检查网络后重试", 
+							Toast.LENGTH_SHORT).show();
+					Log.e(tag, "curAddressLatLng is null");
+					return;
+				}
+				
+				if (elvtAddressLatLng == null) {
+					Toast.makeText(FaultOrderDetailActivity.this, 
+							"解析电梯地址失败，刷新网络后重试", Toast.LENGTH_SHORT).show();
+					Log.e(tag, "elvtAddressLatLng is null");
+					return;
+				}
 				
 				showProgressDialog();
 				

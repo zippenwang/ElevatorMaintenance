@@ -14,6 +14,9 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -47,7 +50,7 @@ public class ElevatorRecordSearchActivity extends BaseActivity implements IEleva
 	private RelativeLayout relativeSearch;
 	private ImageButton ibtnBackToPrevious;
 	private EditText edtCondition;
-	private Button btnSearchByCondition;
+	private ImageButton ibtnSearchByCondition;
 	private PullToRefreshListView ptrlvElevatorRecord;
 	private LinearLayout linearTipInfo;						// 提示网络异常、或当前工单不存在的LinearLayout控件
 	private TextView tvTipInfo;								// 当ListView中传入的List为空，该控件用于提示数据为空
@@ -70,6 +73,13 @@ public class ElevatorRecordSearchActivity extends BaseActivity implements IEleva
 	private long groupId;
 	
 	private int listIndex;
+	// 记录当前PullToRefreshListView控件显示的是否是下拉刷新的提示消息
+	private boolean isShowPullDownInfo = true;
+	
+	private static final int ALL_ELEVATOR_RECORDS = 0x50;
+	private static final int ELEVATOR_RECORDS_BY_CONDITION = 0x55;
+	private int currentSearchMode = ALL_ELEVATOR_RECORDS;
+	private String searchCondition = null;
 	
 	private static final String tag = "ElevatorRecordSearchActivity";
 	
@@ -108,7 +118,7 @@ public class ElevatorRecordSearchActivity extends BaseActivity implements IEleva
 		relativeSearch = (RelativeLayout) findViewById(R.id.relative_search);
 		ibtnBackToPrevious = (ImageButton) findViewById(R.id.ibtn_backToPrevious);
 		edtCondition = (EditText) findViewById(R.id.edt_condition);
-		btnSearchByCondition = (Button) findViewById(R.id.btn_searchByCondition);
+		ibtnSearchByCondition = (ImageButton) findViewById(R.id.ibtn_searchByCondition);
 		ptrlvElevatorRecord = (PullToRefreshListView) findViewById(R.id.ptrlv_elevatorRecord);
 		linearTipInfo = (LinearLayout) findViewById(R.id.linear_tipInfo);
 		tvTipInfo = (TextView) findViewById(R.id.tv_tipInfo);
@@ -126,6 +136,7 @@ public class ElevatorRecordSearchActivity extends BaseActivity implements IEleva
 			public void onClick(View v) {
 				relativeBase.setVisibility(View.GONE);
 				relativeSearch.setVisibility(View.VISIBLE);
+				// 设置edtCondition没用，原因暂不明
 				edtCondition.setFocusable(true);
 				edtCondition.setSelectAllOnFocus(true);
 			}
@@ -136,13 +147,25 @@ public class ElevatorRecordSearchActivity extends BaseActivity implements IEleva
 			public void onClick(View v) {
 				relativeBase.setVisibility(View.VISIBLE);
 				relativeSearch.setVisibility(View.GONE);
+				currentSearchMode = ALL_ELEVATOR_RECORDS;
 			}
 		});
 		
-		btnSearchByCondition.setOnClickListener(new OnClickListener() {		
+		ibtnSearchByCondition.setOnClickListener(new OnClickListener() {		
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(ElevatorRecordSearchActivity.this, "搜索", Toast.LENGTH_SHORT).show();
+				searchCondition = edtCondition.getText().toString();
+				// 此次不需要进行非空判断，如果查询条件为空，默认为查询所有电梯档案
+				/*if (TextUtils.isEmpty(searchCondition)) {
+					Toast.makeText(ElevatorRecordSearchActivity.this, 
+							"查询条件不能为空", Toast.LENGTH_SHORT).show();
+					return;
+				}*/
+				
+				currentSearchMode = ELEVATOR_RECORDS_BY_CONDITION;
+				curPage = 1;
+				presenter.searchElevatorRecordsByCondition(curPage++, ProjectContants.PAGE_SIZE, 
+						searchCondition, elevatorRecordList);
 			}
 		});
 		
@@ -185,16 +208,19 @@ public class ElevatorRecordSearchActivity extends BaseActivity implements IEleva
 			public void onScroll(AbsListView view, int firstVisibleItem,
 					int visibleItemCount, int totalItemCount) {
 				Log.i(tag, "onScroll#" + firstVisibleItem + "," + visibleItemCount + "," + totalItemCount);
-				
-				// 此处可以进行一下优化，没必要每次滑动时都执行如下操作
-				if (0 == firstVisibleItem) {
+
+				if (0 == firstVisibleItem
+						&& !isShowPullDownInfo) {
 					ptrlvElevatorRecord.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
 					ptrlvElevatorRecord.getLoadingLayoutProxy().setPullLabel("下拉刷新...");
 					ptrlvElevatorRecord.getLoadingLayoutProxy().setReleaseLabel("释放开始刷新...");
-				} else if ((totalItemCount - visibleItemCount) == firstVisibleItem) {
+					isShowPullDownInfo = true;
+				} else if ((totalItemCount - visibleItemCount) == firstVisibleItem
+						&& isShowPullDownInfo) {
 					ptrlvElevatorRecord.getLoadingLayoutProxy().setRefreshingLabel("正在加载");
 					ptrlvElevatorRecord.getLoadingLayoutProxy().setPullLabel("上拉加载更多...");
 					ptrlvElevatorRecord.getLoadingLayoutProxy().setReleaseLabel("释放开始加载...");
+					isShowPullDownInfo = false;
 				}
 			}			
 		});
@@ -219,7 +245,13 @@ public class ElevatorRecordSearchActivity extends BaseActivity implements IEleva
         protected Void doInBackground(Void... params) {
         	// pageNumber一定是为1，表示只加载第一页的内容
 			curPage = 1;
-			presenter.searchAllElevatorRecords(curPage++, ProjectContants.PAGE_SIZE, elevatorRecordList);
+			if (currentSearchMode == ALL_ELEVATOR_RECORDS) {
+				presenter.searchAllElevatorRecords(curPage++, ProjectContants.PAGE_SIZE, 
+						elevatorRecordList);
+			} else if (currentSearchMode == ELEVATOR_RECORDS_BY_CONDITION) {
+				presenter.searchElevatorRecordsByCondition(curPage++, ProjectContants.PAGE_SIZE, 
+						searchCondition, elevatorRecordList);
+			}
         	
             // 返回执行的结果
             return null;    
@@ -235,7 +267,13 @@ public class ElevatorRecordSearchActivity extends BaseActivity implements IEleva
 	private class SearchMoreTask extends AsyncTask<Void, Void, Void> {
         @Override  
         protected Void doInBackground(Void... params) {
-        	presenter.searchAllElevatorRecords(curPage++, ProjectContants.PAGE_SIZE, elevatorRecordList);
+        	if (currentSearchMode == ALL_ELEVATOR_RECORDS) {
+				presenter.searchAllElevatorRecords(curPage++, ProjectContants.PAGE_SIZE, 
+						elevatorRecordList);
+			} else if (currentSearchMode == ELEVATOR_RECORDS_BY_CONDITION) {
+				presenter.searchElevatorRecordsByCondition(curPage++, ProjectContants.PAGE_SIZE, 
+						searchCondition, elevatorRecordList);
+			}
         	
             return null;    
         }  
@@ -289,7 +327,6 @@ public class ElevatorRecordSearchActivity extends BaseActivity implements IEleva
 				mAdapter.notifyDataSetChanged();
 			}
 		});
-		
 	}
 
 	@Override
@@ -335,6 +372,16 @@ public class ElevatorRecordSearchActivity extends BaseActivity implements IEleva
 	@Override
 	public void setIsPtrlvHidden(boolean isPtrlvHidden) {
 		this.isPtrlvHidden = isPtrlvHidden;
+	}
+
+	@Override
+	public void hideBtnRefresh() {
+		runOnUiThread(new Runnable() {		
+			@Override
+			public void run() {
+				btnRefreshAgain.setVisibility(View.GONE);
+			}
+		});
 	}
 
 }

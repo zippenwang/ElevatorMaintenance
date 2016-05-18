@@ -8,4 +8,6 @@ public interface IEmployeeBiz {
 	
 	void signIn(int workOrderType, Long workOrderId, 
 			String signInAddress, IEmployeeSignInListener listener);
+	
+	void getInfo(Long groupId, IEmployeeInfoSearchListener listener);
 }

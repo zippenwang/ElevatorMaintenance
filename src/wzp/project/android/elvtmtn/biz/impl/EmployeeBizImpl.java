@@ -2,6 +2,7 @@ package wzp.project.android.elvtmtn.biz.impl;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -13,12 +14,14 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.igexin.sdk.PushManager;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.biz.IEmployeeBiz;
+import wzp.project.android.elvtmtn.biz.IEmployeeInfoSearchListener;
 import wzp.project.android.elvtmtn.biz.IEmployeeLoginListener;
 import wzp.project.android.elvtmtn.biz.IEmployeeSignInListener;
 import wzp.project.android.elvtmtn.entity.Employee;
@@ -133,6 +136,42 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 					Log.e(tag, Log.getStackTraceString(e));
 					listener.onSignInFailure("服务器正在打盹\n请检查网络连接后重试");		
 				}
+			});
+	}
+
+	@Override
+	public void getInfo(Long groupId, final IEmployeeInfoSearchListener listener) {
+		String url = ProjectContants.basePath + "/group/employees";
+		
+		OkHttpUtils.get().url(url)
+			.addParams("id", String.valueOf(groupId))
+			.build()
+			.execute(new StringCallback() {
+				@Override
+				public void onResponse(String response) {
+					Log.i(tag, response);
+					
+					if (!TextUtils.isEmpty(response)) {
+						List<Employee> employeeList = JSON.parseObject(response, 
+								new TypeReference<List<Employee>>() {});
+						listener.onSearchSuccess(employeeList);						
+					} else {
+						listener.onSearchFailure("服务器故障，响应数据有误！");
+					}
+				}
+				
+				@Override
+				public void onError(Call call, Exception e) {
+					Log.e(tag, Log.getStackTraceString(e));
+					listener.onSearchFailure("服务器正在打盹\n请检查网络连接后重试");		
+				}
+
+				@Override
+				public void onAfter() {
+					listener.onAfter();
+				}
+				
+				
 			});
 	}
 

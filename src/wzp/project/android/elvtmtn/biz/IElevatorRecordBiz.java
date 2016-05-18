@@ -11,4 +11,7 @@ public interface IElevatorRecordBiz {
 	
 	void getAllElevatorRecords(long groupId, int pageNumber, int pageSize, 
 			List<ElevatorRecord> elevatorRecordList, IElevatorRecordSearchListener listener);
+	
+	void getElevatorRecordsByCondition(int pageNumber, int pageSize, String searchParam, 
+			List<ElevatorRecord> elevatorRecordList, IElevatorRecordSearchListener listener);
 }

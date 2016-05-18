@@ -61,5 +61,6 @@
 	<!-- 员工信息 -->
 	<string name="username">用户名</string>
 	<string name="name">员工姓名</string>
+	<string name="employeePhone">联系方式</string>
 	<string name="groupMember">小组成员</string>
 </resources>
