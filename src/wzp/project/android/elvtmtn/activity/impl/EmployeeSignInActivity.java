@@ -32,6 +32,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -61,6 +62,7 @@ public class EmployeeSignInActivity extends BaseActivity
 	
 	private Button btnBack;
 	private TextView tvWorkOrderType;
+	private ImageButton ibtnSort;
 	private PullToRefreshListView ptrlvSignIn;
 	private LinearLayout linearTipInfo;						// 提示网络异常、或当前工单不存在的LinearLayout控件
 	private TextView tvTipInfo;								// 当ListView中传入的List为空，该控件用于提示数据为空
@@ -160,6 +162,7 @@ public class EmployeeSignInActivity extends BaseActivity
 	private void initWidget() {
 		btnBack = (Button) findViewById(R.id.btn_back);
 		tvWorkOrderType = (TextView) findViewById(R.id.tv_workOrderType);
+		ibtnSort = (ImageButton) findViewById(R.id.ibtn_sort);
 		ptrlvSignIn = (PullToRefreshListView) findViewById(R.id.ptrlv_signIn);
 		linearTipInfo = (LinearLayout) findViewById(R.id.linear_tipInfo);
 		tvTipInfo = (TextView) findViewById(R.id.tv_tipInfo);
@@ -251,7 +254,7 @@ public class EmployeeSignInActivity extends BaseActivity
 			}
 		});
 		
-		pmSort = new PopupMenu(this, tvWorkOrderType);
+		pmSort = new PopupMenu(this, ibtnSort);
 		getMenuInflater().inflate(R.menu.order_sign_in_sort_menu, pmSort.getMenu());
 		
 		pmSort.setOnMenuItemClickListener(new OnMenuItemClickListener() {
@@ -273,7 +276,7 @@ public class EmployeeSignInActivity extends BaseActivity
 			}
 		});
 		
-		tvWorkOrderType.setOnClickListener(new OnClickListener() {			
+		ibtnSort.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
 				pmSort.show();

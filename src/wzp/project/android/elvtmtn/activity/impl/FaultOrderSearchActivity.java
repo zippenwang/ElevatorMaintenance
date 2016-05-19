@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -54,7 +55,8 @@ public class FaultOrderSearchActivity extends FragmentActivity {
 	
 	private Button btnBack;
 	
-	private TextView tvWorkOrderType;
+//	private TextView tvWorkOrderType;
+	private ImageButton ibtnSort;
 	private PopupMenu pmSort;
 	private Menu menu;
 	
@@ -94,8 +96,9 @@ public class FaultOrderSearchActivity extends FragmentActivity {
 			}
 		});
 		
-		tvWorkOrderType = (TextView) findViewById(R.id.tv_workOrderType);
-		pmSort = new PopupMenu(this, tvWorkOrderType);
+//		tvWorkOrderType = (TextView) findViewById(R.id.tv_workOrderType);
+		ibtnSort = (ImageButton) findViewById(R.id.ibtn_sort);
+		pmSort = new PopupMenu(this, ibtnSort);
 		getMenuInflater().inflate(R.menu.fault_order_search_sort_menu, pmSort.getMenu());
 		menu = pmSort.getMenu();
 		
@@ -152,7 +155,7 @@ public class FaultOrderSearchActivity extends FragmentActivity {
 			}
 		});
 		
-		tvWorkOrderType.setOnClickListener(new OnClickListener() {
+		ibtnSort.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				pmSort.show();

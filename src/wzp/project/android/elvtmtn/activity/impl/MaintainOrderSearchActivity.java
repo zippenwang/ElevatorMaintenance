@@ -61,7 +61,8 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 	private TextView[] tvHiddenArray;					// 用于标注当前所在的选项卡
 	private TextView[] tvArray;							// 用于标注当前所在的选项卡的标题
 	
-	private TextView tvWorkOrderType;
+//	private TextView tvWorkOrderType;
+	private ImageButton ibtnSort;
 	private PopupMenu pmSort;
 	private Menu menu;
 	
@@ -96,8 +97,9 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 		tvFinished = (TextView) findViewById(R.id.tv_finished);
 		tvOverdue = (TextView) findViewById(R.id.tv_overdue);
 		
-		tvWorkOrderType = (TextView) findViewById(R.id.tv_workOrderType);
-		pmSort = new PopupMenu(this, tvWorkOrderType);
+//		tvWorkOrderType = (TextView) findViewById(R.id.tv_workOrderType);
+		ibtnSort = (ImageButton) findViewById(R.id.ibtn_sort);
+		pmSort = new PopupMenu(this, ibtnSort);
 		getMenuInflater().inflate(R.menu.maintain_order_search_sort_menu, pmSort.getMenu());
 		menu = pmSort.getMenu();
 		
@@ -167,7 +169,6 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 		vpMaintainOrder.setOffscreenPageLimit(2);
 		
 		btnBack = (Button) findViewById(R.id.btn_back);
-//		ibtnBack = (ImageButton) findViewById(R.id.ibtn_back);
 		btnBack.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -175,7 +176,7 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 			}
 		});
 		
-		tvWorkOrderType.setOnClickListener(new OnClickListener() {			
+		ibtnSort.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
 				pmSort.show();
