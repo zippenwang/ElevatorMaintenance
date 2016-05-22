@@ -12,6 +12,8 @@ public class MyApplication extends Application {
 
 	private static Context context;
 	private static String cid = "";
+	public static String token = "";
+	
 
 	@Override
 	public void onCreate() {
@@ -29,4 +31,12 @@ public class MyApplication extends Application {
 	public static String getCid() {
 		return cid;
 	}
+	
+/*	public static void setToken(String token) {
+		MyApplication.token = token;
+	}
+	
+	public static String getToken() {
+		return token;
+	}*/
 }

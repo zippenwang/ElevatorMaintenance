@@ -5,6 +5,7 @@ import java.util.List;
 import com.alibaba.fastjson.JSON;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -130,5 +131,11 @@ public class EmployeeInfoActivity extends BaseActivity implements IEmployeeInfoA
 				&& progressDialog.isShowing()) {
 			progressDialog.dismiss();
 		}
+	}
+
+	@Override
+	public void backToLoginInterface() {
+		Intent intent = new Intent(this, EmployeeLoginActivity.class);
+		startActivity(intent);
 	}
 }

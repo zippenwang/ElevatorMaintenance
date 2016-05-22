@@ -9,6 +9,7 @@ import java.util.TimerTask;
 import okhttp3.Call;
 import okhttp3.Request;
 
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -28,27 +29,15 @@ import wzp.project.android.elvtmtn.entity.Employee;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 import wzp.project.android.elvtmtn.util.MyApplication;
+import wzp.project.android.elvtmtn.util.myokhttp.MyOkHttpUtils;
+import wzp.project.android.elvtmtn.util.myokhttp.MyStringCallback;
 
 public class EmployeeBizImpl implements IEmployeeBiz {
 	
-	private static final String tag = "UserBizImpl";
+	private static final String tag = "EmployeeBizImpl";
 
 	@Override
 	public void login(final Employee employee, final IEmployeeLoginListener listener) {
-		/*
-		 * 用于测试的代码，模拟访问服务器费时的操作
-		 */
-		/*new Timer().schedule(new TimerTask() {		
-			@Override
-			public void run() {
-				if (employee.getUsername().equals("wzp") && employee.getPassword().equals("1234")) {
-					listener.onLoginSuccess();
-				} else {
-					listener.onLoginFailure();
-				}
-			}
-		}, 3000);*/
-		
 		String cid = MyApplication.getCid();
 		if (cid.equals("")) {
 			listener.onAfter();
@@ -58,7 +47,7 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 		
 		String strUrl = ProjectContants.basePath + "/login";
 		
-		OkHttpUtils.post().url(strUrl)
+		/*OkHttpUtils.post().url(strUrl)
 			.addParams("username", employee.getUsername())
 			.addParams("password", employee.getPassword())
 			.addParams("cid", MyApplication.getCid())
@@ -91,6 +80,50 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
 //					listener.onServerException("访问服务器失败，请\n检查网络连接后重试");
+					listener.onLoginFailure("访问服务器失败，请\n检查网络连接后重试");
+				}
+			});*/
+		
+		MyOkHttpUtils.post().url(strUrl)
+			.addParams("username", employee.getUsername())
+			.addParams("password", employee.getPassword())
+			.addParams("cid", MyApplication.getCid())
+			.build()
+			.execute(new MyStringCallback() {
+				@Override
+				public void onAfter() {
+					listener.onAfter();
+				}
+	
+				@Override
+				public void onResponse(String response) {
+					Log.i(tag, response);
+					JSONObject jo = JSON.parseObject(response);
+					String result = jo.getString("result");
+					
+					if (!TextUtils.isEmpty(result)) {
+						if (result.equals("success")) {
+							MyApplication.token = jo.getString("token");
+							Log.d(tag, MyApplication.token);
+							listener.onLoginSuccess((JSON.toJavaObject((JSONObject) jo.get("employee"), Employee.class)));
+						} else if (result.equals("failed")) {
+							listener.onLoginFailure("用户名或密码错误！");
+						}
+					} else {
+						listener.onLoginFailure("服务器故障，响应数据有误！");
+					}
+				}
+
+				@Override
+				public void onError(Call call, Exception e) {
+					Log.e(tag, Log.getStackTraceString(e));
+					listener.onLoginFailure("访问服务器失败，请\n检查网络连接后重试");
+				}
+				
+				@Override
+				public void onError(Call call, Exception e, int respCode) {
+					Log.e(tag, "响应码为：" + respCode);
+					Log.e(tag, Log.getStackTraceString(e));
 					listener.onLoginFailure("访问服务器失败，请\n检查网络连接后重试");
 				}
 			});
@@ -143,7 +176,7 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 	public void getInfo(Long groupId, final IEmployeeInfoSearchListener listener) {
 		String url = ProjectContants.basePath + "/group/employees";
 		
-		OkHttpUtils.get().url(url)
+		/*OkHttpUtils.get().url(url)
 			.addParams("id", String.valueOf(groupId))
 			.build()
 			.execute(new StringCallback() {
@@ -163,7 +196,7 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 				@Override
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
-					listener.onSearchFailure("服务器正在打盹\n请检查网络连接后重试");		
+					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");		
 				}
 
 				@Override
@@ -172,6 +205,46 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 				}
 				
 				
+			});*/
+		
+		MyOkHttpUtils.get().url(url)
+			.addHeader("token", MyApplication.token)
+			.addParams("id", String.valueOf(groupId))
+			.build()
+			.execute(new MyStringCallback() {
+				@Override
+				public void onResponse(String response) {
+					Log.i(tag, response);
+					
+					if (!TextUtils.isEmpty(response)) {
+						List<Employee> employeeList = JSON.parseObject(response, 
+								new TypeReference<List<Employee>>() {});
+						listener.onSearchSuccess(employeeList);						
+					} else {
+						listener.onSearchFailure("服务器故障，响应数据有误！");
+					}
+				}
+				
+				@Override
+				public void onError(Call call, Exception e) {
+					Log.e(tag, Log.getStackTraceString(e));
+					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");		
+				}
+				
+				@Override
+				public void onError(Call call, Exception e, int respCode) {
+					Log.e(tag, "响应码为：" + respCode);
+					Log.e(tag, Log.getStackTraceString(e));
+					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+					if (respCode == 401) {
+						listener.onBackToLoginInterface();
+					}
+				}
+	
+				@Override
+				public void onAfter() {
+					listener.onAfter();
+				}
 			});
 	}
 

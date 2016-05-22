@@ -77,7 +77,7 @@
         android:gravity="center"
         android:layout_marginBottom="20dp"/>
 	
-	<EditText 
+	<!-- <EditText 
 	    android:id="@+id/edt_username"
 	    android:layout_width="match_parent"
 	    android:layout_height="50dp"
@@ -85,8 +85,20 @@
 	    android:paddingLeft="10dp"
 	    android:paddingRight="10dp"
 	    android:hint="请输入用户名..."
+	    android:background="@drawable/username_edit_bg"/> -->
+    
+    <wzp.project.android.elvtmtn.util.ClearAllEditText 
+	    android:id="@+id/caedt_username"
+	    android:layout_width="match_parent"
+	    android:layout_height="50dp"
+	    android:selectAllOnFocus="true"
+	    android:paddingLeft="10dp"
+	    android:paddingRight="10dp"
+	    android:hint="请输入用户名..."
+	    android:drawableRight="@drawable/delete_all"
 	    android:background="@drawable/username_edit_bg"/>
     
+	
 	<ImageView
         android:id="@+id/iv_spiltLine"
         android:layout_width="match_parent"
@@ -94,7 +106,7 @@
         android:scaleType="fitXY"
         android:src="@drawable/spilt_line" />
 	
-    <EditText 
+    <!-- <EditText 
 	    android:id="@+id/edt_password"
 	    android:layout_width="match_parent"
 	    android:layout_height="50dp"
@@ -102,6 +114,17 @@
 	    android:paddingRight="10dp"
 	    android:hint="请输入密码"
 	    android:inputType="textPassword"
+	    android:background="@drawable/password_edit_bg"/> -->
+	    
+	<wzp.project.android.elvtmtn.util.ClearAllEditText 
+	    android:id="@+id/caedt_password"
+	    android:layout_width="match_parent"
+	    android:layout_height="50dp"
+	    android:paddingLeft="10dp"
+	    android:paddingRight="10dp"
+	    android:hint="请输入密码"
+	    android:inputType="textPassword"
+	    android:drawableRight="@drawable/delete_all"
 	    android:background="@drawable/password_edit_bg"/>
     
     <CheckBox 

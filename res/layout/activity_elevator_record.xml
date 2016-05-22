@@ -44,7 +44,7 @@
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:src="@drawable/elevator_record_search"
+            android:src="@drawable/search"
             android:scaleType="centerInside"
             android:background="@drawable/search_elevator_record_ibtn_bg"
             android:paddingRight="10dp"

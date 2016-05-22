@@ -13,4 +13,6 @@ public interface IEmployeeInfoActivity {
 	void showProgressDialog();
 	
 	void closeProgressDialog();
+	
+	void backToLoginInterface();
 }

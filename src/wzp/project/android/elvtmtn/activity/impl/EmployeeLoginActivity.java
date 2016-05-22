@@ -8,10 +8,12 @@ import wzp.project.android.elvtmtn.activity.IEmployeeLoginActivity;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
 import wzp.project.android.elvtmtn.entity.Employee;
 import wzp.project.android.elvtmtn.presenter.EmployeeLoginPresenter;
+import wzp.project.android.elvtmtn.util.ClearAllEditText;
 import wzp.project.android.elvtmtn.util.MyApplication;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -25,8 +27,10 @@ import android.widget.Toast;
 
 public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLoginActivity {
 
-	private EditText edtUsername;
-	private EditText edtPassword;
+//	private EditText edtUsername;
+	private ClearAllEditText caedtUsername;
+//	private EditText edtPassword;
+	private ClearAllEditText caedtPassword;
 	private Button btnLogin;
 //	private Button btnExit;
 	private CheckBox cbIsRemember;
@@ -57,8 +61,10 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 	private void initWidget() {
 		pushManager.initialize(this);
 		
-		edtUsername = (EditText) findViewById(R.id.edt_username);
-		edtPassword = (EditText) findViewById(R.id.edt_password);
+//		edtUsername = (EditText) findViewById(R.id.edt_username);
+		caedtUsername = (ClearAllEditText) findViewById(R.id.caedt_username);
+//		edtPassword = (EditText) findViewById(R.id.edt_password);
+		caedtPassword = (ClearAllEditText) findViewById(R.id.caedt_password);
 		btnLogin = (Button) findViewById(R.id.btn_login);
 //		btnExit = (Button) findViewById(R.id.btn_exit);
 		cbIsRemember = (CheckBox) findViewById(R.id.cb_isRemember);
@@ -69,15 +75,21 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 		boolean isRemember = preferences.getBoolean("isRemember", false);
 		if (isRemember) {
 			cbIsRemember.setChecked(true);
-			edtUsername.setText(preferences.getString("username", ""));
-			edtPassword.setText(preferences.getString("password", ""));
+//			edtUsername.setText(preferences.getString("username", ""));
+			caedtUsername.setText(preferences.getString("username", ""));
+//			edtPassword.setText(preferences.getString("password", ""));
+			caedtPassword.setText(preferences.getString("password", ""));
+			Drawable[] drawables = caedtPassword.getCompoundDrawables();
+			caedtPassword.setCompoundDrawables(drawables[0], drawables[1], null, drawables[3]);
 		}
 		
 		btnLogin.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-				String username = edtUsername.getText().toString();
-				String password = edtPassword.getText().toString();
+//				String username = edtUsername.getText().toString();
+				String username = caedtUsername.getText().toString();
+//				String password = edtPassword.getText().toString();
+				String password = caedtPassword.getText().toString();
 				
 				// 可以在此处对输入的内容进行正则表达式判断
 				if (TextUtils.isEmpty(username.trim())
@@ -114,8 +126,10 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 		Log.i(tag, "employeeId:" + employee.getId() + ";groupId" + employee.getGroup().getId());
 		editor.putLong("employeeId", employee.getId());
 		editor.putLong("groupId", employee.getGroup().getId());
-		editor.putString("username", edtUsername.getEditableText().toString());
-		editor.putString("password", edtPassword.getEditableText().toString());
+//		editor.putString("username", edtUsername.getEditableText().toString());
+		editor.putString("username", caedtUsername.getEditableText().toString());
+//		editor.putString("password", edtPassword.getEditableText().toString());
+		editor.putString("password", caedtPassword.getEditableText().toString());
 		editor.putBoolean("isRemember", cbIsRemember.isChecked());
 		editor.putString("employeeJson", JSON.toJSONString(employee));
 		editor.commit();

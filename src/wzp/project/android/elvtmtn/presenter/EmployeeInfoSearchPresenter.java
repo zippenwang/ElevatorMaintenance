@@ -2,6 +2,8 @@ package wzp.project.android.elvtmtn.presenter;
 
 import java.util.List;
 
+import android.content.Intent;
+
 import wzp.project.android.elvtmtn.activity.IEmployeeInfoActivity;
 import wzp.project.android.elvtmtn.activity.IEmployeeSignInDetailActivity;
 import wzp.project.android.elvtmtn.biz.IEmployeeBiz;
@@ -36,6 +38,11 @@ public class EmployeeInfoSearchPresenter {
 			@Override
 			public void onAfter() {
 				employeeInfoActivity.closeProgressDialog();
+			}
+
+			@Override
+			public void onBackToLoginInterface() {
+				employeeInfoActivity.backToLoginInterface();
 			}
 		});
 	}

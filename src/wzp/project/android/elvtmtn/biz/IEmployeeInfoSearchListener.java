@@ -11,4 +11,6 @@ public interface IEmployeeInfoSearchListener {
 	void onSearchFailure(String tipInfo);
 	
 	void onAfter();
+	
+	void onBackToLoginInterface();
 }
