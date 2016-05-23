@@ -40,13 +40,15 @@ import android.widget.Toast;
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.activity.IEmployeeSignInDetailActivity;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
-import wzp.project.android.elvtmtn.biz.IEmployeeSignInListener;
+import wzp.project.android.elvtmtn.biz.listener.IEmployeeSignInListener;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 import wzp.project.android.elvtmtn.presenter.EmployeeSignInPresenter;
+import wzp.project.android.elvtmtn.util.MyProgressDialog;
 
-public class EmployeeSignInDetailActivity extends BaseActivity implements IEmployeeSignInDetailActivity, OnGetGeoCoderResultListener {
+public class EmployeeSignInDetailActivity extends BaseActivity 
+		implements IEmployeeSignInDetailActivity, OnGetGeoCoderResultListener {
 
 	private Button btnBack;
 //	private Button btnRefreshCurAddress;
@@ -64,6 +66,7 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 	private TextView tvSignInAddress;
 	private Button btnSignIn;
 	private ProgressDialog progressDialog;
+	private MyProgressDialog myProgressDialog;
 	
 	private EmployeeSignInPresenter employeeSignInPresenter = new EmployeeSignInPresenter(this); 
 	
@@ -138,6 +141,7 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 		btnSignIn = (Button) findViewById(R.id.btn_signIn);
 		
 		progressDialog = new ProgressDialog(this);
+		myProgressDialog = new MyProgressDialog(this);
 				
 		if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
 			tvWorkOrderType.setText("保养工单 ");
@@ -214,7 +218,7 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 			@Override
 			public void onClick(View v) {
 				// 刷新当前位置
-				showProgressDialog();
+				showProgressDialog("定位中，请稍后...");
 				isShowCurrentAddress = false;
 			}
 		});
@@ -336,7 +340,7 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 		
 		locationClient.setLocOption(option);
 		
-		showProgressDialog();
+		showProgressDialog("定位中，请稍后...");
 		locationClient.registerLocationListener(locationListener);
 	}
 	
@@ -428,30 +432,38 @@ public class EmployeeSignInDetailActivity extends BaseActivity implements IEmplo
 	}
 	
 	@Override
-	public void showProgressDialog() {
+	public void showProgressDialog(final String tipInfo) {
 		runOnUiThread(new Runnable() {		
 			@Override
 			public void run() {
-				progressDialog.setTitle("正在定位，请稍后...");
-				progressDialog.setMessage("Loading...");
-				progressDialog.setCancelable(true);
+				myProgressDialog.setMessage(tipInfo);
+				myProgressDialog.setCancelable(true);
 				
-				progressDialog.show();
+				myProgressDialog.show();
+			}
+		});
+	}
+	
+	@Override
+	public void showProgressDialog() {}
+
+	@Override
+	public void closeProgressDialog() {
+		// 在百度地图SDK中被调用，因此需要包含在runOnUiThread方法中
+		runOnUiThread(new Runnable() {			
+			@Override
+			public void run() {				
+				if (myProgressDialog != null
+						&& myProgressDialog.isShowing()) {
+					myProgressDialog.dismiss();
+				}
 			}
 		});
 	}
 
 	@Override
-	public void closeProgressDialog() {
-		runOnUiThread(new Runnable() {			
-			@Override
-			public void run() {
-				if (progressDialog != null
-						&& progressDialog.isShowing()) {
-					progressDialog.dismiss();
-				}
-			}
-		});
+	public void backToLoginInterface() {
+		EmployeeLoginActivity.myStartActivity(this);
 	}
 	
 	// 自定义一个startActivity()方法

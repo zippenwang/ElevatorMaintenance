@@ -9,7 +9,6 @@ import wzp.project.android.elvtmtn.biz.IWorkOrderBiz;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
 import wzp.project.android.elvtmtn.fragment.IFinishedOrderSortFragment;
-import wzp.project.android.elvtmtn.fragment.IOrderSortFragment;
 import wzp.project.android.elvtmtn.fragment.IUnfOvdOrderSortFragment;
 import wzp.project.android.elvtmtn.fragment.IWorkOrderSearchFragment;
 

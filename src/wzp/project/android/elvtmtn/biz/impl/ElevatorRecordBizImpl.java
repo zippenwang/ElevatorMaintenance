@@ -12,10 +12,14 @@ import com.alibaba.fastjson.TypeReference;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import wzp.project.android.elvtmtn.activity.impl.EmployeeLoginActivity;
 import wzp.project.android.elvtmtn.biz.IElevatorRecordBiz;
-import wzp.project.android.elvtmtn.biz.IElevatorRecordSearchListener;
+import wzp.project.android.elvtmtn.biz.listener.IElevatorRecordSearchListener;
 import wzp.project.android.elvtmtn.entity.ElevatorRecord;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
+import wzp.project.android.elvtmtn.util.MyApplication;
+import wzp.project.android.elvtmtn.util.myokhttp.MyOkHttpUtils;
+import wzp.project.android.elvtmtn.util.myokhttp.MyStringCallback;
 
 public class ElevatorRecordBizImpl implements IElevatorRecordBiz {
 
@@ -25,11 +29,12 @@ public class ElevatorRecordBizImpl implements IElevatorRecordBiz {
 	public void getAllElevatorRecords(final int pageNumber, int pageSize, 
 			final List<ElevatorRecord> elevatorRecordList, final IElevatorRecordSearchListener listener) {
 		String url = ProjectContants.basePath + "/elevatorRecord/list";
-		OkHttpUtils.get().url(url)
+		MyOkHttpUtils.get().url(url)
+			.addHeader("token", MyApplication.token)
 			.addParams("pageNumber", String.valueOf(pageNumber))
 			.addParams("pageSize", String.valueOf(pageSize))
 			.build()
-			.execute(new StringCallback() {				
+			.execute(new MyStringCallback() {				
 				@Override
 				public void onAfter() {
 					listener.onAfter();
@@ -69,6 +74,18 @@ public class ElevatorRecordBizImpl implements IElevatorRecordBiz {
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
 					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+				}
+
+				@Override
+				public void onError(Call call, Exception e, int respCode) {
+					Log.e(tag, "响应码为：" + respCode);
+					Log.e(tag, Log.getStackTraceString(e));
+					if (respCode == 401) {
+						listener.onSearchFailure("您的账号无效或已过期，请重新登录");
+						listener.onBackToLoginInterface();
+					} else {
+						listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+					}
 				}
 			});
 	}
@@ -77,12 +94,13 @@ public class ElevatorRecordBizImpl implements IElevatorRecordBiz {
 	public void getAllElevatorRecords(final long groupId, final int pageNumber, int pageSize, 
 			final List<ElevatorRecord> elevatorRecordList, final IElevatorRecordSearchListener listener) {
 		String url = ProjectContants.basePath + "/elevatorRecord/list";
-		OkHttpUtils.get().url(url)
+		MyOkHttpUtils.get().url(url)
+			.addHeader("token", MyApplication.token)
 			.addParams("groupId", String.valueOf(groupId))
 			.addParams("pageNumber", String.valueOf(pageNumber))
 			.addParams("pageSize", String.valueOf(pageSize))
 			.build()
-			.execute(new StringCallback() {				
+			.execute(new MyStringCallback() {				
 				@Override
 				public void onAfter() {
 					listener.onAfter();
@@ -122,6 +140,18 @@ public class ElevatorRecordBizImpl implements IElevatorRecordBiz {
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
 					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+				}
+				
+				@Override
+				public void onError(Call call, Exception e, int respCode) {
+					Log.e(tag, "响应码为：" + respCode);
+					Log.e(tag, Log.getStackTraceString(e));
+					if (respCode == 401) {
+						listener.onSearchFailure("您的账号无效或已过期，请重新登录");
+						listener.onBackToLoginInterface();
+					} else {
+						listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+					}
 				}
 			});
 	}
@@ -132,12 +162,13 @@ public class ElevatorRecordBizImpl implements IElevatorRecordBiz {
 			final List<ElevatorRecord> elevatorRecordList, 
 			final IElevatorRecordSearchListener listener) {
 		String url = ProjectContants.basePath + "/elevatorRecord/search";
-		OkHttpUtils.get().url(url)
+		MyOkHttpUtils.get().url(url)
+			.addHeader("token", MyApplication.token)
 			.addParams("pageNumber", String.valueOf(pageNumber))
 			.addParams("pageSize", String.valueOf(pageSize))
 			.addParams("searchParam", searchParam)
 			.build()
-			.execute(new StringCallback() {				
+			.execute(new MyStringCallback() {				
 				@Override
 				public void onAfter() {
 					listener.onAfter();
@@ -177,6 +208,18 @@ public class ElevatorRecordBizImpl implements IElevatorRecordBiz {
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
 					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+				}
+
+				@Override
+				public void onError(Call call, Exception e, int respCode) {
+					Log.e(tag, "响应码为：" + respCode);
+					Log.e(tag, Log.getStackTraceString(e));
+					if (respCode == 401) {
+						listener.onSearchFailure("您的账号无效或已过期，请重新登录");
+						listener.onBackToLoginInterface();
+					} else {
+						listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+					}
 				}
 			});
 	}

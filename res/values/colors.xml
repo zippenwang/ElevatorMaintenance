@@ -11,4 +11,6 @@
 	<color name="actionBarPressedColor">#000000</color>
 	
 	<color name="popupMenuBgColor">#484E61</color>
+	
+	<color name="backgroundColor">#AFEEEE</color>
 </resources>

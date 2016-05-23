@@ -23,18 +23,22 @@ import com.zhy.http.okhttp.builder.PostFormBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import wzp.project.android.elvtmtn.activity.impl.FaultOrderDetailActivity;
-import wzp.project.android.elvtmtn.biz.ISignleOrderSearchListener;
 import wzp.project.android.elvtmtn.biz.IWorkOrderBiz;
-import wzp.project.android.elvtmtn.biz.IWorkOrderCancelListener;
-import wzp.project.android.elvtmtn.biz.IWorkOrderFeedbackListener;
-import wzp.project.android.elvtmtn.biz.IWorkOrderReceiveListener;
-import wzp.project.android.elvtmtn.biz.IWorkOrderSearchListener;
+import wzp.project.android.elvtmtn.biz.listener.ISignleOrderSearchListener;
+import wzp.project.android.elvtmtn.biz.listener.IWorkOrderCancelListener;
+import wzp.project.android.elvtmtn.biz.listener.IWorkOrderFeedbackListener;
+import wzp.project.android.elvtmtn.biz.listener.IWorkOrderReceiveListener;
+import wzp.project.android.elvtmtn.biz.listener.IWorkOrderSearchListener;
 import wzp.project.android.elvtmtn.entity.Employee;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderState;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
+import wzp.project.android.elvtmtn.util.MyApplication;
+import wzp.project.android.elvtmtn.util.myokhttp.MyOkHttpUtils;
+import wzp.project.android.elvtmtn.util.myokhttp.MyPostFormBuilder;
+import wzp.project.android.elvtmtn.util.myokhttp.MyStringCallback;
 
 public class WorkOrderBizImpl implements IWorkOrderBiz {
 	
@@ -137,13 +141,14 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 		StringBuilder strUrl = new StringBuilder(ProjectContants.basePath);
 		strUrl.append("/maintainOrder/list");
 		
-		OkHttpUtils.get().url(strUrl.toString())
+		MyOkHttpUtils.get().url(strUrl.toString())
+			.addHeader("token", MyApplication.token)
 			.addParams("groupId", String.valueOf(groupId))
 			.addParams("pageNumber", String.valueOf(pageNumber))
 			.addParams("pageSize", String.valueOf(pageSize))
 			.addParams("type", String.valueOf(workOrderState))
 			.build()
-			.execute(new StringCallback() {
+			.execute(new MyStringCallback() {
 				@Override
 				public void onAfter() {
 					listener.onAfter();
@@ -156,16 +161,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 					if (!TextUtils.isEmpty(response)) {
 						List<MaintainOrder> respDataList = JSON.parseObject(response, 
 								new TypeReference<List<MaintainOrder>>() {});
-						if (respDataList != null && respDataList.size() > 0) {							
-							/*if (1 == pageNumber) {
-								dataList.clear();
-								for (int i=0; i<respDataList.size(); i++) {
-									Log.d(tag, respDataList.get(i).getClass().getSimpleName());
-									dataList.add(respDataList.get(i));
-								}
-							} else if (pageNumber > 1) {
-								dataList.addAll(respDataList);
-							}*/
+						if (respDataList != null && respDataList.size() > 0) {
 							if (1 == pageNumber) {
 								dataList.clear();
 							}
@@ -204,6 +200,18 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 					Log.e(tag, Log.getStackTraceString(e));
 					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
 				}
+
+				@Override
+				public void onError(Call call, Exception e, int respCode) {
+					Log.e(tag, "响应码为：" + respCode);
+					Log.e(tag, Log.getStackTraceString(e));
+					if (respCode == 401) {
+						listener.onSearchFailure("您的账号无效或已过期，请重新登录");
+						listener.onBackToLoginInterface();
+					} else {
+						listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+					}
+				}
 			});		
 	}
 
@@ -216,13 +224,14 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 		StringBuilder strUrl = new StringBuilder(ProjectContants.basePath);
 		strUrl.append("/faultOrder/list");
 		
-		OkHttpUtils.get().url(strUrl.toString())
+		MyOkHttpUtils.get().url(strUrl.toString())
+			.addHeader("token", MyApplication.token)
 			.addParams("groupId", String.valueOf(groupId))
 			.addParams("pageNumber", String.valueOf(pageNumber))
 			.addParams("pageSize", String.valueOf(pageSize))
 			.addParams("type", String.valueOf(workOrderState))
 			.build()
-			.execute(new StringCallback() {
+			.execute(new MyStringCallback() {
 				@Override
 				public void onAfter() {
 					listener.onAfter();
@@ -274,6 +283,18 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 					Log.e(tag, Log.getStackTraceString(e));
 					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");	
 				}
+
+				@Override
+				public void onError(Call call, Exception e, int respCode) {
+					Log.e(tag, "响应码为：" + respCode);
+					Log.e(tag, Log.getStackTraceString(e));
+					if (respCode == 401) {
+						listener.onSearchFailure("您的账号无效或已过期，请重新登录");
+						listener.onBackToLoginInterface();
+					} else {
+						listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+					}
+				}
 			});
 	}
 	
@@ -282,10 +303,11 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 		StringBuilder strUrl = new StringBuilder(ProjectContants.basePath);
 		strUrl.append("/faultOrder/detail");
 		
-		OkHttpUtils.get().url(strUrl.toString())
+		MyOkHttpUtils.get().url(strUrl.toString())
+			.addHeader("token", MyApplication.token)
 			.addParams("id", id)
 			.build()
-			.execute(new StringCallback() {
+			.execute(new MyStringCallback() {
 				@Override
 				public void onResponse(String response) {
 					Log.i(tag, response);
@@ -302,6 +324,18 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 					Log.e(tag, Log.getStackTraceString(e));
 					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");	
 				}
+
+				@Override
+				public void onError(Call call, Exception e, int respCode) {
+					Log.e(tag, "响应码为：" + respCode);
+					Log.e(tag, Log.getStackTraceString(e));
+					if (respCode == 401) {
+						listener.onSearchFailure("您的账号无效或已过期，请重新登录");
+						listener.onBackToLoginInterface();
+					} else {
+						listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+					}
+				}
 			});
 	}
 	
@@ -312,12 +346,13 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 			final IWorkOrderSearchListener listener) {
 		String url = ProjectContants.basePath + "/maintainOrder/accept/list";
 		
-		OkHttpUtils.get().url(url)
+		MyOkHttpUtils.get().url(url)
+			.addHeader("token", MyApplication.token)
 			.addParams("employeeId", String.valueOf(employeeId))
 			.addParams("pageNumber", String.valueOf(pageNumber))
 			.addParams("pageSize", String.valueOf(pageSize))
 			.build()
-			.execute(new StringCallback() {
+			.execute(new MyStringCallback() {
 				@Override
 				public void onAfter() {
 					listener.onAfter();
@@ -378,6 +413,18 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 					Log.e(tag, Log.getStackTraceString(e));
 					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");	
 				}
+				
+				@Override
+				public void onError(Call call, Exception e, int respCode) {
+					Log.e(tag, "响应码为：" + respCode);
+					Log.e(tag, Log.getStackTraceString(e));
+					if (respCode == 401) {
+						listener.onSearchFailure("您的账号无效或已过期，请重新登录");
+						listener.onBackToLoginInterface();
+					} else {
+						listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+					}
+				}
 			});
 		
 	}
@@ -388,12 +435,13 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 			final IWorkOrderSearchListener listener) {
 		String url = ProjectContants.basePath + "/faultOrder/accept/list";
 		
-		OkHttpUtils.get().url(url)
+		MyOkHttpUtils.get().url(url)
+			.addHeader("token", MyApplication.token)
 			.addParams("employeeId", String.valueOf(employeeId))
 			.addParams("pageNumber", String.valueOf(pageNumber))
 			.addParams("pageSize", String.valueOf(pageSize))
 			.build()
-			.execute(new StringCallback() {
+			.execute(new MyStringCallback() {
 				@Override
 				public void onAfter() {
 					listener.onAfter();
@@ -454,6 +502,18 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 					Log.e(tag, Log.getStackTraceString(e));
 					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");	
 				}
+				
+				@Override
+				public void onError(Call call, Exception e, int respCode) {
+					Log.e(tag, "响应码为：" + respCode);
+					Log.e(tag, Log.getStackTraceString(e));
+					if (respCode == 401) {
+						listener.onSearchFailure("您的账号无效或已过期，请重新登录");
+						listener.onBackToLoginInterface();
+					} else {
+						listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+					}
+				}
 			});
 	}
 	
@@ -463,12 +523,13 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 			final IWorkOrderSearchListener listener) {
 		String url = ProjectContants.basePath + "/faultOrder/feedback/list";
 		
-		OkHttpUtils.get().url(url)
+		MyOkHttpUtils.get().url(url)
+			.addHeader("token", MyApplication.token)
 			.addParams("employeeId", String.valueOf(employeeId))
 			.addParams("pageNumber", String.valueOf(pageNumber))
 			.addParams("pageSize", String.valueOf(pageSize))
 			.build()
-			.execute(new StringCallback() {
+			.execute(new MyStringCallback() {
 				@Override
 				public void onAfter() {
 					listener.onAfter();
@@ -520,6 +581,18 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 					Log.e(tag, Log.getStackTraceString(e));
 					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");	
 				}
+				
+				@Override
+				public void onError(Call call, Exception e, int respCode) {
+					Log.e(tag, "响应码为：" + respCode);
+					Log.e(tag, Log.getStackTraceString(e));
+					if (respCode == 401) {
+						listener.onSearchFailure("您的账号无效或已过期，请重新登录");
+						listener.onBackToLoginInterface();
+					} else {
+						listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+					}
+				}
 			});
 		
 	}
@@ -530,12 +603,13 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 			final IWorkOrderSearchListener listener) {
 		String url = ProjectContants.basePath + "/maintainOrder/feedback/list";
 		
-		OkHttpUtils.get().url(url)
+		MyOkHttpUtils.get().url(url)
+			.addHeader("token", MyApplication.token)
 			.addParams("employeeId", String.valueOf(employeeId))
 			.addParams("pageNumber", String.valueOf(pageNumber))
 			.addParams("pageSize", String.valueOf(pageSize))
 			.build()
-			.execute(new StringCallback() {
+			.execute(new MyStringCallback() {
 				@Override
 				public void onAfter() {
 					listener.onAfter();
@@ -587,6 +661,18 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 					Log.e(tag, Log.getStackTraceString(e));
 					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");	
 				}
+				
+				@Override
+				public void onError(Call call, Exception e, int respCode) {
+					Log.e(tag, "响应码为：" + respCode);
+					Log.e(tag, Log.getStackTraceString(e));
+					if (respCode == 401) {
+						listener.onSearchFailure("您的账号无效或已过期，请重新登录");
+						listener.onBackToLoginInterface();
+					} else {
+						listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+					}
+				}
 			});
 	}
 
@@ -602,11 +688,12 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 			throw new IllegalArgumentException("工单类型有误");
 		}
 		
-		OkHttpUtils.post().url(url)
+		MyOkHttpUtils.post().url(url)
+			.addHeader("token", MyApplication.token)
 			.addParams("id", String.valueOf(workOrderId))
 			.addParams("employeeId", String.valueOf(employeeId))
 			.build()
-			.execute(new StringCallback() {		
+			.execute(new MyStringCallback() {		
 				@Override
 				public void onResponse(String response) {
 					Log.i(response, response);
@@ -635,6 +722,18 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 					Log.e(tag, Log.getStackTraceString(e));
 					listener.onReceiveFailure("服务器正在打盹，请\n检查网络连接后重试");					
 				}
+				
+				@Override
+				public void onError(Call call, Exception e, int respCode) {
+					Log.e(tag, "响应码为：" + respCode);
+					Log.e(tag, Log.getStackTraceString(e));
+					if (respCode == 401) {
+						listener.onReceiveFailure("您的账号无效或已过期，请重新登录");
+						listener.onBackToLoginInterface();
+					} else {
+						listener.onReceiveFailure("服务器正在打盹，请\n检查网络连接后重试");
+					}
+				}
 			});
 	}
 
@@ -650,11 +749,12 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 			throw new IllegalArgumentException("工单类型有误");
 		}
 		
-		OkHttpUtils.post().url(url)
+		MyOkHttpUtils.post().url(url)
+			.addHeader("token", MyApplication.token)
 			.addParams("id", String.valueOf(workOrderId))
 			.addParams("employeeId", String.valueOf(employeeId))
 			.build()
-			.execute(new StringCallback() {				
+			.execute(new MyStringCallback() {				
 				@Override
 				public void onResponse(String response) {
 					Log.i(response, response);
@@ -684,7 +784,19 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
 					listener.onCancelFailure("服务器正在打盹，请\n检查网络连接后重试");			
-				}				
+				}	
+				
+				@Override
+				public void onError(Call call, Exception e, int respCode) {
+					Log.e(tag, "响应码为：" + respCode);
+					Log.e(tag, Log.getStackTraceString(e));
+					if (respCode == 401) {
+						listener.onCancelFailure("您的账号无效或已过期，请重新登录");
+						listener.onBackToLoginInterface();
+					} else {
+						listener.onCancelFailure("服务器正在打盹，请\n检查网络连接后重试");
+					}
+				}
 			});
 	}
 
@@ -693,7 +805,8 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 			Long employeeId, String faultReason, boolean isDone, String remark,
 			String signOutAddress, String finishedItems, final IWorkOrderFeedbackListener listener) {
 		String url = null;
-		PostFormBuilder builder = OkHttpUtils.post()
+		PostFormBuilder builder = MyOkHttpUtils.post()
+			.addHeader("token", MyApplication.token)
 			.addParams("id", String.valueOf(workOrderId))
 			.addParams("employee.id", String.valueOf(employeeId))
 			.addParams("remark", remark)
@@ -713,7 +826,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 			throw new IllegalArgumentException("工单类型有误");
 		}
 		
-		builder.build().execute(new StringCallback() {			
+		builder.build().execute(new MyStringCallback() {			
 			@Override
 			public void onResponse(String response) {
 				Log.i(response, response);
@@ -747,47 +860,21 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 			public void onAfter() {
 				listener.onAfter();
 			}
+
+			@Override
+			public void onError(Call call, Exception e, int respCode) {
+				Log.e(tag, "响应码为：" + respCode);
+				Log.e(tag, Log.getStackTraceString(e));
+				if (respCode == 401) {
+					listener.onFeedbackFailure("您的账号无效或已过期，请重新登录");
+					listener.onBackToLoginInterface();
+				} else {
+					listener.onFeedbackFailure("服务器正在打盹，请\n检查网络连接后重试");
+				}
+			}
 		});
 	}
 
-	/*@Override
-	public void sortMaintainOrderByFinalTimeIncrease(
-			List<MaintainOrder> maintainOrderList) {
-		if (maintainOrderList.size() == 0) {
-			return;
-		}
-		
-		MaintainOrder[] maintainOrders = (MaintainOrder[]) maintainOrderList.toArray();
-		long dateI;
-		long dateJ;
-		MaintainOrder temp;
-		
-		for (int i=0; i<maintainOrders.length-1; i++) {
-			if (maintainOrders[i].getFinalTime() != null) {
-				dateI = maintainOrders[i].getFinalTime().getTime();
-			} else {
-				dateI = 0;
-			}
-			
-			for (int j=maintainOrders.length; j>i; j--) {				
-				if (maintainOrders[j].getFinalTime() != null) {
-					dateJ = maintainOrders[j].getFinalTime().getTime();
-				} else {
-					dateJ = 0;
-				}
-				
-				if (dateI > dateJ) {
-					temp = maintainOrders[i];
-					maintainOrders[i] = maintainOrders[j];
-					maintainOrders[j] = temp;
-				}
-			}
-			
-			maintainOrderList.add(maintainOrders[i]);
-		}
-	}*/
-
-	
 	@Override
 	public void sortMaintainOrderByFinalTimeIncrease(
 			List<MaintainOrder> maintainOrderList) {

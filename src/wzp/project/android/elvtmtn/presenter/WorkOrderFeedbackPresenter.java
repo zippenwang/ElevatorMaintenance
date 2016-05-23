@@ -2,8 +2,8 @@ package wzp.project.android.elvtmtn.presenter;
 
 import wzp.project.android.elvtmtn.activity.IWorkOrderFeedbackActivity;
 import wzp.project.android.elvtmtn.biz.IWorkOrderBiz;
-import wzp.project.android.elvtmtn.biz.IWorkOrderFeedbackListener;
 import wzp.project.android.elvtmtn.biz.impl.WorkOrderBizImpl;
+import wzp.project.android.elvtmtn.biz.listener.IWorkOrderFeedbackListener;
 
 public class WorkOrderFeedbackPresenter {
 	
@@ -35,6 +35,11 @@ public class WorkOrderFeedbackPresenter {
 			@Override
 			public void onAfter() {
 				workOrderFeedbackActivity.closeProgressDialog();
+			}
+
+			@Override
+			public void onBackToLoginInterface() {
+//				workOrderFeedbackActivity.
 			}
 		});
 	}

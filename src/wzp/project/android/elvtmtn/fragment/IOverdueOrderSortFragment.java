@@ -1,20 +1,17 @@
 package wzp.project.android.elvtmtn.fragment;
 
-public interface IOrderSortFragment {
+/**
+ * 未完成、超期工单的排序接口
+ * @author Zippen
+ *
+ */
+public interface IOverdueOrderSortFragment {
 
 	void sortMaintainOrderByFinalTimeIncrease();
 	
 	void sortMaintainOrderByFinalTimeDecrease();
 	
-	void sortFaultOrderByOccurredTimeIncrease();
-	
-	void sortFaultOrderByOccurredTimeDecrease();
-	
 	void sortMaintainOrderByReceivingTime();
-	
-	void sortMaintainOrderByFinishedTimeIncrease();
-	
-	void sortMaintainOrderByFinishedTimeDecrease();
 	
 	void updateInterface();
 	

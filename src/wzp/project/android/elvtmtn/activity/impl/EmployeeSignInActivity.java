@@ -56,6 +56,7 @@ import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 import wzp.project.android.elvtmtn.presenter.WorkOrderSearchPresenter;
 import wzp.project.android.elvtmtn.presenter.WorkOrderSortPresenter;
 import wzp.project.android.elvtmtn.util.MyApplication;
+import wzp.project.android.elvtmtn.util.MyProgressDialog;
 
 public class EmployeeSignInActivity extends BaseActivity 
 		implements IWorkOrderSearchFragment, IEmployeeSignInActivity {
@@ -68,6 +69,7 @@ public class EmployeeSignInActivity extends BaseActivity
 	private TextView tvTipInfo;								// 当ListView中传入的List为空，该控件用于提示数据为空
 	private Button btnRefreshAgain;							// 重试按钮
 	private ProgressDialog progressDialog;					// 进度对话框
+	private MyProgressDialog myProgressDialog;
 	
 	private PopupMenu pmSort;
 	private Menu menu;
@@ -148,6 +150,7 @@ public class EmployeeSignInActivity extends BaseActivity
 		}
 		
 		progressDialog = new ProgressDialog(this);
+		myProgressDialog = new MyProgressDialog(this);
 		
 		curPage = 1;
 		if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
@@ -341,22 +344,29 @@ public class EmployeeSignInActivity extends BaseActivity
 	public void showProgressDialog() {
 		runOnUiThread(new Runnable() {		
 			@Override
-			public void run() {
-				progressDialog.setTitle("正在访问服务器，请稍后...");
-				progressDialog.setMessage("Loading...");
-				progressDialog.setCancelable(true);
+			public void run() {	
+				myProgressDialog.setMessage("正在获取数据，请稍后...");
+				myProgressDialog.setCancelable(true);
 				
-				progressDialog.show();
+				myProgressDialog.show();
 			}
 		});
 	}
+	
+	@Override
+	public void showProgressDialog(String tipInfo) {}
 
 	@Override
-	public void closeProgressDialog() {
-		if (progressDialog != null
-				&& progressDialog.isShowing()) {
-			progressDialog.dismiss();
+	public void closeProgressDialog() {		
+		if (myProgressDialog != null
+				&& myProgressDialog.isShowing()) {
+			myProgressDialog.dismiss();
 		}
+	}
+	
+	@Override
+	public void backToLoginInterface() {
+		EmployeeLoginActivity.myStartActivity(this);
 	}
 	
 	@Override

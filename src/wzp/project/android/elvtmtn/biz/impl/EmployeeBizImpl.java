@@ -22,9 +22,9 @@ import com.zhy.http.okhttp.callback.StringCallback;
 
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.biz.IEmployeeBiz;
-import wzp.project.android.elvtmtn.biz.IEmployeeInfoSearchListener;
-import wzp.project.android.elvtmtn.biz.IEmployeeLoginListener;
-import wzp.project.android.elvtmtn.biz.IEmployeeSignInListener;
+import wzp.project.android.elvtmtn.biz.listener.IEmployeeInfoSearchListener;
+import wzp.project.android.elvtmtn.biz.listener.IEmployeeLoginListener;
+import wzp.project.android.elvtmtn.biz.listener.IEmployeeSignInListener;
 import wzp.project.android.elvtmtn.entity.Employee;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
@@ -141,11 +141,12 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 			throw new IllegalArgumentException("工单类型有误");
 		}
 		
-		OkHttpUtils.post().url(url)
+		MyOkHttpUtils.post().url(url)
+			.addHeader("token", MyApplication.token)
 			.addParams("id", String.valueOf(workOrderId))
 			.addParams("signInAddress", signInAddress)
 			.build()
-			.execute(new StringCallback() {
+			.execute(new MyStringCallback() {
 				@Override
 				public void onResponse(String response) {
 					Log.i(tag, response);
@@ -168,6 +169,23 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
 					listener.onSignInFailure("服务器正在打盹\n请检查网络连接后重试");		
+				}
+				
+				@Override
+				public void onError(Call call, Exception e, int respCode) {
+					Log.e(tag, "响应码为：" + respCode);
+					Log.e(tag, Log.getStackTraceString(e));
+					if (respCode == 401) {
+						listener.onSignInFailure("您的账号无效或已过期，请重新登录");
+						listener.onBackToLoginInterface();
+					} else {
+						listener.onSignInFailure("服务器正在打盹，请\n检查网络连接后重试");
+					}
+				}
+
+				@Override
+				public void onAfter() {
+					listener.onAfter();
 				}
 			});
 	}
@@ -232,12 +250,14 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 				}
 				
 				@Override
-				public void onError(Call call, Exception e, int respCode) {
+				public void onError(Call call, Exception e, int respCode) {					
 					Log.e(tag, "响应码为：" + respCode);
 					Log.e(tag, Log.getStackTraceString(e));
-					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
 					if (respCode == 401) {
+						listener.onSearchFailure("您的账号无效或已过期，请重新登录");
 						listener.onBackToLoginInterface();
+					} else {
+						listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
 					}
 				}
 	

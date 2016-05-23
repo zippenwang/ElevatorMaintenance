@@ -7,9 +7,9 @@ import android.content.Intent;
 import wzp.project.android.elvtmtn.activity.IEmployeeInfoActivity;
 import wzp.project.android.elvtmtn.activity.IEmployeeSignInDetailActivity;
 import wzp.project.android.elvtmtn.biz.IEmployeeBiz;
-import wzp.project.android.elvtmtn.biz.IEmployeeInfoSearchListener;
-import wzp.project.android.elvtmtn.biz.IEmployeeSignInListener;
 import wzp.project.android.elvtmtn.biz.impl.EmployeeBizImpl;
+import wzp.project.android.elvtmtn.biz.listener.IEmployeeInfoSearchListener;
+import wzp.project.android.elvtmtn.biz.listener.IEmployeeSignInListener;
 import wzp.project.android.elvtmtn.entity.Employee;
 
 public class EmployeeInfoSearchPresenter {

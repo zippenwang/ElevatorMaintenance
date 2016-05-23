@@ -87,7 +87,8 @@
         
         <activity
             android:name="wzp.project.android.elvtmtn.activity.impl.EmployeeLoginActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -170,7 +171,7 @@
 
         <!-- 配置第三方Receiver -->
         <receiver
-            android:name="wzp.project.android.elvtmtn.listener.PushDemoReceiver"
+            android:name="wzp.project.android.elvtmtn.receiver.PushDemoReceiver"
             android:exported="false" >
             <intent-filter>
                 <action android:name="com.igexin.sdk.action.BUZVn9qozQA9a6DppN7mS2" />

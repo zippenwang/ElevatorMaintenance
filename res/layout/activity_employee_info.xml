@@ -19,6 +19,17 @@
             android:textColor="@android:color/white"
             android:layout_marginLeft="5dp"
             android:layout_centerVertical="true"/>        
+            
+        <!-- <ImageButton 
+            android:id="@+id/btn_back"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/back"
+            android:background="@drawable/back_to_previous_ibtn_bg"
+            android:scaleType="centerInside"
+            android:layout_marginLeft="5dp"
+            android:layout_centerVertical="true"/> -->
         
 		<TextView 
 	        android:layout_width="wrap_content"

@@ -69,7 +69,7 @@
             android:paddingRight="5dp"
             android:layout_centerVertical="true"/>
         
-		<EditText 
+		<!-- <EditText 
 		    android:id="@+id/edt_condition"
             android:layout_width="240dp"
             android:layout_height="45dp"
@@ -78,7 +78,19 @@
             android:paddingRight="5dp"
             android:hint="输入查询信息..."
             android:textColor="#FFFFFF"
-            android:drawableLeft="@android:drawable/ic_menu_search" />	
+            android:drawableLeft="@android:drawable/ic_menu_search" /> -->	
+            
+        <wzp.project.android.elvtmtn.util.ClearAllEditText 
+		    android:id="@+id/caedt_condition"
+            android:layout_width="240dp"
+            android:layout_height="45dp"
+            android:layout_centerInParent="true"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:hint="输入查询信息..."
+            android:textColor="#FFFFFF"
+            android:drawableLeft="@android:drawable/ic_menu_search"
+            android:drawableRight="@drawable/delete_all" />
 
 		<ImageButton 
             android:id="@+id/ibtn_searchByCondition"

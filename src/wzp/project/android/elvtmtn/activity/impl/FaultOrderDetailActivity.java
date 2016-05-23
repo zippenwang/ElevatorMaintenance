@@ -52,6 +52,7 @@ import wzp.project.android.elvtmtn.helper.contant.WorkOrderState;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 import wzp.project.android.elvtmtn.presenter.WorkOrderReceivePresenter;
 import wzp.project.android.elvtmtn.util.MyApplication;
+import wzp.project.android.elvtmtn.util.MyProgressDialog;
 
 public class FaultOrderDetailActivity extends BaseActivity 
 	implements IWorkOrderDetailActivity, OnGetGeoCoderResultListener {
@@ -81,6 +82,7 @@ public class FaultOrderDetailActivity extends BaseActivity
 	private TextView tvRemark;
 	
 	private ProgressDialog progressDialog;	
+	private MyProgressDialog myProgressDialog;	
 	
 	private WorkOrderReceivePresenter workOrderReceivePresenter 
 		= new WorkOrderReceivePresenter(this);
@@ -191,6 +193,7 @@ public class FaultOrderDetailActivity extends BaseActivity
 		btnDestNavi = (Button) findViewById(R.id.btn_destNavi);
 		
 		progressDialog = new ProgressDialog(this);
+		myProgressDialog = new MyProgressDialog(this);
 		
 		// btnDestNavi按钮需要等待获取了电梯对应的经纬度之后，才能起作用
 		btnDestNavi.setEnabled(false);		
@@ -499,12 +502,15 @@ public class FaultOrderDetailActivity extends BaseActivity
 		fragment.startActivityForResult(actIntent, requestCode);
 	}
 	
-	private void showProgressDialog() {
-		progressDialog.setTitle("正在启动导航功能，请稍后...");
-		progressDialog.setMessage("Loading...");
-		progressDialog.setCancelable(false);
+	@Override
+	public void showProgressDialog() {}
+	
+	@Override
+	public void showProgressDialog(String tipInfo) {
+		myProgressDialog.setMessage(tipInfo);
+		myProgressDialog.setCancelable(true);
 		
-		progressDialog.show();
+		myProgressDialog.show();
 	}
 	
 	public void closeProgressDialog() {
@@ -537,5 +543,10 @@ public class FaultOrderDetailActivity extends BaseActivity
 	public void onGetReverseGeoCodeResult(ReverseGeoCodeResult result) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public void backToLoginInterface() {
+		EmployeeLoginActivity.myStartActivity(this);
 	}
 }

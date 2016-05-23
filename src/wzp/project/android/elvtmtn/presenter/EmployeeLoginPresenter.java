@@ -2,8 +2,8 @@ package wzp.project.android.elvtmtn.presenter;
 
 import wzp.project.android.elvtmtn.activity.IEmployeeLoginActivity;
 import wzp.project.android.elvtmtn.biz.IEmployeeBiz;
-import wzp.project.android.elvtmtn.biz.IEmployeeLoginListener;
 import wzp.project.android.elvtmtn.biz.impl.EmployeeBizImpl;
+import wzp.project.android.elvtmtn.biz.listener.IEmployeeLoginListener;
 import wzp.project.android.elvtmtn.entity.Employee;
 
 public class EmployeeLoginPresenter {

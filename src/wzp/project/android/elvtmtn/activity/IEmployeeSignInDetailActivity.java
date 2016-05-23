@@ -1,13 +1,9 @@
 package wzp.project.android.elvtmtn.activity;
 
-public interface IEmployeeSignInDetailActivity {
+import wzp.project.android.elvtmtn.activity.base.IBaseFragmentOrActivity;
+
+public interface IEmployeeSignInDetailActivity extends IBaseFragmentOrActivity {
 
 	void signInSuccess();
-	
-	void showToast(String tipInfo);
-	
-	void showProgressDialog();
-	
-	void closeProgressDialog();
 	
 }

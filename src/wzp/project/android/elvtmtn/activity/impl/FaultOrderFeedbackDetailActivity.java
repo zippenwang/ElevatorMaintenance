@@ -47,6 +47,7 @@ import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 import wzp.project.android.elvtmtn.presenter.WorkOrderFeedbackPresenter;
 import wzp.project.android.elvtmtn.util.MyApplication;
+import wzp.project.android.elvtmtn.util.MyProgressDialog;
 
 public class FaultOrderFeedbackDetailActivity extends BaseActivity 
 		implements IWorkOrderFeedbackActivity, OnGetGeoCoderResultListener {
@@ -68,6 +69,7 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 	private RadioButton rbNo;
 	private Button btnSubmit;
 	private ProgressDialog progressDialog;
+	private MyProgressDialog myProgressDialog;
 	private AlertDialog.Builder altDlgBuilder;
 	
 	private FaultOrder faultOrder;
@@ -162,6 +164,7 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 		btnSubmit = (Button) findViewById(R.id.btn_submit);
 		
 		progressDialog = new ProgressDialog(this);
+		myProgressDialog = new MyProgressDialog(this);
 		altDlgBuilder = new AlertDialog.Builder(this);
 				
 		btnBack.setOnClickListener(new OnClickListener() {
@@ -338,27 +341,35 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 	public void showProgressDialog(final String tipInfo) {
 		runOnUiThread(new Runnable() {		
 			@Override
-			public void run() {
-				progressDialog.setTitle(tipInfo);
-				progressDialog.setMessage("Loading...");
-				progressDialog.setCancelable(true);
+			public void run() {				
+				myProgressDialog.setMessage(tipInfo);
+				myProgressDialog.setCancelable(true);
 				
-				progressDialog.show();
+				myProgressDialog.show();
 			}
 		});
 	}
+	
+	@Override
+	public void showProgressDialog() {}
 
 	@Override
 	public void closeProgressDialog() {
+		// 在百度地图SDK中被调用，因此需要包含在runOnUiThread方法中
 		runOnUiThread(new Runnable() {			
 			@Override
 			public void run() {
-				if (progressDialog != null
-						&& progressDialog.isShowing()) {
-					progressDialog.dismiss();
+				if (myProgressDialog != null
+						&& myProgressDialog.isShowing()) {
+					myProgressDialog.dismiss();
 				}
 			}
 		});
+	}
+	
+	@Override
+	public void backToLoginInterface() {
+		EmployeeLoginActivity.myStartActivity(this);
 	}
 
 	@Override
@@ -406,5 +417,6 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 			}
 		});
 	}
+
 
 }

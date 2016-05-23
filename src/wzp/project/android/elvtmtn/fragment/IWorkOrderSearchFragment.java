@@ -1,14 +1,8 @@
 package wzp.project.android.elvtmtn.fragment;
 
-public interface IWorkOrderSearchFragment {
-	
-	void showProgressDialog();
-	
-	void closeProgressDialog();
-	
-	void showToast(String text);
-	
-//	void remindDataIsNull();
+import wzp.project.android.elvtmtn.activity.base.IBaseFragmentOrActivity;
+
+public interface IWorkOrderSearchFragment extends IBaseFragmentOrActivity {
 	
 	void updateInterface();
 	
@@ -16,15 +10,7 @@ public interface IWorkOrderSearchFragment {
 	
 	void openPullUpToRefresh();
 	
-//	void remindExceptionInfo();
-	
 	void hidePtrlvAndShowLinearLayout(String info);				// 隐藏PullToRefreshListView控件，显示LinearLayout控件
-	
-//	void hideLinearLayoutAndShowPtrlv();
-	
+
 	void setIsPtrlvHidden(boolean isPtrlvHidden);
-	
-//	void sortMaintainOrderByFinalTimeIncrease();
-//	
-//	void sortMaintainOrderByFinalTimeDecrease();
 }

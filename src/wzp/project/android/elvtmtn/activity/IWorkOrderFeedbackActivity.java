@@ -1,12 +1,8 @@
 package wzp.project.android.elvtmtn.activity;
 
-public interface IWorkOrderFeedbackActivity {
+import wzp.project.android.elvtmtn.activity.base.IBaseFragmentOrActivity;
+
+public interface IWorkOrderFeedbackActivity extends IBaseFragmentOrActivity {
 
 	void feedbackSuccess();
-	
-	void showToast(String tipInfo);
-	
-	void showProgressDialog(String tipInfo);
-	
-	void closeProgressDialog();
 }

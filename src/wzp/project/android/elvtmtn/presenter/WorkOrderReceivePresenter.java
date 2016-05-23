@@ -4,9 +4,9 @@ import java.util.Date;
 
 import wzp.project.android.elvtmtn.activity.IWorkOrderDetailActivity;
 import wzp.project.android.elvtmtn.biz.IWorkOrderBiz;
-import wzp.project.android.elvtmtn.biz.IWorkOrderCancelListener;
-import wzp.project.android.elvtmtn.biz.IWorkOrderReceiveListener;
 import wzp.project.android.elvtmtn.biz.impl.WorkOrderBizImpl;
+import wzp.project.android.elvtmtn.biz.listener.IWorkOrderCancelListener;
+import wzp.project.android.elvtmtn.biz.listener.IWorkOrderReceiveListener;
 
 public class WorkOrderReceivePresenter {
 
@@ -30,6 +30,11 @@ public class WorkOrderReceivePresenter {
 			public void onReceiveFailure(String tipInfo) {
 				workOrderDetailActivity.showToast(tipInfo);
 			}
+
+			@Override
+			public void onBackToLoginInterface() {
+				workOrderDetailActivity.backToLoginInterface();
+			}
 		});
 	}
 	
@@ -45,13 +50,12 @@ public class WorkOrderReceivePresenter {
 			public void onCancelFailure(String tipInfo) {
 				workOrderDetailActivity.showToast(tipInfo);
 			}
+			
+			@Override
+			public void onBackToLoginInterface() {
+				workOrderDetailActivity.backToLoginInterface();
+			}
 		});
 	}
-	
-	
-	
-	
-
-	
 
 }

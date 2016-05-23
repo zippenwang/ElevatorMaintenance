@@ -11,6 +11,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 import wzp.project.android.elvtmtn.R;
+import wzp.project.android.elvtmtn.activity.impl.EmployeeLoginActivity;
 import wzp.project.android.elvtmtn.activity.impl.MaintainOrderDetailActivity;
 import wzp.project.android.elvtmtn.activity.impl.MaintainOrderSearchActivity;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
@@ -23,6 +24,7 @@ import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 import wzp.project.android.elvtmtn.presenter.WorkOrderSearchPresenter;
 import wzp.project.android.elvtmtn.presenter.WorkOrderSortPresenter;
 import wzp.project.android.elvtmtn.util.MyApplication;
+import wzp.project.android.elvtmtn.util.MyProgressDialog;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -61,6 +63,7 @@ public class OverdueWorkOrderFragment extends Fragment
 	private TextView tvTipInfo;								// 当ListView中传入的List为空，该控件用于提示数据为空
 	private Button btnRefreshAgain;							// 重试按钮
 	private ProgressDialog progressDialog;					// 进度对话框
+	private MyProgressDialog myProgressDialog;
 	
 	private ArrayAdapter<MaintainOrder> mAdapter;
 	
@@ -110,6 +113,7 @@ public class OverdueWorkOrderFragment extends Fragment
 		
 		// 初始化ProgressDialog，必须在此处进行初始化，因为访问服务器时，需要调用ProgressDialog
 		progressDialog = new ProgressDialog(workOrderSearchActivity);
+		myProgressDialog = new MyProgressDialog(workOrderSearchActivity);
 		
 		groupId = preferences.getLong("groupId", -1);
 		if (groupId == -1) {
@@ -268,21 +272,29 @@ public class OverdueWorkOrderFragment extends Fragment
 	public void showProgressDialog() {
 		workOrderSearchActivity.runOnUiThread(new Runnable() {		
 			@Override
-			public void run() {
-				progressDialog.setTitle("正在访问服务器，请稍后...");
-				progressDialog.setMessage("Loading...");
-				progressDialog.setCancelable(true);
+			public void run() {				
+				myProgressDialog.setMessage("正在获取数据，请稍后...");
+				myProgressDialog.setCancelable(true);
 				
-				progressDialog.show();
+				myProgressDialog.show();
 			}
 		});			
 	}
+	
+	@Override
+	public void showProgressDialog(String tipInfo) {}
 
 	@Override
-	public void closeProgressDialog() {
-		if (progressDialog != null) {
-			progressDialog.dismiss();
+	public void closeProgressDialog() {		
+		if (myProgressDialog != null
+				&& myProgressDialog.isShowing()) {
+			myProgressDialog.dismiss();
 		}
+	}
+	
+	@Override
+	public void backToLoginInterface() {
+		EmployeeLoginActivity.myStartActivity(workOrderSearchActivity);
 	}
 
 	@Override
@@ -363,26 +375,20 @@ public class OverdueWorkOrderFragment extends Fragment
 	}
 
 	@Override
-	public void sortFaultOrderByOccurredTimeIncrease() {
-		
-	}
-
-	@Override
-	public void sortFaultOrderByOccurredTimeDecrease() {
-		
-	}
-
-	@Override
 	public void sortMaintainOrderByReceivingTime() {
 		workOrderSortPresenter.sortMaintainOrderByReceivingTime(maintainOrderList);
 	}
 
-	/**
-	 * 不存在超期的故障工单，因此不需要为该方法编写方法体
+	/*
+	 * 不存在超期的故障工单，因此不需要为如下方法编写方法体
 	 */
 	@Override
-	public void sortFaultOrderByReceivingTime() {
-		
-	}
+	public void sortFaultOrderByReceivingTime() {}
+
+	@Override
+	public void sortFaultOrderByOccurredTimeIncrease() {}
+
+	@Override
+	public void sortFaultOrderByOccurredTimeDecrease() {}
 	
 }

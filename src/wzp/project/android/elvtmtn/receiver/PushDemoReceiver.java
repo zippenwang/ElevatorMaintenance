@@ -1,11 +1,13 @@
-package wzp.project.android.elvtmtn.listener;
+package wzp.project.android.elvtmtn.receiver;
 
+import wzp.project.android.elvtmtn.activity.impl.EmployeeLoginActivity;
 import wzp.project.android.elvtmtn.activity.impl.FaultOrderDetailActivity;
 import wzp.project.android.elvtmtn.activity.impl.MaintainOrderSearchActivity;
-import wzp.project.android.elvtmtn.biz.ISignleOrderSearchListener;
 import wzp.project.android.elvtmtn.biz.IWorkOrderBiz;
 import wzp.project.android.elvtmtn.biz.impl.WorkOrderBizImpl;
+import wzp.project.android.elvtmtn.biz.listener.ISignleOrderSearchListener;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderState;
+import wzp.project.android.elvtmtn.presenter.WorkOrderSearchPresenter;
 import wzp.project.android.elvtmtn.util.MyApplication;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -32,6 +34,8 @@ public class PushDemoReceiver extends BroadcastReceiver {
     
     private Handler handler = new Handler();
     
+    private WorkOrderSearchPresenter presenter = new WorkOrderSearchPresenter();
+    
     
     @Override
     public void onReceive(final Context context, Intent intent) {    	
@@ -54,7 +58,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
                     String strOrderId = js.getString("id");
                     
                     if (strOrderType.equals("faultOrder")) {
-						workOrderBiz.getFaultOrderById(strOrderId, new ISignleOrderSearchListener() {							
+						/*workOrderBiz.getFaultOrderById(strOrderId, new ISignleOrderSearchListener() {							
 							@Override
 							public void onSearchSuccess(String jsonOrder) {
 								Intent actIntent = new Intent(context, FaultOrderDetailActivity.class);
@@ -74,9 +78,14 @@ public class PushDemoReceiver extends BroadcastReceiver {
 									}
 								});
 							}
-						});
+
+							@Override
+							public void onBackToLoginInterface() {
+								EmployeeLoginActivity.myStartActivity(context);
+							}
+						});*/
+                    	presenter.searchFaultOrderById(context, strOrderId);
 					} else if (strOrderType.equals("maintainOrder")) {
-//						MaintainOrderSearchActivity.myStartActivity(context);
 						Intent actIntent = new Intent(context, MaintainOrderSearchActivity.class);
 						actIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 						context.startActivity(actIntent);

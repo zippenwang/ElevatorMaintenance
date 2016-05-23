@@ -1,12 +1,8 @@
 package wzp.project.android.elvtmtn.activity;
 
-public interface IElevatorRecordSearchActivity {
+import wzp.project.android.elvtmtn.activity.base.IBaseFragmentOrActivity;
 
-	void showProgressDialog();
-	
-	void closeProgressDialog();
-	
-	void showToast(String text);
+public interface IElevatorRecordSearchActivity extends IBaseFragmentOrActivity {
 	
 	void updateInterface();
 	

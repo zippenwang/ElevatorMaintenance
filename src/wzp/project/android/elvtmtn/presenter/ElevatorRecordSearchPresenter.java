@@ -3,9 +3,10 @@ package wzp.project.android.elvtmtn.presenter;
 import java.util.List;
 
 import wzp.project.android.elvtmtn.activity.IElevatorRecordSearchActivity;
+import wzp.project.android.elvtmtn.activity.impl.EmployeeLoginActivity;
 import wzp.project.android.elvtmtn.biz.IElevatorRecordBiz;
-import wzp.project.android.elvtmtn.biz.IElevatorRecordSearchListener;
 import wzp.project.android.elvtmtn.biz.impl.ElevatorRecordBizImpl;
+import wzp.project.android.elvtmtn.biz.listener.IElevatorRecordSearchListener;
 import wzp.project.android.elvtmtn.entity.ElevatorRecord;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 
@@ -60,6 +61,11 @@ public class ElevatorRecordSearchPresenter implements IElevatorRecordSearchListe
 					public void onAfter() {
 						elevatorRecordSearchActivity.closeProgressDialog();
 					}
+					
+					@Override
+					public void onBackToLoginInterface() {
+						elevatorRecordSearchActivity.backToLoginInterface();
+					}
 				});
 	}
 	
@@ -84,11 +90,16 @@ public class ElevatorRecordSearchPresenter implements IElevatorRecordSearchListe
 	@Override
 	public void onSearchFailure(String tipInfo) {
 		elevatorRecordSearchActivity.showToast(tipInfo);
-		elevatorRecordSearchActivity.hidePtrlvAndShowLinearLayout("服务器正在打盹，请检查网络后重试...");
+		elevatorRecordSearchActivity.hidePtrlvAndShowLinearLayout(tipInfo);
 	}
 	
 	@Override
 	public void onAfter() {
 		elevatorRecordSearchActivity.closeProgressDialog();
+	}
+
+	@Override
+	public void onBackToLoginInterface() {
+		elevatorRecordSearchActivity.backToLoginInterface();
 	}
 }

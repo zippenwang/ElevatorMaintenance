@@ -12,6 +12,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 
 import wzp.project.android.elvtmtn.R;
+import wzp.project.android.elvtmtn.activity.impl.EmployeeLoginActivity;
 import wzp.project.android.elvtmtn.activity.impl.FaultOrderDetailActivity;
 import wzp.project.android.elvtmtn.activity.impl.FaultOrderSearchActivity;
 import wzp.project.android.elvtmtn.activity.impl.MaintainOrderDetailActivity;
@@ -27,6 +28,7 @@ import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 import wzp.project.android.elvtmtn.presenter.WorkOrderSearchPresenter;
 import wzp.project.android.elvtmtn.presenter.WorkOrderSortPresenter;
 import wzp.project.android.elvtmtn.util.MyApplication;
+import wzp.project.android.elvtmtn.util.MyProgressDialog;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -61,6 +63,7 @@ public class UnfinishedWorkOrderFragment extends Fragment
 	private TextView tvTipInfo;								// 当ListView中传入的List为空，该控件用于提示数据为空
 	private Button btnRefreshAgain;							// 重试按钮
 	private ProgressDialog progressDialog;					// 进度对话框
+	private MyProgressDialog myProgressDialog;					// 进度对话框
 		
 	private int workOrderType;								// 工单类型
 	private ArrayAdapter<?> mAdapter;
@@ -117,6 +120,7 @@ public class UnfinishedWorkOrderFragment extends Fragment
 		
 		// 初始化ProgressDialog，必须在此处进行初始化，因为访问服务器时，需要调用ProgressDialog
 		progressDialog = new ProgressDialog(workOrderSearchActivity);
+		myProgressDialog = new MyProgressDialog(workOrderSearchActivity);		
 		
 		groupId = preferences.getLong("groupId", -1);
 		Log.i(tag, "groupId:" + groupId);
@@ -329,28 +333,28 @@ public class UnfinishedWorkOrderFragment extends Fragment
 		workOrderSearchActivity.runOnUiThread(new Runnable() {		
 			@Override
 			public void run() {
-				progressDialog.setTitle("正在访问服务器，请稍后...");
-				progressDialog.setMessage("Loading...");
-				progressDialog.setCancelable(true);
+				myProgressDialog.setMessage("正在获取数据，请稍后...");
+				myProgressDialog.setCancelable(true);
 				
-				progressDialog.show();
+				myProgressDialog.show();
 			}
 		});
 	}
-
+	
+	@Override
+	public void showProgressDialog(String tipInfo) {}
+	
 	@Override
 	public void closeProgressDialog() {
-		/*workOrderSearchActivity.runOnUiThread(new Runnable() {			
-			@Override
-			public void run() {
-				if (progressDialog != null) {
-					progressDialog.dismiss();
-				}
-			}
-		});*/
-		if (progressDialog != null) {
-			progressDialog.dismiss();
+		if (myProgressDialog != null
+				&& myProgressDialog.isShowing()) {
+			myProgressDialog.dismiss();
 		}
+	}
+	
+	@Override
+	public void backToLoginInterface() {
+		EmployeeLoginActivity.myStartActivity(workOrderSearchActivity);
 	}
 	
 	@Override
@@ -450,5 +454,4 @@ public class UnfinishedWorkOrderFragment extends Fragment
 	public void sortFaultOrderByReceivingTime() {
 		workOrderSortPresenter.sortFaultOrderByReceivingTime(faultOrderList);
 	}
-
 }

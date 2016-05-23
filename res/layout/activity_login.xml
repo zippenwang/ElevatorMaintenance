@@ -8,66 +8,6 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="40dp">  
-    
-    <!-- <TableLayout
-        android:id="@+id/table_userLogin"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:stretchColumns="1" >
-	    
-	    <TextView 
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:text="@string/userLogin"
-	        android:textSize="28sp"
-	        android:gravity="center"/>
-        
-	    <TableRow
-	        android:layout_marginTop="10dp">
-	        <TextView
-	            android:layout_height="wrap_content"
-	            android:textSize="20sp"
-	            android:text="账号" />
-	        <EditText
-	            android:id="@+id/edt_username"
-	            android:layout_height="wrap_content"
-	            android:hint="请输入员工号..." />
-	    </TableRow>
-			
-	    <TableRow>
-	        <TextView
-	            android:layout_height="wrap_content"
-	            android:textSize="20sp"
-	            android:text="密码" />
-	        <EditText
-	            android:id="@+id/edt_password"
-	            android:layout_height="wrap_content"
-	            android:hint="请输入密码..."
-	            android:inputType="textPassword" />
-	    </TableRow>
-	    
-	    <CheckBox 
-	        android:id="@+id/cb_isRemember"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:text="记住账号密码"/>
-	    
-	    <LinearLayout
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:gravity="center">
-	        <Button 
-	            android:id="@+id/btn_login"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:text="登录"/>
-	        <Button 
-	            android:id="@+id/btn_exit"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:text="退出"/>
-	    </LinearLayout>
-	</TableLayout> -->
 	
 	<TextView 
         android:layout_width="match_parent"
@@ -75,7 +15,8 @@
         android:text="@string/userLogin"
         android:textSize="28sp"
         android:gravity="center"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="20dp"
+        android:textStyle="bold"/>
 	
 	<!-- <EditText 
 	    android:id="@+id/edt_username"
@@ -96,7 +37,7 @@
 	    android:paddingRight="10dp"
 	    android:hint="请输入用户名..."
 	    android:drawableRight="@drawable/delete_all"
-	    android:background="@drawable/username_edit_bg"/>
+	    android:background="@drawable/username_edit_bg" />
     
 	
 	<ImageView

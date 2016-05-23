@@ -10,7 +10,9 @@ import wzp.project.android.elvtmtn.entity.Employee;
 import wzp.project.android.elvtmtn.presenter.EmployeeLoginPresenter;
 import wzp.project.android.elvtmtn.util.ClearAllEditText;
 import wzp.project.android.elvtmtn.util.MyApplication;
+import wzp.project.android.elvtmtn.util.MyProgressDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
@@ -39,6 +41,7 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 	private Button btnIntoNext;
 	
 	private ProgressDialog progressDialog;
+	private MyProgressDialog myProgressDialog;
 	
 	private EmployeeLoginPresenter userLoginPresenter = new EmployeeLoginPresenter(this);
 	
@@ -70,6 +73,7 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 		cbIsRemember = (CheckBox) findViewById(R.id.cb_isRemember);
 		
 		progressDialog = new ProgressDialog(this);
+		myProgressDialog = new MyProgressDialog(this);
 		
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
 		boolean isRemember = preferences.getBoolean("isRemember", false);
@@ -152,28 +156,22 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 		runOnUiThread(new Runnable() {		
 			@Override
 			public void run() {
-				progressDialog.setTitle("正在验证用户名和密码，请稍后...");
+				/*progressDialog.setTitle("正在验证用户名和密码，请稍后...");
 				progressDialog.setMessage("Loading...");
 				progressDialog.setCancelable(true);
 				
-				progressDialog.show();
+				progressDialog.show();*/
+				
+				myProgressDialog.setMessage("正在访问服务器，请稍后...");
+				myProgressDialog.setCancelable(true);
+				
+				myProgressDialog.show();
 			}
 		});
 	}
 	
 	@Override
-	public void showProgressDialog(final String title, final String message) {
-		runOnUiThread(new Runnable() {		
-			@Override
-			public void run() {
-				progressDialog.setTitle(title);
-				progressDialog.setMessage(message);
-				progressDialog.setCancelable(true);
-				
-				progressDialog.show();
-			}
-		});
-	}
+	public void showProgressDialog(String tipInfo) {}
 
 	@Override
 	public void closeProgressDialog() {
@@ -185,8 +183,12 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 				}
 			}
 		});*/
-		if (progressDialog != null) {
+		/*if (progressDialog != null) {
 			progressDialog.dismiss();
+		}*/
+		if (myProgressDialog != null
+				&& myProgressDialog.isShowing()) {
+			myProgressDialog.dismiss();
 		}
 	}
 	
@@ -199,4 +201,12 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 			}
 		});		
 	}
+	
+	public static void myStartActivity(Context context) {
+		Intent actIntent = new Intent(context, EmployeeLoginActivity.class);
+		context.startActivity(actIntent);
+	}
+
+	@Override
+	public void backToLoginInterface() {}
 }

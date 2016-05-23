@@ -2,9 +2,9 @@ package wzp.project.android.elvtmtn.activity;
 
 import java.util.Date;
 
-public interface IWorkOrderDetailActivity {
+import wzp.project.android.elvtmtn.activity.base.IBaseFragmentOrActivity;
 
-	void showToast(String text);
+public interface IWorkOrderDetailActivity extends IBaseFragmentOrActivity {
 	
 	void receiveSuccess(Date receivingTime);
 	

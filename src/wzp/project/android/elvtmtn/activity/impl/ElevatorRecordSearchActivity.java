@@ -31,6 +31,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 import wzp.project.android.elvtmtn.R;
@@ -40,7 +41,9 @@ import wzp.project.android.elvtmtn.entity.ElevatorRecord;
 import wzp.project.android.elvtmtn.helper.adapter.ElevatorRecordAdapter;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import wzp.project.android.elvtmtn.presenter.ElevatorRecordSearchPresenter;
+import wzp.project.android.elvtmtn.util.ClearAllEditText;
 import wzp.project.android.elvtmtn.util.MyApplication;
+import wzp.project.android.elvtmtn.util.MyProgressDialog;
 
 public class ElevatorRecordSearchActivity extends BaseActivity implements IElevatorRecordSearchActivity {
 
@@ -49,13 +52,14 @@ public class ElevatorRecordSearchActivity extends BaseActivity implements IEleva
 	private ImageButton ibtnSearchRecord;
 	private RelativeLayout relativeSearch;
 	private ImageButton ibtnBackToPrevious;
-	private EditText edtCondition;
+	private ClearAllEditText caedtCondition;
 	private ImageButton ibtnSearchByCondition;
 	private PullToRefreshListView ptrlvElevatorRecord;
 	private LinearLayout linearTipInfo;						// 提示网络异常、或当前工单不存在的LinearLayout控件
 	private TextView tvTipInfo;								// 当ListView中传入的List为空，该控件用于提示数据为空
 	private Button btnRefreshAgain;							// 重试按钮
 	private ProgressDialog progressDialog;					// 进度对话框
+	private MyProgressDialog myProgressDialog;
 	
 	private ArrayAdapter<ElevatorRecord> mAdapter;
 	
@@ -105,6 +109,7 @@ public class ElevatorRecordSearchActivity extends BaseActivity implements IEleva
 		}
 		
 		progressDialog = new ProgressDialog(this);
+		myProgressDialog = new MyProgressDialog(this);
 		
 		curPage = 1;
 		mAdapter = new ElevatorRecordAdapter(this, R.layout.listitem_elevator_record, elevatorRecordList);
@@ -117,13 +122,13 @@ public class ElevatorRecordSearchActivity extends BaseActivity implements IEleva
 		ibtnSearchRecord = (ImageButton) findViewById(R.id.ibtn_searchElevatorRecord);
 		relativeSearch = (RelativeLayout) findViewById(R.id.relative_search);
 		ibtnBackToPrevious = (ImageButton) findViewById(R.id.ibtn_backToPrevious);
-		edtCondition = (EditText) findViewById(R.id.edt_condition);
+		caedtCondition = (ClearAllEditText) findViewById(R.id.caedt_condition);
 		ibtnSearchByCondition = (ImageButton) findViewById(R.id.ibtn_searchByCondition);
 		ptrlvElevatorRecord = (PullToRefreshListView) findViewById(R.id.ptrlv_elevatorRecord);
 		linearTipInfo = (LinearLayout) findViewById(R.id.linear_tipInfo);
 		tvTipInfo = (TextView) findViewById(R.id.tv_tipInfo);
 		btnRefreshAgain = (Button) findViewById(R.id.btn_refreshAgain);
-		
+				
 		btnBack.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
@@ -137,8 +142,8 @@ public class ElevatorRecordSearchActivity extends BaseActivity implements IEleva
 				relativeBase.setVisibility(View.GONE);
 				relativeSearch.setVisibility(View.VISIBLE);
 				// 设置edtCondition没用，原因暂不明
-				edtCondition.setFocusable(true);
-				edtCondition.setSelectAllOnFocus(true);
+				caedtCondition.setFocusable(true);
+				caedtCondition.setSelectAllOnFocus(true);
 			}
 		});
 		
@@ -154,7 +159,8 @@ public class ElevatorRecordSearchActivity extends BaseActivity implements IEleva
 		ibtnSearchByCondition.setOnClickListener(new OnClickListener() {		
 			@Override
 			public void onClick(View v) {
-				searchCondition = edtCondition.getText().toString();
+				searchCondition = caedtCondition.getText().toString();
+				
 				// 此次不需要进行非空判断，如果查询条件为空，默认为查询所有电梯档案
 				/*if (TextUtils.isEmpty(searchCondition)) {
 					Toast.makeText(ElevatorRecordSearchActivity.this, 
@@ -290,21 +296,28 @@ public class ElevatorRecordSearchActivity extends BaseActivity implements IEleva
 		runOnUiThread(new Runnable() {		
 			@Override
 			public void run() {
-				progressDialog.setTitle("正在访问服务器，请稍后...");
-				progressDialog.setMessage("Loading...");
-				progressDialog.setCancelable(true);
+				myProgressDialog.setMessage("正在获取数据，请稍后...");
+				myProgressDialog.setCancelable(true);
 				
-				progressDialog.show();
+				myProgressDialog.show();
 			}
 		});
 	}
+	
+	@Override
+	public void showProgressDialog(String tipInfo) {}
 
 	@Override
 	public void closeProgressDialog() {
-		if (progressDialog != null
-				&& progressDialog.isShowing()) {
-			progressDialog.dismiss();
+		if (myProgressDialog != null
+				&& myProgressDialog.isShowing()) {
+			myProgressDialog.dismiss();
 		}
+	}
+	
+	@Override
+	public void backToLoginInterface() {
+		EmployeeLoginActivity.myStartActivity(this);
 	}
 	
 	@Override
@@ -383,5 +396,4 @@ public class ElevatorRecordSearchActivity extends BaseActivity implements IEleva
 			}
 		});
 	}
-
 }

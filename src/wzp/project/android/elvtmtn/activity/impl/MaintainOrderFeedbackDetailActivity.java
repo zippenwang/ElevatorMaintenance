@@ -55,6 +55,7 @@ import wzp.project.android.elvtmtn.entity.MaintainOrder;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 import wzp.project.android.elvtmtn.presenter.WorkOrderFeedbackPresenter;
 import wzp.project.android.elvtmtn.util.MyApplication;
+import wzp.project.android.elvtmtn.util.MyProgressDialog;
 
 public class MaintainOrderFeedbackDetailActivity extends BaseActivity 
 		implements IWorkOrderFeedbackActivity, OnGetGeoCoderResultListener {
@@ -75,6 +76,7 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 	private RadioButton rbNo;
 	private Button btnSubmit;
 	private ProgressDialog progressDialog;
+	private MyProgressDialog myProgressDialog;
 	private AlertDialog.Builder altDlgBuilder;
 	
 	private MaintainOrder maintainOrder;
@@ -97,8 +99,8 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 	
 	private int checkedNum;
 	private List<MaintainItem> itemList;
-//	private List<String> finishedItemList;
-	private String finishedItems;
+	private List<String> finishedItemList;
+//	private String finishedItems;
 	
 	private ConnectivityManager mConnectivityManager;
 	
@@ -154,10 +156,12 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 		}
 		itemList = maintainOrder.getMaintainType().getMaintainItems();
 //		finishedItemList = Arrays.asList(maintainOrder.getFinishedItems().split(";"));
-		finishedItems = maintainOrder.getFinishedItems();
-		if (finishedItems == null) {
-			finishedItems = "";
-		}
+		String finishedItems = maintainOrder.getFinishedItems();
+		if (TextUtils.isEmpty(finishedItems)) {
+			finishedItemList = null;
+		} else {
+			finishedItemList = Arrays.asList(finishedItems.split(";"));
+		}		
 		
 		mConnectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 	}
@@ -181,6 +185,7 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 		btnSubmit = (Button) findViewById(R.id.btn_submit);
 		
 		progressDialog = new ProgressDialog(this);
+		myProgressDialog = new MyProgressDialog(this);
 		altDlgBuilder = new AlertDialog.Builder(this);
 				
 		btnBack.setOnClickListener(new OnClickListener() {
@@ -299,33 +304,13 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 					}
 				}
 			});
-			if (finishedItems.contains(String.valueOf(item.getId()))) {
+			if (finishedItemList != null
+					&& finishedItemList.contains(String.valueOf(item.getId()))) {
 				ckBox.setChecked(true);
 			}
 			linearMaintainItem.addView(ckBox);
 			ckBox = null;
 		}
-		
-		/*for (int i=0; i<linearMaintainItem.getChildCount(); i++) {
-			CheckBox ckbxItem = (CheckBox) linearMaintainItem.getChildAt(i);
-			ckbxItem.setOnCheckedChangeListener(new OnCheckedChangeListener() {				
-				@Override
-				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-					if (isChecked) {
-						checkedNum++;
-					} else {
-						checkedNum--;
-					}
-					Log.i(tag, "" + checkedNum);
-					if (checkedNum == linearMaintainItem.getChildCount()) {
-						rbYes.setEnabled(true);
-					} else {
-						rbYes.setEnabled(false);
-						rbNo.setChecked(true);
-					}
-				}
-			});
-		}*/
 
 		if (!TextUtils.isEmpty(maintainOrder.getRemark())) {
 			edtRemark.setText(maintainOrder.getRemark());
@@ -417,26 +402,34 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 		runOnUiThread(new Runnable() {		
 			@Override
 			public void run() {
-				progressDialog.setTitle(tipInfo);
-				progressDialog.setMessage("Loading...");
-				progressDialog.setCancelable(true);
+				myProgressDialog.setMessage(tipInfo);
+				myProgressDialog.setCancelable(true);
 				
-				progressDialog.show();
+				myProgressDialog.show();
+			}
+		});
+	}
+	
+	@Override
+	public void showProgressDialog() {}
+
+	@Override
+	public void closeProgressDialog() {
+		// 在百度地图SDK中被调用，因此需要包含在runOnUiThread方法中
+		runOnUiThread(new Runnable() {			
+			@Override
+			public void run() {
+				if (myProgressDialog != null
+						&& myProgressDialog.isShowing()) {
+					myProgressDialog.dismiss();
+				}
 			}
 		});
 	}
 
 	@Override
-	public void closeProgressDialog() {
-		runOnUiThread(new Runnable() {			
-			@Override
-			public void run() {
-				if (progressDialog != null
-						&& progressDialog.isShowing()) {
-					progressDialog.dismiss();
-				}
-			}
-		});
+	public void backToLoginInterface() {
+		EmployeeLoginActivity.myStartActivity(this);
 	}
 
 	@Override

@@ -20,6 +20,7 @@ import wzp.project.android.elvtmtn.activity.base.BaseActivity;
 import wzp.project.android.elvtmtn.entity.Employee;
 import wzp.project.android.elvtmtn.presenter.EmployeeInfoSearchPresenter;
 import wzp.project.android.elvtmtn.util.MyApplication;
+import wzp.project.android.elvtmtn.util.MyProgressDialog;
 
 public class EmployeeInfoActivity extends BaseActivity implements IEmployeeInfoActivity {
 
@@ -31,6 +32,7 @@ public class EmployeeInfoActivity extends BaseActivity implements IEmployeeInfoA
 	private TextView tvGroupMember;
 	private Button btnChangePassword;
 	private ProgressDialog progressDialog;					// 进度对话框
+	private MyProgressDialog myProgressDialog; 
 	
 	private SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
 	private Employee employee;
@@ -58,6 +60,7 @@ public class EmployeeInfoActivity extends BaseActivity implements IEmployeeInfoA
 		tvGroupMember = (TextView) findViewById(R.id.tv_groupMember);
 		btnChangePassword = (Button) findViewById(R.id.btn_changePassword);
 		progressDialog = new ProgressDialog(this);
+		myProgressDialog = new MyProgressDialog(this);
 		
 		btnChangePassword.setOnClickListener(new OnClickListener() {		
 			@Override
@@ -116,20 +119,22 @@ public class EmployeeInfoActivity extends BaseActivity implements IEmployeeInfoA
 		runOnUiThread(new Runnable() {		
 			@Override
 			public void run() {
-				progressDialog.setTitle("正在访问服务器，请稍后...");
-				progressDialog.setMessage("Loading...");
-				progressDialog.setCancelable(true);
+				myProgressDialog.setMessage("正在获取数据，请稍后...");
+				myProgressDialog.setCancelable(true);
 				
-				progressDialog.show();
+				myProgressDialog.show();
 			}
 		});
 	}
+	
+	@Override
+	public void showProgressDialog(String tipInfo) {}
 
 	@Override
 	public void closeProgressDialog() {
-		if (progressDialog != null
-				&& progressDialog.isShowing()) {
-			progressDialog.dismiss();
+		if (myProgressDialog != null
+				&& myProgressDialog.isShowing()) {
+			myProgressDialog.dismiss();
 		}
 	}
 
@@ -138,4 +143,5 @@ public class EmployeeInfoActivity extends BaseActivity implements IEmployeeInfoA
 		Intent intent = new Intent(this, EmployeeLoginActivity.class);
 		startActivity(intent);
 	}
+
 }

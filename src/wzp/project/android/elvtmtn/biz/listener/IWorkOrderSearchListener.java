@@ -1,6 +1,8 @@
-package wzp.project.android.elvtmtn.biz;
+package wzp.project.android.elvtmtn.biz.listener;
 
-public interface IWorkOrderSearchListener {
+import wzp.project.android.elvtmtn.biz.listener.base.IBaseListener;
+
+public interface IWorkOrderSearchListener extends IBaseListener {
 	
 	void onAfter();								// 查询工单结束执行的UI操作
 	

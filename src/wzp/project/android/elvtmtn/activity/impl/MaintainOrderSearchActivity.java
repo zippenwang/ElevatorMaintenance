@@ -14,7 +14,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.view.ViewPager.SimpleOnPageChangeListener;
 import android.util.Log;
 import android.view.Menu;
@@ -32,7 +31,6 @@ import android.widget.Toast;
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.fragment.FinishedWorkOrderFragment;
 import wzp.project.android.elvtmtn.fragment.IFinishedOrderSortFragment;
-import wzp.project.android.elvtmtn.fragment.IOrderSortFragment;
 import wzp.project.android.elvtmtn.fragment.IUnfOvdOrderSortFragment;
 import wzp.project.android.elvtmtn.fragment.IWorkOrderSearchFragment;
 import wzp.project.android.elvtmtn.fragment.OverdueWorkOrderFragment;
@@ -156,13 +154,9 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 					default:
 						break;
 				}
-				
-				
 				return false;
 			}
 		});
-		
-		
 	
 		vpMaintainOrder = (ViewPager) findViewById(R.id.vp_maintainOrder);
 		// 设置ViewPager的预加载值，即让ViewPager维护以当前Fragment为中心，左右各2个Fragment
@@ -201,30 +195,6 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 				}
 			}
 		});
-		
-		/*pmSort.setOnMenuItemClickListener(new OnMenuItemClickListener() {			
-			@Override
-			public boolean onMenuItemClick(MenuItem item) {
-				switch (item.getItemId()) {
-				case R.id.item_increase:
-					FragmentManager manager = getSupportFragmentManager();
-					List<Fragment> fragmentList = manager.getFragments();
-					for (Fragment fragment : fragmentList) {
-						if (fragment.isVisible()) {
-							
-						}
-					}
-					break;
-
-				default:
-					break;
-				}
-				
-				
-				
-				return false;
-			}
-		});*/
 	}
 	
 	private void initParam() {
@@ -326,8 +296,6 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 			}
 		}
 	};
-	
-	
 	
 	public static void myStartActivity(Context context) {
 		Intent actIntent = new Intent(context, MaintainOrderSearchActivity.class);

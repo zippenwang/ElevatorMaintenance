@@ -2,21 +2,33 @@ package wzp.project.android.elvtmtn.presenter;
 
 import java.util.List;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
+import android.widget.Toast;
+
+import wzp.project.android.elvtmtn.activity.impl.EmployeeLoginActivity;
+import wzp.project.android.elvtmtn.activity.impl.FaultOrderDetailActivity;
 import wzp.project.android.elvtmtn.biz.IWorkOrderBiz;
-import wzp.project.android.elvtmtn.biz.IWorkOrderSearchListener;
 import wzp.project.android.elvtmtn.biz.impl.WorkOrderBizImpl;
+import wzp.project.android.elvtmtn.biz.listener.ISignleOrderSearchListener;
+import wzp.project.android.elvtmtn.biz.listener.IWorkOrderSearchListener;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
 import wzp.project.android.elvtmtn.fragment.IWorkOrderSearchFragment;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
+import wzp.project.android.elvtmtn.helper.contant.WorkOrderState;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 
 public class WorkOrderSearchPresenter implements IWorkOrderSearchListener {
 
 	private static IWorkOrderBiz workOrderBiz = new WorkOrderBizImpl();
 	private IWorkOrderSearchFragment workOrderSearchFragment;
+    private Handler handler = new Handler();	
 	
-
+    
+    public WorkOrderSearchPresenter() {}
+    
 	public WorkOrderSearchPresenter(IWorkOrderSearchFragment workOrderSearchFragment) {
 		this.workOrderSearchFragment = workOrderSearchFragment;
 	}
@@ -33,6 +45,34 @@ public class WorkOrderSearchPresenter implements IWorkOrderSearchListener {
 		workOrderSearchFragment.showProgressDialog();
 		workOrderBiz.getFaultOrdersByCondition(groupId, workOrderState, 
 				pageNumber, pageSize, dataList, this);
+	}
+	
+	public void searchFaultOrderById(final Context context, String strOrderId) {
+		workOrderBiz.getFaultOrderById(strOrderId, new ISignleOrderSearchListener() {
+			@Override
+			public void onSearchSuccess(String jsonOrder) {
+				Intent actIntent = new Intent(context, FaultOrderDetailActivity.class);
+				actIntent.putExtra("workOrderState", WorkOrderState.UNFINISHED);
+				actIntent.putExtra("workOrder", jsonOrder);
+				actIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				context.startActivity(actIntent);
+			}
+			
+			@Override
+			public void onSearchFailure(final String tipInfo) {
+				handler.post(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(context, tipInfo, Toast.LENGTH_SHORT).show();
+					}
+				});
+			}
+
+			@Override
+			public void onBackToLoginInterface() {
+				EmployeeLoginActivity.myStartActivity(context);
+			}
+		});
 	}
 	
 	public void searchReceivedMaintainOrders(long employeeId, int pageNumber, 
@@ -92,6 +132,9 @@ public class WorkOrderSearchPresenter implements IWorkOrderSearchListener {
 	public void onAfter() {
 		workOrderSearchFragment.closeProgressDialog();
 	}
-	
-	
+
+	@Override
+	public void onBackToLoginInterface() {
+		workOrderSearchFragment.backToLoginInterface();
+	}
 }
