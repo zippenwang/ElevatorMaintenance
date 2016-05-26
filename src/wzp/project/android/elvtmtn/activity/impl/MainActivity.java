@@ -1,9 +1,14 @@
 package wzp.project.android.elvtmtn.activity.impl;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -22,6 +27,8 @@ public class MainActivity extends BaseActivity {
 	private MyImageButton mibtnElevatorRecord;
 	private MyImageButton mibtnUserInfo;
 	private AlertDialog.Builder altDlgBuilder;
+	
+	private int pressBackTimes;
 	
 	private String[] items = new String[] {"保养工单", "故障工单"};
 	
@@ -107,5 +114,30 @@ public class MainActivity extends BaseActivity {
 			}
 		});
 	}
+	
+	public static void myStartActivity(Context context) {
+		Intent intent = new Intent(context, MainActivity.class);
+		context.startActivity(intent);
+	}
 
+	@Override
+	public void onBackPressed() {
+//		moveTaskToBack(true);		// 退出后并没有销毁Activity，只是将应用程序的back stack保存至后台中
+		/*
+		 * 按一次退出，提示“再按一次推出系统”，1.5秒内再按一次退出，则真正退出应用程序
+		 */
+		pressBackTimes++;
+		if (pressBackTimes == 2) {
+			finish();
+		} else if (pressBackTimes < 2) {
+			new Timer().schedule(new TimerTask() {
+				@Override
+				public void run() {
+					pressBackTimes = 0;
+				}
+			}, 1500);
+			Toast.makeText(this, "再按一次退出系统", Toast.LENGTH_SHORT).show();
+		}
+		
+	}
 }

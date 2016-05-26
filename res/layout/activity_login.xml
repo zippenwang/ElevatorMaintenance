@@ -73,7 +73,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="记住账号密码"/>
+        android:text="记住用户名"/>
+    
+    <CheckBox 
+        android:id="@+id/cb_isAutoLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="自动登录"/>
     
     <Button 
         android:id="@+id/btn_login"

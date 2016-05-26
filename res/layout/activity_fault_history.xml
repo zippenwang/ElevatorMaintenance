@@ -8,6 +8,26 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="#484E61">
+       <!--  <ImageButton 
+            android:id="@+id/ibtn_back"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/back"
+            android:background="@drawable/back_to_previous_ibtn_bg"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+            android:layout_centerVertical="true"/>   -->             
+		<!-- <TextView 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="24sp"
+	        android:textColor="#FFFFFF"
+	        android:text="电梯档案"
+	        android:gravity="center"
+	        android:layout_alignParentRight="true"
+	        android:layout_centerVertical="true"
+	        android:layout_marginRight="10dp"/>         -->
         <Button 
             android:id="@+id/btn_back"
             android:layout_width="60dp"
@@ -18,24 +38,59 @@
             android:textSize="14sp"
             android:textColor="@android:color/white"
             android:layout_marginLeft="5dp"
-            android:layout_centerVertical="true"/>               
-		<TextView 
+            android:layout_centerVertical="true"/>      
+        
+        <TextView 
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:textSize="24sp"
 	        android:textColor="#FFFFFF"
-	        android:text="电梯档案"
+	        android:text="故障历史"
 	        android:gravity="center"
-	        android:layout_alignParentRight="true"
-	        android:layout_centerVertical="true"
-	        android:layout_marginRight="10dp"/>        
+			android:layout_centerInParent="true"/>     
+	
+		<ImageButton 
+            android:id="@+id/ibtn_sort"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/sort"
+            android:scaleType="centerInside"
+            android:background="@drawable/sort_ibtn_bg"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+            android:layout_centerVertical="true"/>
     </RelativeLayout>
     
-    <TextView 
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:textSize="30sp"
-	    android:text="故障历史"
-	    android:gravity="center"/>
+    <com.handmark.pulltorefresh.library.PullToRefreshListView  
+        android:id="@+id/ptrlv_faultHistory"  
+        android:layout_width="match_parent"  
+        android:layout_height="match_parent" />
+	
+	<LinearLayout 
+        android:id="@+id/linear_tipInfo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:visibility="gone"
+        android:orientation="vertical">
+        <TextView 
+	        android:id="@+id/tv_tipInfo"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:textSize="@dimen/exception_tip"
+	        android:gravity="center" />
+        <Button 
+            android:id="@+id/btn_refreshAgain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/try_again_btn_bg"
+            android:text="重试"
+            android:textColor="@color/whiteColor"/>
+    </LinearLayout>
 
 </LinearLayout>

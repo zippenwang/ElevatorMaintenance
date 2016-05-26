@@ -56,7 +56,7 @@ import android.widget.Toast;
  *
  */
 public class OverdueWorkOrderFragment extends Fragment 
-		implements IWorkOrderSearchFragment, IUnfOvdOrderSortFragment {
+		implements IWorkOrderSearchFragment, IOverdueOrderSortFragment {
 	
 	private PullToRefreshListView ptrlvOverdue;			// 提供下拉刷新功能的ListView
 	private LinearLayout linearTipInfo;						// 提示网络异常、或当前工单不存在的LinearLayout控件
@@ -78,7 +78,7 @@ public class OverdueWorkOrderFragment extends Fragment
 	
 	private volatile int curPage = 1;				// 当前需要访问的页码
 	
-	private boolean isPtrlvHidden = false;			// PullToRefreshListView控件是否被隐藏
+//	private boolean isPtrlvHidden = false;			// PullToRefreshListView控件是否被隐藏
 	private String tipInfo;							// PullToRefreshListView控件被隐藏时的提示信息
 	private boolean isFirstAccessServer = true;
 	
@@ -233,9 +233,9 @@ public class OverdueWorkOrderFragment extends Fragment
 			}
 		});
 		
-		if (isPtrlvHidden) {
+		/*if (isPtrlvHidden) {
 			hidePtrlvAndShowLinearLayout(tipInfo);
-		}
+		}*/
 	}
 	
 	private class RefreshDataTask extends AsyncTask<Void, Void, Void> {
@@ -294,7 +294,7 @@ public class OverdueWorkOrderFragment extends Fragment
 	
 	@Override
 	public void backToLoginInterface() {
-		EmployeeLoginActivity.myStartActivity(workOrderSearchActivity);
+		EmployeeLoginActivity.myForceStartActivity(workOrderSearchActivity);
 	}
 
 	@Override
@@ -349,7 +349,7 @@ public class OverdueWorkOrderFragment extends Fragment
 		workOrderSearchActivity.runOnUiThread(new Runnable() {		
 			@Override
 			public void run() {
-				isPtrlvHidden = true;
+//				isPtrlvHidden = true;
 				tipInfo = info;
 				
 				ptrlvOverdue.setVisibility(View.GONE);
@@ -359,36 +359,42 @@ public class OverdueWorkOrderFragment extends Fragment
 		});
 	}
 
-	@Override
+	/*@Override
 	public void setIsPtrlvHidden(boolean isPtrlvHidden) {
 		this.isPtrlvHidden = isPtrlvHidden;
-	}
+	}*/
 
 	@Override
 	public void sortMaintainOrderByFinalTimeIncrease() {
+//		workOrderSortPresenter.sortMaintainOrderByFinalTimeIncrease(maintainOrderList, 
+//				WorkOrderState.OVERDUE);
 		workOrderSortPresenter.sortMaintainOrderByFinalTimeIncrease(maintainOrderList);
 	}
 
 	@Override
 	public void sortMaintainOrderByFinalTimeDecrease() {
-		workOrderSortPresenter.sortMaintainOrderByFinalTimeDecrease(maintainOrderList);		
+//		workOrderSortPresenter.sortMaintainOrderByFinalTimeDecrease(maintainOrderList, 
+//				WorkOrderState.OVERDUE);		
+		workOrderSortPresenter.sortMaintainOrderByFinalTimeDecrease(maintainOrderList);
 	}
 
 	@Override
 	public void sortMaintainOrderByReceivingTime() {
+//		workOrderSortPresenter.sortMaintainOrderByReceivingTime(maintainOrderList, 
+//				WorkOrderState.OVERDUE);
 		workOrderSortPresenter.sortMaintainOrderByReceivingTime(maintainOrderList);
 	}
 
 	/*
 	 * 不存在超期的故障工单，因此不需要为如下方法编写方法体
 	 */
-	@Override
+	/*@Override
 	public void sortFaultOrderByReceivingTime() {}
 
 	@Override
 	public void sortFaultOrderByOccurredTimeIncrease() {}
 
 	@Override
-	public void sortFaultOrderByOccurredTimeDecrease() {}
+	public void sortFaultOrderByOccurredTimeDecrease() {}*/
 	
 }

@@ -31,12 +31,16 @@ import android.widget.Toast;
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.fragment.FinishedWorkOrderFragment;
 import wzp.project.android.elvtmtn.fragment.IFinishedOrderSortFragment;
+import wzp.project.android.elvtmtn.fragment.IOverdueOrderSortFragment;
 import wzp.project.android.elvtmtn.fragment.IUnfOvdOrderSortFragment;
+import wzp.project.android.elvtmtn.fragment.IUnfinishedOrderSortFragment;
 import wzp.project.android.elvtmtn.fragment.IWorkOrderSearchFragment;
 import wzp.project.android.elvtmtn.fragment.OverdueWorkOrderFragment;
 import wzp.project.android.elvtmtn.fragment.UnfinishedWorkOrderFragment;
+import wzp.project.android.elvtmtn.helper.contant.WorkOrderState;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 import wzp.project.android.elvtmtn.presenter.WorkOrderSortPresenter;
+import wzp.project.android.elvtmtn.util.ActivityCollector;
 
 /**
  * 主控界面
@@ -81,6 +85,14 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 		
 		initWidget();
 		initParam();
+		
+		ActivityCollector.addActivity(this);
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		ActivityCollector.removeActivity(this);
 	}
 	
 	private void initWidget() {		
@@ -104,38 +116,51 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 		pmSort.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			@Override
 			public boolean onMenuItemClick(MenuItem mi) {
-				IUnfOvdOrderSortFragment unfOvdOrderFragment = null;
+				IUnfinishedOrderSortFragment unfinishedOrderSortFragment = null;
 				IFinishedOrderSortFragment finishedOrderFragment = null;
+				IOverdueOrderSortFragment overdueOrderSortFragment = null;
 				
 				switch (currentSelectedId) {
 					case 0:
-						unfOvdOrderFragment = (UnfinishedWorkOrderFragment) fragmentList.get(0);
+						unfinishedOrderSortFragment = (UnfinishedWorkOrderFragment) fragmentList.get(0);
 						break;
 					case 1:
 						finishedOrderFragment = (FinishedWorkOrderFragment) fragmentList.get(1);
 						break;
 					case 2:
-						unfOvdOrderFragment = (OverdueWorkOrderFragment) fragmentList.get(2);
+						overdueOrderSortFragment = (OverdueWorkOrderFragment) fragmentList.get(2);
 						break;
 					default:
 						break;
 				}
 				
 				switch (mi.getItemId()) {
-					case R.id.item_finalTimeIncrease:				
-						if (unfOvdOrderFragment != null) {
-							unfOvdOrderFragment.sortMaintainOrderByFinalTimeIncrease();
+					case R.id.item_finalTimeIncrease:		
+						if (currentSelectedId == 0
+								&& unfinishedOrderSortFragment != null) {
+							unfinishedOrderSortFragment.sortMaintainOrderByFinalTimeIncrease();
+						} else if (currentSelectedId == 2
+								&& overdueOrderSortFragment != null) {
+							overdueOrderSortFragment.sortMaintainOrderByFinalTimeIncrease();
 						}
 						break;
-					case R.id.item_finalTimeDecrease:			
-						if (unfOvdOrderFragment != null) {
-							unfOvdOrderFragment.sortMaintainOrderByFinalTimeDecrease();
+					case R.id.item_finalTimeDecrease:	
+						if (currentSelectedId == 0
+								&& unfinishedOrderSortFragment != null) {
+							unfinishedOrderSortFragment.sortMaintainOrderByFinalTimeDecrease();
+						} else if (currentSelectedId == 2
+								&& overdueOrderSortFragment != null) {
+							overdueOrderSortFragment.sortMaintainOrderByFinalTimeDecrease();
 						}
 						break;
 						
 					case R.id.item_sortByReceiveTime:	
-						if (unfOvdOrderFragment != null) {
-							unfOvdOrderFragment.sortMaintainOrderByReceivingTime();
+						if (currentSelectedId == 0
+								&& unfinishedOrderSortFragment != null) {
+							unfinishedOrderSortFragment.sortMaintainOrderByReceivingTime();
+						} else if (currentSelectedId == 2
+								&& overdueOrderSortFragment != null) {
+							overdueOrderSortFragment.sortMaintainOrderByReceivingTime();
 						}
 						break;
 						

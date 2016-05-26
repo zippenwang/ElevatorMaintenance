@@ -29,10 +29,14 @@ import android.widget.PopupMenu.OnMenuItemClickListener;
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.fragment.FinishedWorkOrderFragment;
 import wzp.project.android.elvtmtn.fragment.IFinishedOrderSortFragment;
+import wzp.project.android.elvtmtn.fragment.IOverdueOrderSortFragment;
 import wzp.project.android.elvtmtn.fragment.IUnfOvdOrderSortFragment;
+import wzp.project.android.elvtmtn.fragment.IUnfinishedOrderSortFragment;
 import wzp.project.android.elvtmtn.fragment.OverdueWorkOrderFragment;
 import wzp.project.android.elvtmtn.fragment.UnfinishedWorkOrderFragment;
+import wzp.project.android.elvtmtn.helper.contant.WorkOrderState;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
+import wzp.project.android.elvtmtn.util.ActivityCollector;
 
 /**
  * 主控界面
@@ -72,6 +76,14 @@ public class FaultOrderSearchActivity extends FragmentActivity {
 		
 		initWidget();
 		initParam();
+		
+		ActivityCollector.addActivity(this);
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		ActivityCollector.removeActivity(this);
 	}
 	
 	private void initWidget() {		
@@ -104,13 +116,13 @@ public class FaultOrderSearchActivity extends FragmentActivity {
 		pmSort.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			@Override
 			public boolean onMenuItemClick(MenuItem mi) {
-//				IOrderSortFragment fragment = null;
-				IUnfOvdOrderSortFragment unfOvdOrderFragment = null;
+//				IUnfOvdOrderSortFragment unfOvdOrderFragment = null;
+				IUnfinishedOrderSortFragment unfinishedOrderSortFragment = null;
 				IFinishedOrderSortFragment finishedOrderFragment = null;
 				
 				switch (currentSelectedId) {
 					case 0:
-						unfOvdOrderFragment = (UnfinishedWorkOrderFragment) fragmentList.get(0);
+						unfinishedOrderSortFragment = (UnfinishedWorkOrderFragment) fragmentList.get(0);
 						break;
 					case 1:
 						finishedOrderFragment = (FinishedWorkOrderFragment) fragmentList.get(1);
@@ -121,18 +133,18 @@ public class FaultOrderSearchActivity extends FragmentActivity {
 				
 				switch (mi.getItemId()) {
 					case R.id.item_occuredTimeIncrease:					
-						if (unfOvdOrderFragment != null) {
-							unfOvdOrderFragment.sortFaultOrderByOccurredTimeIncrease();
+						if (unfinishedOrderSortFragment != null) {
+							unfinishedOrderSortFragment.sortFaultOrderByOccurredTimeIncrease();
 						}
 						break;
 					case R.id.item_occuredTimeDecrease:		
-						if (unfOvdOrderFragment != null) {
-							unfOvdOrderFragment.sortFaultOrderByOccurredTimeDecrease();
+						if (unfinishedOrderSortFragment != null) {
+							unfinishedOrderSortFragment.sortFaultOrderByOccurredTimeDecrease();
 						}
 						break;
 					case R.id.item_sortByReceiveTime:	
-						if (unfOvdOrderFragment != null) {
-							unfOvdOrderFragment.sortFaultOrderByReceivingTime();
+						if (unfinishedOrderSortFragment != null) {
+							unfinishedOrderSortFragment.sortFaultOrderByReceivingTime();
 						}
 						break;
 					case R.id.item_fixedTimeIncrease:	

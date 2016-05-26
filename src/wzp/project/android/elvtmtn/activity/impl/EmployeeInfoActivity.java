@@ -19,6 +19,7 @@ import wzp.project.android.elvtmtn.activity.IEmployeeInfoActivity;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
 import wzp.project.android.elvtmtn.entity.Employee;
 import wzp.project.android.elvtmtn.presenter.EmployeeInfoSearchPresenter;
+import wzp.project.android.elvtmtn.util.ActivityCollector;
 import wzp.project.android.elvtmtn.util.MyApplication;
 import wzp.project.android.elvtmtn.util.MyProgressDialog;
 
@@ -140,8 +141,7 @@ public class EmployeeInfoActivity extends BaseActivity implements IEmployeeInfoA
 
 	@Override
 	public void backToLoginInterface() {
-		Intent intent = new Intent(this, EmployeeLoginActivity.class);
-		startActivity(intent);
+		EmployeeLoginActivity.myForceStartActivity(this);
 	}
 
 }

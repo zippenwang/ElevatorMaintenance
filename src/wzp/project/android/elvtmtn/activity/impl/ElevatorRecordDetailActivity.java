@@ -35,6 +35,8 @@ public class ElevatorRecordDetailActivity extends BaseActivity {
 	private TextView tvPhone;
 	private Button btnQueryFaultHistory;
 	
+	private ElevatorRecord elevatorRecord;
+	
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
 	
 	
@@ -47,7 +49,9 @@ public class ElevatorRecordDetailActivity extends BaseActivity {
 		
 		Intent intent = getIntent();
 		String jsonElevatorRecord = intent.getStringExtra("elevatorRecord");
-		showRecord(JSON.parseObject(jsonElevatorRecord, ElevatorRecord.class));
+		elevatorRecord = JSON.parseObject(jsonElevatorRecord, ElevatorRecord.class);
+		
+		showRecord(elevatorRecord);
 	}
 	
 	private void initWidget() {
@@ -77,7 +81,8 @@ public class ElevatorRecordDetailActivity extends BaseActivity {
 		btnQueryFaultHistory.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				FaultHistorySearchActivity.myStartActivivty(ElevatorRecordDetailActivity.this);
+				FaultHistorySearchActivity.myStartActivivty(ElevatorRecordDetailActivity.this, 
+						elevatorRecord.getId());
 			}
 		});
 	}

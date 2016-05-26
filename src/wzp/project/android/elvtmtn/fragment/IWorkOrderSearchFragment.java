@@ -12,5 +12,5 @@ public interface IWorkOrderSearchFragment extends IBaseFragmentOrActivity {
 	
 	void hidePtrlvAndShowLinearLayout(String info);				// 隐藏PullToRefreshListView控件，显示LinearLayout控件
 
-	void setIsPtrlvHidden(boolean isPtrlvHidden);
+//	void setIsPtrlvHidden(boolean isPtrlvHidden);
 }

@@ -547,6 +547,6 @@ public class FaultOrderDetailActivity extends BaseActivity
 	
 	@Override
 	public void backToLoginInterface() {
-		EmployeeLoginActivity.myStartActivity(this);
+		EmployeeLoginActivity.myForceStartActivity(this);
 	}
 }

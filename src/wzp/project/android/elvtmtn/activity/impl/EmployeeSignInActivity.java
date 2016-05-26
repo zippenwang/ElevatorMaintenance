@@ -39,7 +39,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 import wzp.project.android.elvtmtn.R;
-import wzp.project.android.elvtmtn.activity.IEmployeeSignInActivity;
+import wzp.project.android.elvtmtn.activity.IWorkOrderSortContainer;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
@@ -59,7 +59,7 @@ import wzp.project.android.elvtmtn.util.MyApplication;
 import wzp.project.android.elvtmtn.util.MyProgressDialog;
 
 public class EmployeeSignInActivity extends BaseActivity 
-		implements IWorkOrderSearchFragment, IEmployeeSignInActivity {
+		implements IWorkOrderSearchFragment, IWorkOrderSortContainer {
 	
 	private Button btnBack;
 	private TextView tvWorkOrderType;
@@ -88,7 +88,7 @@ public class EmployeeSignInActivity extends BaseActivity
 	
 	private volatile int curPage = 1;				// 当前需要访问的页码
 	
-	private boolean isPtrlvHidden = false;			// PullToRefreshListView控件是否被隐藏
+//	private boolean isPtrlvHidden = false;			// PullToRefreshListView控件是否被隐藏
 	private String tipInfo;							// PullToRefreshListView控件被隐藏时的提示信息
 	
 	private SharedPreferences preferences 
@@ -286,9 +286,9 @@ public class EmployeeSignInActivity extends BaseActivity
 			}
 		});
 		
-		if (isPtrlvHidden) {
+		/*if (isPtrlvHidden) {
 			hidePtrlvAndShowLinearLayout(tipInfo);
-		}
+		}*/
 	}
 	
 	private class RefreshDataTask extends AsyncTask<Void, Void, Void> {
@@ -366,7 +366,7 @@ public class EmployeeSignInActivity extends BaseActivity
 	
 	@Override
 	public void backToLoginInterface() {
-		EmployeeLoginActivity.myStartActivity(this);
+		EmployeeLoginActivity.myForceStartActivity(this);
 	}
 	
 	@Override
@@ -422,7 +422,7 @@ public class EmployeeSignInActivity extends BaseActivity
 		runOnUiThread(new Runnable() {		
 			@Override
 			public void run() {
-				isPtrlvHidden = true;
+//				isPtrlvHidden = true;
 				tipInfo = info;
 				
 				ptrlvSignIn.setVisibility(View.GONE);
@@ -432,9 +432,9 @@ public class EmployeeSignInActivity extends BaseActivity
 		});
 	}
 
-	@Override
+	/*@Override
 	public void setIsPtrlvHidden(boolean isPtrlvHidden) {
 		this.isPtrlvHidden = isPtrlvHidden;
-	}
+	}*/
 
 }

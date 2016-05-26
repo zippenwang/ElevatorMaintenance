@@ -1,11 +1,13 @@
 package wzp.project.android.elvtmtn.fragment;
 
+import wzp.project.android.elvtmtn.activity.IWorkOrderSortContainer;
+
 /**
  * 未完成、超期工单的排序接口
  * @author Zippen
  *
  */
-public interface IUnfinishedOrderSortFragment {
+public interface IUnfinishedOrderSortFragment extends IWorkOrderSortContainer {
 
 	void sortMaintainOrderByFinalTimeIncrease();
 	
@@ -18,8 +20,4 @@ public interface IUnfinishedOrderSortFragment {
 	void sortMaintainOrderByReceivingTime();
 	
 	void sortFaultOrderByReceivingTime();
-	
-	void updateInterface();
-	
-	void showToast(String tipInfo);
 }

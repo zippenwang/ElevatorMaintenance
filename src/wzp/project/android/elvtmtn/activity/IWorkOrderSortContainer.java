@@ -1,7 +1,7 @@
 package wzp.project.android.elvtmtn.activity;
 
-public interface IEmployeeSignInActivity {
-
+public interface IWorkOrderSortContainer {
+	
 	void updateInterface();
 	
 	void showToast(String tipInfo);

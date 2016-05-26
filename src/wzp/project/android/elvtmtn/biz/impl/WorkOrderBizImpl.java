@@ -677,6 +677,73 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 	}
 
 	@Override
+	public void getFaultOrdersByElevatorId(long elevatorRecordId, final int pageNumber, int pageSize,
+			final List<FaultOrder> faultOrderList, final IWorkOrderSearchListener listener) {
+		String url = ProjectContants.basePath + "/faultOrder/history";
+		
+		MyOkHttpUtils.get().url(url)
+			.addHeader("token", MyApplication.token)
+			.addParams("elevatorRecordId", String.valueOf(elevatorRecordId))
+			.addParams("pageNumber", String.valueOf(pageNumber))
+			.addParams("pageSize", String.valueOf(pageSize))
+			.build()
+			.execute(new MyStringCallback() {
+				@Override
+				public void onAfter() {
+					listener.onAfter();
+				}
+				
+				@Override
+				public void onResponse(String response) {
+					Log.i(tag, response);
+					
+					if (!TextUtils.isEmpty(response)) {
+						List<FaultOrder> respDataList = JSON.parseObject(response, 
+								new TypeReference<List<FaultOrder>>() {});
+						if (respDataList != null && respDataList.size() > 0) {
+							if (1 == pageNumber) {
+								faultOrderList.clear();
+							}
+							faultOrderList.addAll(respDataList);
+							
+							if (respDataList.size() % ProjectContants.PAGE_SIZE == 0) {
+								listener.onSearchSuccess(ProjectContants.ORDER_SHOW_UNCOMPLETE);
+							} else {
+								listener.onSearchSuccess(ProjectContants.ORDER_SHOW_COMPLETE);
+							}
+						} else {
+							if (1 == pageNumber) {
+								listener.onSearchSuccess(ProjectContants.ORDER_IS_NULL);
+							} else if (pageNumber > 1) {
+								listener.onSearchSuccess(ProjectContants.ORDER_SHOW_COMPLETE);
+							}
+						}
+					} else {
+						listener.onSearchFailure("服务器故障，响应数据有误！");
+					}
+				}
+				
+				@Override
+				public void onError(Call call, Exception e) {
+					Log.e(tag, Log.getStackTraceString(e));
+					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");	
+				}
+				
+				@Override
+				public void onError(Call call, Exception e, int respCode) {
+					Log.e(tag, "响应码为：" + respCode);
+					Log.e(tag, Log.getStackTraceString(e));
+					if (respCode == 401) {
+						listener.onSearchFailure("您的账号无效或已过期，请重新登录");
+						listener.onBackToLoginInterface();
+					} else {
+						listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+					}
+				}
+			});
+	}
+	
+	@Override
 	public void receiveOrder(int workOrderType, Long workOrderId, Long employeeId, 
 			final IWorkOrderReceiveListener listener) {
 		String url = null;

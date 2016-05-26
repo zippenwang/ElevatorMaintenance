@@ -56,7 +56,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class UnfinishedWorkOrderFragment extends Fragment 
-		implements IWorkOrderSearchFragment, IUnfOvdOrderSortFragment {
+		implements IWorkOrderSearchFragment, IUnfinishedOrderSortFragment {
 
 	private PullToRefreshListView ptrlvUnfinished;			// 提供下拉刷新、上拉加载功能的ListView
 	private LinearLayout linearTipInfo;						// 提示网络异常、或当前工单不存在的LinearLayout控件
@@ -80,7 +80,7 @@ public class UnfinishedWorkOrderFragment extends Fragment
 	
 	private volatile int curPage = 1;				// 当前需要访问的页码
 	
-	private boolean isPtrlvHidden = false;			// PullToRefreshListView控件是否被隐藏
+//	private boolean isPtrlvHidden = false;			// PullToRefreshListView控件是否被隐藏
 	private String tipInfo;							// PullToRefreshListView控件被隐藏时的提示信息
 	
 	private int listIndex;							// 查询工单详情时，所选中的list集合的元素的编号
@@ -235,9 +235,9 @@ public class UnfinishedWorkOrderFragment extends Fragment
 		
 		
 		
-		if (isPtrlvHidden) {
+		/*if (isPtrlvHidden) {
 			hidePtrlvAndShowLinearLayout(tipInfo);
-		}
+		}*/
 	}
 	
 	@Override
@@ -354,7 +354,7 @@ public class UnfinishedWorkOrderFragment extends Fragment
 	
 	@Override
 	public void backToLoginInterface() {
-		EmployeeLoginActivity.myStartActivity(workOrderSearchActivity);
+		EmployeeLoginActivity.myForceStartActivity(workOrderSearchActivity);
 	}
 	
 	@Override
@@ -410,7 +410,7 @@ public class UnfinishedWorkOrderFragment extends Fragment
 		workOrderSearchActivity.runOnUiThread(new Runnable() {		
 			@Override
 			public void run() {
-				isPtrlvHidden = true;
+//				isPtrlvHidden = true;
 				tipInfo = info;
 				
 				ptrlvUnfinished.setVisibility(View.GONE);
@@ -420,19 +420,23 @@ public class UnfinishedWorkOrderFragment extends Fragment
 		});
 	}
 
-	@Override
+	/*@Override
 	public void setIsPtrlvHidden(boolean isPtrlvHidden) {
 		this.isPtrlvHidden = isPtrlvHidden;
-	}
+	}*/
 
 	@Override
 	public void sortMaintainOrderByFinalTimeIncrease() {
 		workOrderSortPresenter.sortMaintainOrderByFinalTimeIncrease(maintainOrderList);
+//		workOrderSortPresenter.sortMaintainOrderByFinalTimeIncrease(maintainOrderList, 
+//				WorkOrderState.UNFINISHED);
 	}
 
 	@Override
 	public void sortMaintainOrderByFinalTimeDecrease() {
 		workOrderSortPresenter.sortMaintainOrderByFinalTimeDecrease(maintainOrderList);
+//		workOrderSortPresenter.sortMaintainOrderByFinalTimeDecrease(maintainOrderList, 
+//				WorkOrderState.UNFINISHED);
 	}
 
 	@Override
@@ -448,6 +452,8 @@ public class UnfinishedWorkOrderFragment extends Fragment
 	@Override
 	public void sortMaintainOrderByReceivingTime() {
 		workOrderSortPresenter.sortMaintainOrderByReceivingTime(maintainOrderList);
+//		workOrderSortPresenter.sortMaintainOrderByReceivingTime(maintainOrderList,
+//				WorkOrderState.UNFINISHED);
 	}
 
 	@Override

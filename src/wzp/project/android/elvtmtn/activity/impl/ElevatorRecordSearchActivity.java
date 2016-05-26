@@ -45,7 +45,8 @@ import wzp.project.android.elvtmtn.util.ClearAllEditText;
 import wzp.project.android.elvtmtn.util.MyApplication;
 import wzp.project.android.elvtmtn.util.MyProgressDialog;
 
-public class ElevatorRecordSearchActivity extends BaseActivity implements IElevatorRecordSearchActivity {
+public class ElevatorRecordSearchActivity extends BaseActivity 
+		implements IElevatorRecordSearchActivity {
 
 	private RelativeLayout relativeBase;
 	private Button btnBack;
@@ -317,7 +318,7 @@ public class ElevatorRecordSearchActivity extends BaseActivity implements IEleva
 	
 	@Override
 	public void backToLoginInterface() {
-		EmployeeLoginActivity.myStartActivity(this);
+		EmployeeLoginActivity.myForceStartActivity(this);
 	}
 	
 	@Override

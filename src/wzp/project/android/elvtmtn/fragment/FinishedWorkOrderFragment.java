@@ -79,7 +79,7 @@ public class FinishedWorkOrderFragment extends Fragment
 	
 	private volatile int curPage = 1;				// 当前需要访问的页码
 	
-	private boolean isPtrlvHidden = false;			// PullToRefreshListView控件是否被隐藏
+//	private boolean isPtrlvHidden = false;			// PullToRefreshListView控件是否被隐藏
 	private String tipInfo;							// PullToRefreshListView控件被隐藏时的提示信息
 	private boolean isFirstAccessServer = true;
 	private int listIndex;
@@ -227,9 +227,9 @@ public class FinishedWorkOrderFragment extends Fragment
 			}
 		});
 		
-		if (isPtrlvHidden) {
+		/*if (isPtrlvHidden) {
 			hidePtrlvAndShowLinearLayout(tipInfo);
-		}
+		}*/
 	}
 
 	private class RefreshDataTask extends AsyncTask<Void, Void, Void> {
@@ -300,7 +300,7 @@ public class FinishedWorkOrderFragment extends Fragment
 	
 	@Override
 	public void backToLoginInterface() {
-		EmployeeLoginActivity.myStartActivity(workOrderSearchActivity);
+		EmployeeLoginActivity.myForceStartActivity(workOrderSearchActivity);
 	}
 
 	@Override
@@ -355,7 +355,7 @@ public class FinishedWorkOrderFragment extends Fragment
 		workOrderSearchActivity.runOnUiThread(new Runnable() {		
 			@Override
 			public void run() {
-				isPtrlvHidden = true;
+//				isPtrlvHidden = true;
 				tipInfo = info;
 				
 				ptrlvFinished.setVisibility(View.GONE);
@@ -365,10 +365,10 @@ public class FinishedWorkOrderFragment extends Fragment
 		});
 	}
 
-	@Override
+	/*@Override
 	public void setIsPtrlvHidden(boolean isPtrlvHidden) {
 		this.isPtrlvHidden = isPtrlvHidden;
-	}
+	}*/
 
 	@Override
 	public void sortMaintainOrderByFinishedTimeIncrease() {

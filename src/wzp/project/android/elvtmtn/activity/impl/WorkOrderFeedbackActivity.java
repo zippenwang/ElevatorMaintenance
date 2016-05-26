@@ -71,7 +71,7 @@ public class WorkOrderFeedbackActivity extends BaseActivity implements IWorkOrde
 	
 	private volatile int curPage = 1;				// 当前需要访问的页码
 	
-	private boolean isPtrlvHidden = false;			// PullToRefreshListView控件是否被隐藏
+//	private boolean isPtrlvHidden = false;			// PullToRefreshListView控件是否被隐藏
 	private String tipInfo;							// PullToRefreshListView控件被隐藏时的提示信息
 	
 	private SharedPreferences preferences 
@@ -244,9 +244,9 @@ public class WorkOrderFeedbackActivity extends BaseActivity implements IWorkOrde
 			}
 		});
 		
-		if (isPtrlvHidden) {
+		/*if (isPtrlvHidden) {
 			hidePtrlvAndShowLinearLayout(tipInfo);
-		}
+		}*/
 	}
 	
 	private class RefreshDataTask extends AsyncTask<Void, Void, Void> {
@@ -322,7 +322,7 @@ public class WorkOrderFeedbackActivity extends BaseActivity implements IWorkOrde
 	
 	@Override
 	public void backToLoginInterface() {
-		EmployeeLoginActivity.myStartActivity(this);
+		EmployeeLoginActivity.myForceStartActivity(this);
 	}
 	
 	@Override
@@ -378,7 +378,7 @@ public class WorkOrderFeedbackActivity extends BaseActivity implements IWorkOrde
 		runOnUiThread(new Runnable() {		
 			@Override
 			public void run() {
-				isPtrlvHidden = true;
+//				isPtrlvHidden = true;
 				tipInfo = info;
 				
 				ptrlvFeedback.setVisibility(View.GONE);
@@ -388,9 +388,9 @@ public class WorkOrderFeedbackActivity extends BaseActivity implements IWorkOrde
 		});
 	}
 
-	@Override
+	/*@Override
 	public void setIsPtrlvHidden(boolean isPtrlvHidden) {
 		this.isPtrlvHidden = isPtrlvHidden;
-	}
+	}*/
 
 }

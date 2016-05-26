@@ -53,6 +53,9 @@ public interface IWorkOrderBiz {
 	void getSignedInFaultOrdersByCondition(long employeeId, int pageNumber,
 			int pageSize, List<FaultOrder> faultOrderList, IWorkOrderSearchListener listener);
 	
+	void getFaultOrdersByElevatorId(long elevatorRecordId, int pageNumber, 
+			int pageSize, List<FaultOrder> faultOrderList, IWorkOrderSearchListener listener);
+	
 	void receiveOrder(int workOrderType, Long workOrderId, Long employeeId, IWorkOrderReceiveListener listener);
 
 	void cancelReceiveOrder(int workOrderType, Long workOrderId, Long employeeId, IWorkOrderCancelListener listener);
@@ -74,10 +77,10 @@ public interface IWorkOrderBiz {
 			boolean isDone, String remark, String signOutAddress, 
 			String finishedItems, IWorkOrderFeedbackListener listener);
 	
+	
 	/*
 	 * 工单排序
 	 */
-	
 	void sortMaintainOrderByFinalTimeIncrease(List<MaintainOrder> maintainOrderList);
 	
 	void sortMaintainOrderByFinalTimeDecrease(List<MaintainOrder> maintainOrderList);

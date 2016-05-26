@@ -463,7 +463,7 @@ public class EmployeeSignInDetailActivity extends BaseActivity
 
 	@Override
 	public void backToLoginInterface() {
-		EmployeeLoginActivity.myStartActivity(this);
+		EmployeeLoginActivity.myForceStartActivity(this);
 	}
 	
 	// 自定义一个startActivity()方法
