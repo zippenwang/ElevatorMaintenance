@@ -4,11 +4,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
     
-    <TextView 
+    <!-- <TextView 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:text="电梯维保移动端app"
-        android:textSize="18sp"/>
+        android:textSize="18sp"/> -->
+        
+    <ImageView 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/welcome"
+        android:scaleType="fitXY"/>
 
 </LinearLayout>

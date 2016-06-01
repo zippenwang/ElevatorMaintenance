@@ -1,5 +1,7 @@
 package wzp.project.android.elvtmtn.activity.impl;
 
+import java.io.UnsupportedEncodingException;
+
 import com.alibaba.fastjson.JSON;
 import com.igexin.sdk.PushManager;
 
@@ -73,7 +75,16 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 		boolean isRemember = preferences.getBoolean("isRemember", false);
 		if (isRemember) {
 			cbIsRemember.setChecked(true);
-			caedtUsername.setText(preferences.getString("username", ""));
+//			caedtUsername.setText(preferences.getString("username", ""));
+			String username = "";
+			try {
+				username = ProjectContants.desUtil.decrypt(preferences.getString("username", ""));
+			} catch (UnsupportedEncodingException e) {
+				Log.e(tag, Log.getStackTraceString(e));
+				throw new IllegalArgumentException("解密出现异常");
+			}
+			caedtUsername.setText(username);
+			
 //			caedtPassword.setText(preferences.getString("password", ""));
 //			Drawable[] drawables = caedtPassword.getCompoundDrawables();
 //			caedtPassword.setCompoundDrawables(drawables[0], drawables[1], null, drawables[3]);
@@ -121,7 +132,15 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 		Log.i(tag, "employeeId:" + employee.getId() + ";groupId" + employee.getGroup().getId());
 		editor.putLong("employeeId", employee.getId());
 		editor.putLong("groupId", employee.getGroup().getId());
-		editor.putString("username", caedtUsername.getEditableText().toString());
+//		editor.putString("username", caedtUsername.getEditableText().toString());
+		String username = caedtUsername.getEditableText().toString();
+		try {
+			username = ProjectContants.desUtil.encrypt(username);
+		} catch (UnsupportedEncodingException e) {
+			Log.e(tag, Log.getStackTraceString(e));
+			throw new IllegalArgumentException("加密出现异常");
+		}
+		editor.putString("username", username);
 		editor.putBoolean("isRemember", cbIsRemember.isChecked());
 		editor.putBoolean("isAutoLogin", cbIsAutoLogin.isChecked());
 		editor.putString("employeeJson", JSON.toJSONString(employee));

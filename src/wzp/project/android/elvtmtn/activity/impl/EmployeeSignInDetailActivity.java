@@ -146,9 +146,16 @@ public class EmployeeSignInDetailActivity extends BaseActivity
 		if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
 			tvWorkOrderType.setText("保养工单 ");
 //			tvWorkOrderId.setText(String.valueOf(maintainOrder.getId()));
-			tvWorkOrderId.setText((maintainOrder.getNo()));
+			String no = maintainOrder.getNo();
+			if (!TextUtils.isEmpty(no)) {
+				tvWorkOrderId.setText(no);
+			} else {
+				tvWorkOrderId.setText("暂无工单号");
+				tvWorkOrderId.setTextSize(18);
+			}		
+			
 			tvReceivingTime.setText(sdf.format(maintainOrder.getReceivingTime()));
-			elevatorAddress = maintainOrder.getElevatorRecord().getAddress();
+			elevatorAddress = maintainOrder.getElevatorRecord().getAddress().trim();
 			tvElevatorAddress.setText(elevatorAddress);
 			
 			if (maintainOrder.getSignInTime() != null) {
@@ -175,7 +182,14 @@ public class EmployeeSignInDetailActivity extends BaseActivity
 		} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
 			tvWorkOrderType.setText("故障工单 ");
 //			tvWorkOrderId.setText(String.valueOf(faultOrder.getId()));
-			tvWorkOrderId.setText((faultOrder.getNo()));
+			String no = faultOrder.getNo();
+			if (!TextUtils.isEmpty(no)) {
+				tvWorkOrderId.setText(no);
+			} else {
+				tvWorkOrderId.setText("暂无工单号");
+				tvWorkOrderId.setTextSize(18);
+			}
+			
 			tvReceivingTime.setText(sdf.format(faultOrder.getReceivingTime()));
 			elevatorAddress = faultOrder.getElevatorRecord().getAddress();
 			tvElevatorAddress.setText(elevatorAddress);

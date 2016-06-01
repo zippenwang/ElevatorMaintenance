@@ -4,15 +4,12 @@
         android:id="@+id/item_sortByFaultOccuredTime"
         android:title="按故障日期排序">
         <menu>
-            <!-- 子Menu中的item一定要放在group中 -->
-            <group android:checkableBehavior="single">
-                <item 
-                    android:id="@+id/item_occuredTimeIncrease"
-        			android:title="顺序排列" />
-                <item 
-                    android:id="@+id/item_occuredTimeDecrease"
-        			android:title="逆序排列" />
-            </group>
+            <item 
+                android:id="@+id/item_occuredTimeIncrease"
+    			android:title="顺序排列" />
+            <item 
+                android:id="@+id/item_occuredTimeDecrease"
+    			android:title="逆序排列" />
         </menu>
     </item>
 
@@ -20,14 +17,12 @@
         android:id="@+id/item_sortByFixedTime"
         android:title="按完成日期排序">
         <menu>
-            <group android:checkableBehavior="single">
-                <item 
-                    android:id="@+id/item_fixedTimeIncrease"
-        			android:title="顺序排列" />
-                <item 
-                    android:id="@+id/item_fixedTimeDecrease"
-        			android:title="逆序排列" />
-            </group>
+            <item 
+                android:id="@+id/item_fixedTimeIncrease"
+    			android:title="顺序排列" />
+            <item 
+                android:id="@+id/item_fixedTimeDecrease"
+    			android:title="逆序排列" />
         </menu>
     </item>
 </menu>

@@ -10,7 +10,6 @@ import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
 import wzp.project.android.elvtmtn.fragment.IFinishedOrderSortFragment;
 import wzp.project.android.elvtmtn.fragment.IOverdueOrderSortFragment;
-import wzp.project.android.elvtmtn.fragment.IUnfOvdOrderSortFragment;
 import wzp.project.android.elvtmtn.fragment.IUnfinishedOrderSortFragment;
 import wzp.project.android.elvtmtn.fragment.IWorkOrderSearchFragment;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderState;
@@ -35,6 +34,7 @@ public class WorkOrderSortPresenter {
 		
 		workOrderBiz.sortMaintainOrderByFinalTimeIncrease(maintainOrderList);	
 		workOrderSortContainer.updateInterface();
+		workOrderSortContainer.locateToFirstItem();
 	}
 	
 	public void sortMaintainOrderByFinalTimeDecrease(List<MaintainOrder> maintainOrderList) {
@@ -45,6 +45,7 @@ public class WorkOrderSortPresenter {
 		
 		workOrderBiz.sortMaintainOrderByFinalTimeDecrease(maintainOrderList);	
 		workOrderSortContainer.updateInterface();
+		workOrderSortContainer.locateToFirstItem();
 	}
 	
 	public void sortFaultOrderByOccurredTimeIncrease(List<FaultOrder> faultOrderList) {
@@ -55,6 +56,7 @@ public class WorkOrderSortPresenter {
 		
 		workOrderBiz.sortFaultOrderByOccurredTimeIncrease(faultOrderList);
 		workOrderSortContainer.updateInterface();
+		workOrderSortContainer.locateToFirstItem();
 	}
 	
 	public void sortFaultOrderByOccurredTimeDecrease(List<FaultOrder> faultOrderList) {
@@ -65,6 +67,7 @@ public class WorkOrderSortPresenter {
 		
 		workOrderBiz.sortFaultOrderByOccurredTimeDecrease(faultOrderList);
 		workOrderSortContainer.updateInterface();
+		workOrderSortContainer.locateToFirstItem();
 	}
 	
 	public void sortMaintainOrderByReceivingTime(List<MaintainOrder> maintainOrderList) {
@@ -75,6 +78,7 @@ public class WorkOrderSortPresenter {
 		
 		workOrderBiz.sortMaintainOrderByReceivingTime(maintainOrderList);	
 		workOrderSortContainer.updateInterface();
+		workOrderSortContainer.locateToFirstItem();
 	}
 	
 	public void sortFaultOrderByReceivingTime(List<FaultOrder> faultOrderList) {
@@ -85,6 +89,7 @@ public class WorkOrderSortPresenter {
 		
 		workOrderBiz.sortFaultOrderByReceivingTime(faultOrderList);
 		workOrderSortContainer.updateInterface();
+		workOrderSortContainer.locateToFirstItem();
 	}
 	
 	public void sortMaintainOrderByFinishedTimeIncrease(List<MaintainOrder> maintainOrderList) {
@@ -95,6 +100,7 @@ public class WorkOrderSortPresenter {
 		
 		workOrderBiz.sortMaintainOrderByFinishedTimeIncrease(maintainOrderList);
 		workOrderSortContainer.updateInterface();
+		workOrderSortContainer.locateToFirstItem();
 	}
 	
 	public void sortMaintainOrderByFinishedTimeDecrease(List<MaintainOrder> maintainOrderList) {
@@ -105,6 +111,7 @@ public class WorkOrderSortPresenter {
 		
 		workOrderBiz.sortMaintainOrderByFinishedTimeDecrease(maintainOrderList);
 		workOrderSortContainer.updateInterface();
+		workOrderSortContainer.locateToFirstItem();
 	}
 	
 	public void sortFaultOrderByFinishedTimeIncrease(List<FaultOrder> faultOrderList) {
@@ -115,6 +122,7 @@ public class WorkOrderSortPresenter {
 		
 		workOrderBiz.sortFaultOrderByFinishedTimeIncrease(faultOrderList);
 		workOrderSortContainer.updateInterface();
+		workOrderSortContainer.locateToFirstItem();
 	}
 	
 	public void sortFaultOrderByFinishedTimeDecrease(List<FaultOrder> faultOrderList) {
@@ -125,6 +133,7 @@ public class WorkOrderSortPresenter {
 		
 		workOrderBiz.sortFaultOrderByFinishedTimeDecrease(faultOrderList);
 		workOrderSortContainer.updateInterface();
+		workOrderSortContainer.locateToFirstItem();
 	}
 	
 	public void sortMaintainOrderBySignInTime(List<MaintainOrder> maintainOrderList) {
@@ -135,6 +144,7 @@ public class WorkOrderSortPresenter {
 		
 		workOrderBiz.sortMaintainOrderBySignInTime(maintainOrderList);	
 		workOrderSortContainer.updateInterface();
+		workOrderSortContainer.locateToFirstItem();
 	}
 	
 	public void sortFaultOrderBySignInTime(List<FaultOrder> faultOrderList) {
@@ -145,6 +155,7 @@ public class WorkOrderSortPresenter {
 		
 		workOrderBiz.sortFaultOrderBySignInTime(faultOrderList);	
 		workOrderSortContainer.updateInterface();
+		workOrderSortContainer.locateToFirstItem();
 	}
 	
 }

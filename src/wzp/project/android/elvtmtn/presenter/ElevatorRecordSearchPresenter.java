@@ -37,7 +37,7 @@ public class ElevatorRecordSearchPresenter implements IElevatorRecordSearchListe
 						elevatorRecordSearchActivity.setIsPtrlvHidden(false);
 						
 						if (successType == ProjectContants.ORDER_SHOW_COMPLETE) {
-							elevatorRecordSearchActivity.showToast("当前已经显示出所有档案");
+//							elevatorRecordSearchActivity.showToast("当前已经显示出所有档案");
 							elevatorRecordSearchActivity.closePullUpToRefresh();		// 关闭上拉加载功能，只提供下拉刷新功能
 						} else if (successType == ProjectContants.ORDER_SHOW_UNCOMPLETE) {
 							elevatorRecordSearchActivity.openPullUpToRefresh();		// 打开上拉加载功能，此时包含上拉和下拉两种功能
@@ -74,7 +74,7 @@ public class ElevatorRecordSearchPresenter implements IElevatorRecordSearchListe
 		elevatorRecordSearchActivity.setIsPtrlvHidden(false);
 		
 		if (successType == ProjectContants.ORDER_SHOW_COMPLETE) {
-			elevatorRecordSearchActivity.showToast("当前已经显示出所有档案");
+//			elevatorRecordSearchActivity.showToast("当前已经显示出所有档案");
 			elevatorRecordSearchActivity.closePullUpToRefresh();		// 关闭上拉加载功能，只提供下拉刷新功能
 		} else if (successType == ProjectContants.ORDER_SHOW_UNCOMPLETE) {
 			elevatorRecordSearchActivity.openPullUpToRefresh();		// 打开上拉加载功能，此时包含上拉和下拉两种功能

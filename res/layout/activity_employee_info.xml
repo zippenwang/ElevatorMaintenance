@@ -43,6 +43,13 @@
 	        android:layout_marginRight="10dp"/>        
     </RelativeLayout>
     
+	<ImageView
+        android:id="@+id/iv_spiltLine"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/spilt_line" />
+    
     <ScrollView 
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -198,6 +205,7 @@
 		            android:textSize="@dimen/work_order_detail" />
 		    </LinearLayout>		    
 		    
+		    <!-- 退出当前登录 -->
 		    <LinearLayout 
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
@@ -206,11 +214,13 @@
 		        android:paddingRight="20dp"
 		        android:gravity="center">
 		        <Button 
-		            android:id="@+id/btn_changePassword"
+		            android:id="@+id/btn_exitCurLogin"
 		            android:layout_width="0dp"
 		            android:layout_weight="1"
 		            android:layout_height="wrap_content"
-		            android:text="修改密码" />
+		            android:background="@drawable/exit_cur_login_btn_bg"
+		            android:text="退出当前账号"
+		            android:textColor="#FFFFFF" />
 		    </LinearLayout>
 		            
         </LinearLayout>

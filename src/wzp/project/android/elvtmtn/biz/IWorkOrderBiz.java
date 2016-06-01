@@ -12,9 +12,6 @@ import wzp.project.android.elvtmtn.entity.MaintainOrder;
 
 public interface IWorkOrderBiz {
 
-	<T> void getWorkOrdersByCondition(int workOrderType, int workOrderState, int pageNumber, int pageSize, List<T> dataList,
-			IWorkOrderSearchListener listener);
-	
 	/**
 	 * 按条件查询保养工单
 	 * 

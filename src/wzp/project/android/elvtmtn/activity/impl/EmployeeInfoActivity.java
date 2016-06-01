@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSON;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -31,7 +33,7 @@ public class EmployeeInfoActivity extends BaseActivity implements IEmployeeInfoA
 	private TextView tvPhone;
 	private TextView tvFixGroup;
 	private TextView tvGroupMember;
-	private Button btnChangePassword;
+	private Button btnExitCurLogin;
 	private ProgressDialog progressDialog;					// 进度对话框
 	private MyProgressDialog myProgressDialog; 
 	
@@ -59,15 +61,30 @@ public class EmployeeInfoActivity extends BaseActivity implements IEmployeeInfoA
 		tvPhone = (TextView) findViewById(R.id.tv_phone);
 		tvFixGroup = (TextView) findViewById(R.id.tv_fixGroup);
 		tvGroupMember = (TextView) findViewById(R.id.tv_groupMember);
-		btnChangePassword = (Button) findViewById(R.id.btn_changePassword);
+		btnExitCurLogin = (Button) findViewById(R.id.btn_exitCurLogin);
 		progressDialog = new ProgressDialog(this);
 		myProgressDialog = new MyProgressDialog(this);
 		
-		btnChangePassword.setOnClickListener(new OnClickListener() {		
+		btnExitCurLogin.setOnClickListener(new OnClickListener() {		
 			@Override
 			public void onClick(View v) {
-				
-				
+				AlertDialog dialog = new AlertDialog.Builder(EmployeeInfoActivity.this)
+					.setMessage("您确定退出？")
+					.setCancelable(true)
+					.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							EmployeeLoginActivity.myForceStartActivity(EmployeeInfoActivity.this);
+						}
+					})
+					.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.dismiss();
+						}
+					})
+					.create();
+				dialog.show();
 			}
 		});
 		

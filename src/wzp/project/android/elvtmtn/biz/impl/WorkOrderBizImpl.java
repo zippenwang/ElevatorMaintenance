@@ -45,93 +45,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 	private static final String tag = "WorkOrderBizImpl";
 	
 
-	@Override
-	public <T> void getWorkOrdersByCondition(int workOrderType, int workOrderState, 
-			final int pageNumber, int pageSize, final List<T> dataList, final IWorkOrderSearchListener listener) {
-		/*StringBuilder strUrl = new StringBuilder(ProjectContants.basePath);
-
-		switch (workOrderType) {
-			case WorkOrderType.MAINTAIN_ORDER:
-				strUrl.append("/maintainOrder/list");
-				break;
-			case WorkOrderType.FAULT_ORDER:
-				strUrl.append("/faultOrder/list");
-				break;
-			default:
-				break;
-		}
-		
-		strUrl.append("?pageNumber=" + pageNumber + "&pageSize=" + pageSize + "&type=" + workOrderState);
-		
-		Request request = OkHttpUtils.newRequestInstance(strUrl.toString(), null, null);
-		OkHttpUtils.enqueue(request, new Callback() {	
-			@Override
-			public void onResponse(Response response) throws IOException {
-//				Log.i(tag, response.body().string());
-				if (response.isSuccessful()) {
-					
-					 * 响应成功
-					 
-					String strResponse = response.body().string();
-					
-					Log.i(tag, strResponse);
-					
-					if (!TextUtils.isEmpty(strResponse)) {
-						Log.i(tag, "JSON转换开始");
-						List<T> respDataList = JSON.parseObject(strResponse, new TypeReference<List<T>>() {});
-						Log.i(tag, "JSON转换结束");
-						if (respDataList != null && respDataList.size() > 0) {
-							dataList.clear();
-							for (int i=0; i<respDataList.size(); i++) {
-								dataList.add(respDataList.get(i));
-							}
-							
-							if (1 == pageNumber) {
-								dataList.clear();
-								for (int i=0; i<respDataList.size(); i++) {
-									 此处显示的类型为JSONObject，因此会导致Adapter中出现
-									 * ClassCastException异常，无法将JSONObject转化为FaultOrder或MaintainOrder,
-									 * 原因暂时不清楚。
-									 
-									Log.d(tag, respDataList.get(i).getClass().getSimpleName());
-									dataList.add(respDataList.get(i));
-								}
-							} else if (pageNumber > 1) {
-								dataList.addAll(respDataList);
-							}
-							
-//							listener.onSearchSuccess();
-							if (respDataList.size() % 10 == 0) {
-								listener.onSearchSuccess(ProjectContants.ORDER_SHOW_UNCOMPLETE);
-							} else {
-								listener.onSearchSuccess(ProjectContants.ORDER_SHOW_COMPLETE);
-							}
-						} else {
-							if (1 == pageNumber) {
-								listener.onSearchSuccess(ProjectContants.ORDER_IS_NULL);
-							} else if (pageNumber > 1) {
-								listener.onSearchSuccess(ProjectContants.ORDER_SHOW_COMPLETE);
-							}
-						}
-					} else {
-//						listener.onServerException("服务器故障，响应数据有误！");
-						listener.onSearchFailure("服务器故障，响应数据有误！");
-					}
-				} else {
-					// 响应失败
-//					listener.onServerException("服务器故障，响应失败！");
-					listener.onSearchFailure("服务器故障，响应失败！");
-				}
-			}
-			
-			@Override
-			public void onFailure(Request request, IOException exception) {
-				Log.e(tag, Log.getStackTraceString(exception));
-				listener.onSearchFailure("访问服务器失败\n请检查网络连接后重试");
-			}
-		});*/
-	}
-
 	/**
 	 * 按条件查询保养工单
 	 */
@@ -773,11 +686,11 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 						} else if (result.equals("repeat")) {
 							listener.onReceiveFailure("重复接单，接单失败！");
 						} else if (result.equals("employeeNotExist")) {
-							
+							listener.onReceiveFailure("员工不存在，接单失败！");
 						} else if (response.equals("faultOrderNotExist")) {
-							
+							listener.onReceiveFailure("工单不存在，接单失败！");
 						} else if (response.equals("maintainOrderNotExist")) {
-							
+							listener.onReceiveFailure("工单不存在，接单失败！");
 						}
 					} else {
 						listener.onReceiveFailure("服务器故障，响应数据有误！");
@@ -832,15 +745,15 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 						if (result.equals("success")) {
 							listener.onCancelSuccess();
 						} else if (result.equals("notMatch")) {
-							
+							listener.onCancelFailure("工单和员工不匹配，取消接单失败！");
 						} else if (result.equals("notAccept")) {
-							
+							listener.onCancelFailure("工单并未被接单，取消接单失败！");
 						} else if (result.equals("employeeNotExist")) {
-							
+							listener.onCancelFailure("员工不存在，取消接单失败！");
 						} else if (result.equals("maintainOrderNotExist")) {
-							
+							listener.onCancelFailure("工单不存在，取消接单失败！");
 						} else if (result.equals("faultOrderNotExist")) {
-							
+							listener.onCancelFailure("工单不存在，取消接单失败！");
 						}
 					} else {
 						listener.onCancelFailure("服务器故障，响应数据有误！");		
@@ -906,11 +819,11 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 					} else if (result.equals("failed")) {
 						listener.onFeedbackFailure("未知异常，工单反馈失败，请联系管理员");
 					} else if (result.equals("employeeNotExist")) {
-						
+						listener.onFeedbackFailure("员工不存在，反馈失败！");	
 					} else if (result.equals("maintainOrderNotExist")) {
-						
+						listener.onFeedbackFailure("工单不存在，反馈失败！");	
 					} else if (result.equals("faultOrderNotExist")) {
-						
+						listener.onFeedbackFailure("工单不存在，反馈失败！");	
 					}
 				} else {
 					listener.onFeedbackFailure("服务器故障，响应数据有误！");		

@@ -68,18 +68,23 @@ public class FinishedFaultOrderAdapter extends ArrayAdapter<FaultOrder> {
 		
 		if (faultOrder.getSignOutTime() != null) {
 			subViewHolder.tvFixedTime.setText(sdf2.format(faultOrder.getSignOutTime()));
+			subViewHolder.tvFixedTime.setTextColor(Color.BLACK);
 		} else {
 			subViewHolder.tvFixedTime.setText("暂无");
+			subViewHolder.tvFixedTime.setTextColor(Color.RED);
 		}
 		
 		if (faultOrder.getElevatorRecord() != null) {
 			if (faultOrder.getElevatorRecord().getAddress() == null) {
 				subViewHolder.tvAddress.setText("暂无地址信息");
+				subViewHolder.tvAddress.setTextColor(Color.RED);
 			} else {
 				subViewHolder.tvAddress.setText(faultOrder.getElevatorRecord().getAddress());
+				subViewHolder.tvAddress.setTextColor(Color.BLACK);
 			}
 		} else {
 			subViewHolder.tvAddress.setText("电梯档案为空");
+			subViewHolder.tvAddress.setTextColor(Color.RED);
 		}
 			
 		return view;

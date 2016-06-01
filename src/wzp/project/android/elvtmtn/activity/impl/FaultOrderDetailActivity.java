@@ -45,9 +45,12 @@ import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.activity.IWorkOrderDetailActivity;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
 import wzp.project.android.elvtmtn.biz.IWorkOrderBiz;
+import wzp.project.android.elvtmtn.entity.ElevatorRecord;
+import wzp.project.android.elvtmtn.entity.Employee;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
+import wzp.project.android.elvtmtn.entity.Group;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
-import wzp.project.android.elvtmtn.fragment.UnfinishedWorkOrderFragment;
+import wzp.project.android.elvtmtn.fragment.impl.UnfinishedWorkOrderFragment;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderState;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 import wzp.project.android.elvtmtn.presenter.WorkOrderReceivePresenter;
@@ -202,20 +205,55 @@ public class FaultOrderDetailActivity extends BaseActivity
 		 * 为未完成、已完成的故障工单均需要显示的控件设置数值
 		 */
 //		tvWorkOrderId.setText(String.valueOf(faultOrder.getId()));
-		tvWorkOrderId.setText(String.valueOf(faultOrder.getNo()));
-		String elevatorAddress = faultOrder.getElevatorRecord().getAddress().trim();
-		tvElevatorAddress.setText(elevatorAddress);
-		tvFaultOccuredTime.setText(sdf.format(faultOrder.getOccuredTime()));
-		tvFaultDescription.setText(faultOrder.getDescription());
+		String no = faultOrder.getNo();
+		if (!TextUtils.isEmpty(no)) {
+			tvWorkOrderId.setText(no);
+		} else {
+			tvWorkOrderId.setText("暂无工单号");
+			tvWorkOrderId.setTextSize(18);
+		}
 		
-		if (faultOrder.getReceivingTime() != null) {
+		ElevatorRecord elevatorRecord = faultOrder.getElevatorRecord();
+		String elevatorAddress = "";
+		if (elevatorRecord != null) {
+			elevatorAddress = elevatorRecord.getAddress();
+			if (!TextUtils.isEmpty(elevatorAddress)) {
+				elevatorAddress = elevatorAddress.trim();
+				tvElevatorAddress.setText(elevatorAddress);
+			} else {
+				tvElevatorAddress.setText("暂无该信息");
+				showToast("电梯地址未知，无法进行导航");
+			}
+		} else {
+			tvElevatorAddress.setText("暂无该信息");
+			showToast("电梯地址未知，无法进行导航");
+		}
+		
+		Date occuredTime = faultOrder.getOccuredTime();
+		if (occuredTime != null) {
+			tvFaultOccuredTime.setText(sdf.format(occuredTime));
+		} else {
+			tvFaultOccuredTime.setText("暂无该信息");
+		}
+		
+		String faultDescription = faultOrder.getDescription();
+		if (!TextUtils.isEmpty(faultDescription)) {
+			tvFaultDescription.setText(faultDescription.trim());
+		} else {
+			tvFaultDescription.setText("无");
+		}	
+		
+		Date receivingTime = faultOrder.getReceivingTime();
+		Employee employee = null;
+		if (receivingTime != null) {
 			tvReceiveState.setText("已接单");
 			tvReceiveState.setTextColor(Color.BLACK);
 			linearReceiveTime.setVisibility(View.VISIBLE);
-			tvReceiveTime.setText(sdf2.format(faultOrder.getReceivingTime()));
+			tvReceiveTime.setText(sdf2.format(receivingTime));
 			// 正常情况下，receivingTime为null，employee也一定为空
-			if (faultOrder.getEmployee() != null) {
-				if (employeeId == faultOrder.getEmployee().getId()) {
+			employee = faultOrder.getEmployee();
+			if (employee != null) {
+				if (employeeId == employee.getId()) {
 					btnReceiveOrder.setVisibility(View.GONE);
 					btnCancelReceiveOrder.setVisibility(View.VISIBLE);
 				} else {
@@ -251,45 +289,79 @@ public class FaultOrderDetailActivity extends BaseActivity
 			btnDestNavi.setVisibility(View.GONE);
 			btnQueryElevatorRecord.setTextSize(18);
 			
-			if (faultOrder.getEmployee() != null) {
-				if (!TextUtils.isEmpty(faultOrder.getEmployee().getName())) {
-					tvFixEmployee.setText(faultOrder.getEmployee().getName().trim());
+			if (employee != null) {
+				String employeeName = employee.getName();
+				if (!TextUtils.isEmpty(employeeName)) {
+					tvFixEmployee.setText(employeeName.trim());
 				} else {
 					tvFixEmployee.setText("姓名未知");
-					tvFixEmployee.setTextColor(Color.RED);
 				}
-				if (faultOrder.getEmployee().getGroup() != null) {
-					tvFixGroup.setText(faultOrder.getEmployee().getGroup().getName().trim());
+				
+				Group group = employee.getGroup();
+				if (group != null) {
+					String groupName = group.getName();
+					if (!TextUtils.isEmpty(groupName)) {
+						tvFixGroup.setText(groupName.trim());
+					} else {
+						tvFixGroup.setText("暂无小组名称");
+					}
+					tvFixGroup.setText(group.getName().trim());
 				} else {
 					tvFixGroup.setText("暂无组信息");
-					tvFixGroup.setTextColor(Color.RED);
 				}
 			} else {
 				tvFixEmployee.setText("暂无员工信息");
-				tvFixEmployee.setTextColor(Color.RED);
 				tvFixGroup.setText("暂无组信息");
-				tvFixGroup.setTextColor(Color.RED);
 			}
-				
-			if (faultOrder.getSignInTime() != null) {
-				tvSignInTime.setText(sdf2.format(faultOrder.getSignInTime()));
+			
+			Date signInTime = faultOrder.getSignInTime();
+			if (signInTime != null) {
+				tvSignInTime.setText(sdf2.format(signInTime));
 			} else {
 				tvSignInTime.setText("暂无该信息");
 			}
-			tvSignInAddress.setText(faultOrder.getSignInAddress());
-			if (faultOrder.getSignOutTime() != null) {
-				tvSignOutTime.setText(sdf2.format(faultOrder.getSignOutTime()));
+			
+			String signInAddress = faultOrder.getSignInAddress();
+			if (!TextUtils.isEmpty(signInAddress)) {
+				tvSignInAddress.setText(signInAddress.trim());
+			} else {
+				tvSignInAddress.setText("暂无该信息");
+			}
+			
+			Date signOutTime = faultOrder.getSignOutTime();
+			if (signOutTime != null) {
+				tvSignOutTime.setText(sdf2.format(signOutTime));
 			} else {
 				tvSignOutTime.setText("暂无该信息");
 			}
-			tvSignOutAddress.setText(faultOrder.getSignOutAddress().trim());
-			tvFaultReason.setText(faultOrder.getReason().trim());
+
+			String signOutAddress = faultOrder.getSignOutAddress();
+			if (!TextUtils.isEmpty(signOutAddress)) {
+				tvSignOutAddress.setText(signOutAddress.trim());
+			} else {
+				tvSignOutAddress.setText("暂无该信息");
+			}
+			
+			String faultReason = faultOrder.getReason();
+			if (!TextUtils.isEmpty(faultReason)) {
+				tvFaultReason.setText(faultReason.trim());
+			} else {
+				tvFaultReason.setText("无");
+			}
+			
 			tvIsFixed.setText(faultOrder.getFixed() ? "已修好" : "未修好");
-			tvRemark.setText(faultOrder.getRemark());
-		} else if (isNetworkActive) {
+			
+			String remark = faultOrder.getRemark();
+			if (!TextUtils.isEmpty(remark)) {
+				tvRemark.setText(remark.trim());
+			} else {
+				tvRemark.setText("无");
+			}
+			
+		} else if (isNetworkActive
+				&& !TextUtils.isEmpty(elevatorAddress)) {
 			mSearch.geocode(new GeoCodeOption().city("").address(elevatorAddress));
 		}
-		
 		
 		btnBack.setOnClickListener(new OnClickListener() {
 			@Override
@@ -298,9 +370,9 @@ public class FaultOrderDetailActivity extends BaseActivity
 					Log.i(tag, "" + isReceiveOrCancelOrder);
 					Intent fragIntent = new Intent(FaultOrderDetailActivity.this, MaintainOrderSearchActivity.class);
 					fragIntent.putExtra("isNeedRefresh", isReceiveOrCancelOrder);
-					if (isReceiveOrCancelOrder) {
+					/*if (isReceiveOrCancelOrder) {
 						fragIntent.putExtra("receivingTime", faultOrder.getReceivingTime());
-					}
+					}*/
 					
 					setResult(RESULT_OK, fragIntent);
 				}
@@ -434,7 +506,7 @@ public class FaultOrderDetailActivity extends BaseActivity
 				tvReceiveState.setText("已接单");
 				tvReceiveState.setTextColor(Color.BLACK);
 				linearReceiveTime.setVisibility(View.VISIBLE);
-				faultOrder.setReceivingTime(receivingTime);
+//				faultOrder.setReceivingTime(receivingTime);
 				tvReceiveTime.setText(sdf2.format(receivingTime));
 			}
 		});
@@ -451,7 +523,7 @@ public class FaultOrderDetailActivity extends BaseActivity
 				tvReceiveState.setText("未接单");
 				tvReceiveState.setTextColor(Color.RED);
 				linearReceiveTime.setVisibility(View.GONE);
-				faultOrder.setReceivingTime(null);
+//				faultOrder.setReceivingTime(null);
 			}
 		});
 	}

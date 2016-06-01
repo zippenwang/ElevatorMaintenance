@@ -1,8 +1,10 @@
 package wzp.project.android.elvtmtn.helper.contant;
 
+import wzp.project.android.elvtmtn.util.DESUtil;
+
 public interface ProjectContants {
 
-	String basePath = "http://192.168.1.102:8080/ElevatorMaintainSystem/api";		// Web服务器的域名
+	String basePath = "http://192.168.1.100:8080/ElevatorMaintainSystem/api";		// Web服务器的域名
 	
 	int ORDER_IS_NULL = 0x50;				// 符合要求的工单不存在
 	int ORDER_SHOW_COMPLETE = 0x51;			// 工单已经全部被显示出来了
@@ -10,5 +12,6 @@ public interface ProjectContants {
 	
 	int PAGE_SIZE = 10;
 	
-	String key = "wzp@dfa21&fdbnm!";
+	String key = "wzp@d!108Y#d2s-*yq&";
+	DESUtil desUtil = new DESUtil("wzp@d!108Y#d2s-*yq&");
 }

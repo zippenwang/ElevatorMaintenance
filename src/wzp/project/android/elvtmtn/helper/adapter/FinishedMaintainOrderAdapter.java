@@ -54,6 +54,7 @@ public class FinishedMaintainOrderAdapter extends ArrayAdapter<MaintainOrder> {
 		if (maintainOrder.getEmployee() != null) {
 			if (!TextUtils.isEmpty(maintainOrder.getEmployee().getName())) {
 				subViewHolder.tvFixEmployee.setText(maintainOrder.getEmployee().getName());
+				subViewHolder.tvFixEmployee.setTextColor(Color.BLACK);
 			} else {
 				subViewHolder.tvFixEmployee.setText("姓名未知");
 				subViewHolder.tvFixEmployee.setTextColor(Color.RED);
@@ -65,18 +66,23 @@ public class FinishedMaintainOrderAdapter extends ArrayAdapter<MaintainOrder> {
 		
 		if (maintainOrder.getSignOutTime() != null) {
 			subViewHolder.tvFinishedTime.setText(sdf2.format(maintainOrder.getSignOutTime()));
+			subViewHolder.tvFinishedTime.setTextColor(Color.BLACK);
 		} else {
 			subViewHolder.tvFinishedTime.setText("暂无");
+			subViewHolder.tvFinishedTime.setTextColor(Color.RED);
 		}
 		
 		if (maintainOrder.getElevatorRecord() != null) {
 			if (maintainOrder.getElevatorRecord().getAddress() == null) {
 				subViewHolder.tvAddress.setText("暂无地址信息");
+				subViewHolder.tvAddress.setTextColor(Color.RED);
 			} else {
 				subViewHolder.tvAddress.setText(maintainOrder.getElevatorRecord().getAddress());
+				subViewHolder.tvAddress.setTextColor(Color.BLACK);
 			}
 		} else {
 			subViewHolder.tvAddress.setText("电梯档案为空");
+			subViewHolder.tvAddress.setTextColor(Color.RED);
 		}
 			
 		return view;

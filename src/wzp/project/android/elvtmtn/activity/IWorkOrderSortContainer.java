@@ -5,4 +5,6 @@ public interface IWorkOrderSortContainer {
 	void updateInterface();
 	
 	void showToast(String tipInfo);
+	
+	void locateToFirstItem();
 }

@@ -1,13 +1,16 @@
 package wzp.project.android.elvtmtn.helper.adapter;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import wzp.project.android.elvtmtn.R;
+import wzp.project.android.elvtmtn.entity.ElevatorRecord;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
 import android.content.Context;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,18 +52,29 @@ public class MaintainOrderSignInAdapter extends ArrayAdapter<MaintainOrder> {
 		}
 		
 //		subViewHolder.tvWorkOrderId.setText(maintainOrder.getId() + "");
-		subViewHolder.tvWorkOrderId.setText(maintainOrder.getNo());
-		if (maintainOrder.getElevatorRecord() != null) {
-			if (maintainOrder.getElevatorRecord().getAddress() == null) {
-				subViewHolder.tvAddress.setText("暂无地址信息");
+		
+		String no = maintainOrder.getNo();
+		if (!TextUtils.isEmpty(no)) {
+			subViewHolder.tvWorkOrderId.setText(no);
+		} else {
+			subViewHolder.tvWorkOrderId.setText("无");
+		}
+		
+		ElevatorRecord elevatorRecord = maintainOrder.getElevatorRecord();
+		if (elevatorRecord != null) {
+			String elevatorAddress = elevatorRecord.getAddress();
+			if (!TextUtils.isEmpty(elevatorAddress)) {
+				subViewHolder.tvAddress.setText(elevatorAddress);
 			} else {
-				subViewHolder.tvAddress.setText(maintainOrder.getElevatorRecord().getAddress());
+				subViewHolder.tvAddress.setText("暂无地址信息");
 			}
 		} else {
 			subViewHolder.tvAddress.setText("电梯档案为空");
 		}
-		if (maintainOrder.getReceivingTime() != null) {
-			subViewHolder.tvReceivingTime.setText(sdf.format(maintainOrder.getReceivingTime()));
+		
+		Date receivingTime = maintainOrder.getReceivingTime();
+		if (receivingTime != null) {
+			subViewHolder.tvReceivingTime.setText(sdf.format(receivingTime));
 		} else {
 			subViewHolder.tvReceivingTime.setText("无");
 		}

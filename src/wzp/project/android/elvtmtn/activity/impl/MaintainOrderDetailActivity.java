@@ -47,10 +47,14 @@ import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.activity.IWorkOrderDetailActivity;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
 import wzp.project.android.elvtmtn.biz.IWorkOrderBiz;
+import wzp.project.android.elvtmtn.entity.ElevatorRecord;
+import wzp.project.android.elvtmtn.entity.Employee;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
+import wzp.project.android.elvtmtn.entity.Group;
 import wzp.project.android.elvtmtn.entity.MaintainItem;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
-import wzp.project.android.elvtmtn.fragment.UnfinishedWorkOrderFragment;
+import wzp.project.android.elvtmtn.entity.MaintainType;
+import wzp.project.android.elvtmtn.fragment.impl.UnfinishedWorkOrderFragment;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderState;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 import wzp.project.android.elvtmtn.presenter.WorkOrderReceivePresenter;
@@ -82,7 +86,6 @@ public class MaintainOrderDetailActivity extends BaseActivity
 	private TextView tvIsFinished;
 	private TextView tvRemark;
 	
-	private ProgressDialog progressDialog;
 	private MyProgressDialog myProgressDialog;
 	
 	private WorkOrderReceivePresenter workOrderReceivePresenter 
@@ -194,7 +197,6 @@ public class MaintainOrderDetailActivity extends BaseActivity
 		btnCancelReceiveOrder = (Button) findViewById(R.id.btn_cancelReceiveOrder);
 		btnDestNavi = (Button) findViewById(R.id.btn_destNavi);
 		
-		progressDialog = new ProgressDialog(this);
 		myProgressDialog = new MyProgressDialog(this);
 		
 		// btnDestNavi按钮需要等待获取了电梯对应的经纬度之后，才能起作用
@@ -204,31 +206,91 @@ public class MaintainOrderDetailActivity extends BaseActivity
 		 * 为未完成、已完成、超期的保养工单均需要显示的控件设置数值
 		 */
 //		tvWorkOrderId.setText(String.valueOf(maintainOrder.getId()));
-		tvWorkOrderId.setText(String.valueOf(maintainOrder.getNo()));
 		
-		String elevatorAddress = maintainOrder.getElevatorRecord().getAddress().trim();
-		tvElevatorAddress.setText(elevatorAddress);		
-		tvMaintainType.setText(maintainOrder.getMaintainType().getName().trim());
-		tvMaintainItem.setText("");
-		List<MaintainItem> items = maintainOrder.getMaintainType().getMaintainItems();
-		int itemsSize = items.size();
-		for (int i=0; i<itemsSize; i++) {
-			tvMaintainItem.append(items.get(i).getName().trim());
-			if (i != (itemsSize - 1)) {
-				tvMaintainItem.append("\n");
-			}
+		/*
+		 * 工单号
+		 */
+		String no = maintainOrder.getNo();
+		if (!TextUtils.isEmpty(no)) {
+			tvWorkOrderId.setText(no);
+		} else {
+			tvWorkOrderId.setText("暂无工单号");
+			tvWorkOrderId.setTextSize(18);
 		}
 		
-		tvFinalTime.setText(sdf.format(maintainOrder.getFinalTime()));
+		/*
+		 * 电梯地址
+		 */
+		ElevatorRecord elevatorRecord = maintainOrder.getElevatorRecord();
+		String elevatorAddress = null;
+		if (elevatorRecord != null) {
+			elevatorAddress = elevatorRecord.getAddress();
+			if (!TextUtils.isEmpty(elevatorAddress)) {
+				elevatorAddress = elevatorAddress.trim();
+				tvElevatorAddress.setText(elevatorAddress);
+			} else {
+				tvElevatorAddress.setText("暂无该信息");
+				showToast("电梯地址未知，无法进行导航");
+			}
+		} else {
+			tvElevatorAddress.setText("暂无该信息");
+			showToast("电梯地址未知，无法进行导航");
+		}
 		
-		// 接单时间若不为空，对应的Employee实例也一定不为空
-		if (maintainOrder.getReceivingTime() != null) {
+		/*
+		 * 保养类型、保养项目
+		 */
+		MaintainType maintainType = maintainOrder.getMaintainType();
+		if (maintainType != null) {
+			String maintainTypeName = maintainType.getName();
+			if (!TextUtils.isEmpty(maintainTypeName)) {
+				tvMaintainType.setText(maintainTypeName.trim());
+			} else {
+				tvMaintainType.setText("无");
+			}
+			
+			tvMaintainItem.setText("");
+			List<MaintainItem> items = maintainType.getMaintainItems();
+			if (items != null && items.size() > 0) {
+				int itemsSize = items.size();
+				for (int i=0; i<itemsSize; i++) {
+					tvMaintainItem.append(items.get(i).getName().trim());
+					if (i != (itemsSize - 1)) {
+						tvMaintainItem.append("\n");
+					}
+				}
+			} else {
+				tvMaintainItem.setText("暂无保养项目");
+			}
+		} else {
+			tvMaintainType.setText("暂无保养类型");
+			tvMaintainItem.setText("暂无保养项目");
+		}
+		
+		/*
+		 * 截止日期
+		 */
+		Date finalTime = maintainOrder.getFinalTime();
+		if (finalTime != null) {
+			tvFinalTime.setText(sdf.format(finalTime));
+		} else {
+			tvFinalTime.setText("暂无该信息");
+		}
+		
+		/*
+		 * 接单状态、接单日期
+		 */
+		Date receivingTime = maintainOrder.getReceivingTime();
+		Employee employee = null;
+		if (receivingTime != null) {
 			tvReceiveState.setText("已接单");
 			tvReceiveState.setTextColor(Color.BLACK);
 			linearReceiveTime.setVisibility(View.VISIBLE);
-			tvReceiveTime.setText(sdf2.format(maintainOrder.getReceivingTime()));		
-			if (maintainOrder.getEmployee() != null) {
-				if (employeeId == maintainOrder.getEmployee().getId()) {
+			tvReceiveTime.setText(sdf2.format(receivingTime));		
+			
+			employee = maintainOrder.getEmployee();
+			if (employee != null) {
+				if (employeeId == employee.getId()) {
 					btnReceiveOrder.setVisibility(View.GONE);
 					btnCancelReceiveOrder.setVisibility(View.VISIBLE);
 				} else {
@@ -261,39 +323,67 @@ public class MaintainOrderDetailActivity extends BaseActivity
 			btnDestNavi.setVisibility(View.GONE);
 			btnQueryElevatorRecord.setTextSize(18);
 			
-			if (maintainOrder.getEmployee() != null) {
-				if (!TextUtils.isEmpty(maintainOrder.getEmployee().getName())) {
-					tvFixEmployee.setText(maintainOrder.getEmployee().getName().trim());
+			/*
+			 * 维修人员、维修小组
+			 */
+			if (employee != null) {
+				String employeeName = employee.getName();
+				if (!TextUtils.isEmpty(employeeName)) {
+					tvFixEmployee.setText(employeeName.trim());
 				} else {
 					tvFixEmployee.setText("姓名未知");
-					tvFixEmployee.setTextColor(Color.RED);
 				}
-				if (maintainOrder.getEmployee().getGroup() != null) {
-					tvFixGroup.setText(maintainOrder.getEmployee().getGroup().getName().trim());
+				
+				Group group = employee.getGroup();
+				if (group != null) {
+					String groupName = group.getName();
+					if (!TextUtils.isEmpty(groupName)) {
+						tvFixGroup.setText(groupName.trim());
+					} else {
+						tvFixGroup.setText("暂无小组名称");
+					}
 				} else {
 					tvFixGroup.setText("暂无组信息");
 				}
 			} else {
 				tvFixEmployee.setText("暂无员工信息");
-				tvFixEmployee.setTextColor(Color.RED);
 				tvFixGroup.setText("暂无组信息");
 			}
 				
-			if (maintainOrder.getSignInTime() != null) {
-				tvSignInTime.setText(sdf2.format(maintainOrder.getSignInTime()));
+			/*
+			 * 签到时间
+			 */
+			Date signInTime = maintainOrder.getSignInTime();
+			if (signInTime != null) {
+				tvSignInTime.setText(sdf2.format(signInTime));
 			} else {
 				tvSignInTime.setText("暂无该信息");
 			}
 
-			if (maintainOrder.getSignOutTime() != null) {
-				tvSignOutTime.setText(sdf2.format(maintainOrder.getSignOutTime()));
+			/*
+			 * 签退时间
+			 */
+			Date signOutTime = maintainOrder.getSignOutTime();
+			if (signOutTime != null) {
+				tvSignOutTime.setText(sdf2.format(signOutTime));
 			} else {
 				tvSignOutTime.setText("暂无该信息");
 			}
 
-			tvIsFinished.setText(maintainOrder.getFinished() ? "已修好" : "未修好");
-			tvRemark.setText(maintainOrder.getRemark());
-		} else if (isNetworkActive) {
+			// 是否完成
+			tvIsFinished.setText(maintainOrder.getFinished() ? "已完成" : "未完成");
+			
+			/*
+			 * 备注
+			 */
+			String remark = maintainOrder.getRemark();
+			if (!TextUtils.isEmpty(remark)) {
+				tvRemark.setText(remark.trim());
+			} else {
+				tvRemark.setText("无");
+			}
+		} else if (isNetworkActive 
+				&& !TextUtils.isEmpty(elevatorAddress)) {
 			mSearch.geocode(new GeoCodeOption().city("").address(elevatorAddress));
 		}
 		
@@ -301,12 +391,12 @@ public class MaintainOrderDetailActivity extends BaseActivity
 			@Override
 			public void onClick(View v) {
 				if (workOrderState != WorkOrderState.FINISHED) {
-					Log.i(tag, "" + isReceiveOrCancelOrder);
+//					Log.i(tag, "" + isReceiveOrCancelOrder);
 					Intent fragIntent = new Intent(MaintainOrderDetailActivity.this, MaintainOrderSearchActivity.class);
 					fragIntent.putExtra("isNeedRefresh", isReceiveOrCancelOrder);
-					if (isReceiveOrCancelOrder) {
+					/*if (isReceiveOrCancelOrder) {
 						fragIntent.putExtra("receivingTime", maintainOrder.getReceivingTime());
-					}
+					}*/
 					
 					setResult(RESULT_OK, fragIntent);
 				}
@@ -346,14 +436,15 @@ public class MaintainOrderDetailActivity extends BaseActivity
 			public void onClick(View v) {
 				NetworkInfo networkInfo = mConnectivityManager.getActiveNetworkInfo(); 
 				if (networkInfo == null) { 
-					Toast.makeText(MaintainOrderDetailActivity.this, "网络异常，检查网络后重试", Toast.LENGTH_SHORT).show();
+					Toast.makeText(MaintainOrderDetailActivity.this, 
+							"网络异常，检查网络后重试", Toast.LENGTH_SHORT).show();
 					return;
 				}
 				
 				if (curAddressLatLng == null) {
 					Toast.makeText(MaintainOrderDetailActivity.this, 
 							"百度地图定位失败，无法进行\n" +
-							"签到操作，检查网络后重试", 
+							"导航操作，检查网络后重试", 
 							Toast.LENGTH_SHORT).show();
 					Log.e(tag, "curAddressLatLng is null");
 					return;
@@ -384,12 +475,7 @@ public class MaintainOrderDetailActivity extends BaseActivity
 					builder.setMessage("您尚未安装百度地图app或app版本过低，请安装或更新app后重试 ！");
 					builder.setTitle("提示消息");
 					builder.setCancelable(true);
-					builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							
-						}
-					});
+					builder.setPositiveButton("确定", null);
 					builder.create().show();
 					return;
 				}
@@ -435,7 +521,7 @@ public class MaintainOrderDetailActivity extends BaseActivity
 				tvReceiveState.setText("已接单");
 				tvReceiveState.setTextColor(Color.BLACK);
 				linearReceiveTime.setVisibility(View.VISIBLE);
-				maintainOrder.setReceivingTime(receivingTime);
+//				maintainOrder.setReceivingTime(receivingTime);
 				tvReceiveTime.setText(sdf2.format(receivingTime));
 			}
 		});
@@ -452,7 +538,7 @@ public class MaintainOrderDetailActivity extends BaseActivity
 				tvReceiveState.setText("未接单");
 				tvReceiveState.setTextColor(Color.RED);
 				linearReceiveTime.setVisibility(View.GONE);
-				maintainOrder.setReceivingTime(null);
+//				maintainOrder.setReceivingTime(null);
 			}
 		});
 	}

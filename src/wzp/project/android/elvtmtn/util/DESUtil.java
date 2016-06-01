@@ -1,109 +1,305 @@
 package wzp.project.android.elvtmtn.util;
-
+ 
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
-import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
-
+ 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
-
-import org.apache.commons.codec.binary.Base64;
-
+ 
+/**
+ * DESåŠ å¯†å’Œè§£å¯†ã€‚
+ * 
+ * @author å®‹ç«‹å›
+ * @date 2014å¹´07æœˆ03æ—¥
+ */
 public class DESUtil {
-    //Ëã·¨Ãû³Æ 
-    public static final String KEY_ALGORITHM = "DES";
-    //Ëã·¨Ãû³Æ/¼ÓÃÜÄ£Ê½/Ìî³ä·½Ê½ 
-    //DES¹²ÓĞËÄÖÖ¹¤×÷Ä£Ê½-->>ECB£ºµç×ÓÃÜÂë±¾Ä£Ê½¡¢CBC£º¼ÓÃÜ·Ö×éÁ´½ÓÄ£Ê½¡¢CFB£º¼ÓÃÜ·´À¡Ä£Ê½¡¢OFB£ºÊä³ö·´À¡Ä£Ê½
-    public static final String CIPHER_ALGORITHM = "DES/ECB/NoPadding";
-
+ 
+    /** å®‰å…¨å¯†é’¥ */
+    private String keyData = "ABCDEFGHIJKLMNOPQRSTWXYZabcdefghijklmnopqrstwxyz0123456789-_.";
+ 
     /**
-     *   
-     * Éú³ÉÃÜÔ¿key¶ÔÏó
-     * @param KeyStr ÃÜÔ¿×Ö·û´®£¨±ØĞëÓÉ16¸ö×Ö·û×é³É£©
-     * @return ÃÜÔ¿¶ÔÏó 
-     * @throws InvalidKeyException   
-     * @throws NoSuchAlgorithmException   
-     * @throws InvalidKeySpecException   
-     * @throws Exception 
+     * åŠŸèƒ½ï¼šæ„é€ 
+     * 
+     * @author å®‹ç«‹å›
+     * @date 2014å¹´07æœˆ03æ—¥
      */
-    private static SecretKey keyGenerator(String keyStr) throws Exception {
-        byte input[] = HexString2Bytes(keyStr);
-        DESKeySpec desKey = new DESKeySpec(input);
-        //´´½¨Ò»¸öÃÜ³×¹¤³§£¬È»ºóÓÃËü°ÑDESKeySpec×ª»»³É
-        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
-        SecretKey securekey = keyFactory.generateSecret(desKey);
-        return securekey;
+    public DESUtil() {
     }
-
-    private static int parse(char c) {
-        if (c >= 'a') return (c - 'a' + 10) & 0x0f;
-        if (c >= 'A') return (c - 'A' + 10) & 0x0f;
-        return (c - '0') & 0x0f;
+ 
+    /**
+     * åŠŸèƒ½ï¼šæ„é€ 
+     * 
+     * @author å®‹ç«‹å›
+     * @date 2014å¹´07æœˆ03æ—¥
+     * @param keyData
+     *      key
+     */
+    public DESUtil(String key) {
+        this.keyData = key;
     }
-
-    // ´ÓÊ®Áù½øÖÆ×Ö·û´®µ½×Ö½ÚÊı×é×ª»» 
-    public static byte[] HexString2Bytes(String hexstr) {
-        byte[] b = new byte[hexstr.length() / 2];
-        int j = 0;
-        for (int i = 0; i < b.length; i++) {
-            char c0 = hexstr.charAt(j++);
-            char c1 = hexstr.charAt(j++);
-            b[i] = (byte) ((parse(c0) << 4) | parse(c1));
+ 
+    /**
+     * åŠŸèƒ½ï¼šåŠ å¯† (UTF-8)
+     * 
+     * @author å®‹ç«‹å›
+     * @date 2014å¹´07æœˆ03æ—¥
+     * @param source
+     *      æºå­—ç¬¦ä¸²
+     * @param charSet
+     *      ç¼–ç 
+     * @return String
+     * @throws UnsupportedEncodingException
+     *       ç¼–ç å¼‚å¸¸
+     */
+    public String encrypt(String source) throws UnsupportedEncodingException {
+        return encrypt(source, "UTF-8");
+    }
+ 
+    /**
+     * 
+     * åŠŸèƒ½ï¼šè§£å¯† (UTF-8)
+     * 
+     * @author å®‹ç«‹å›
+     * @date 2014å¹´07æœˆ03æ—¥
+     * @param encryptedData
+     *      è¢«åŠ å¯†åçš„å­—ç¬¦ä¸²
+     * @return String
+     * @throws UnsupportedEncodingException
+     *       ç¼–ç å¼‚å¸¸
+     */
+    public String decrypt(String encryptedData)
+            throws UnsupportedEncodingException {
+        return decrypt(encryptedData, "UTF-8");
+    }
+ 
+    /**
+     * åŠŸèƒ½ï¼šåŠ å¯†
+     * 
+     * @author å®‹ç«‹å›
+     * @date 2014å¹´07æœˆ03æ—¥
+     * @param source
+     *      æºå­—ç¬¦ä¸²
+     * @param charSet
+     *      ç¼–ç 
+     * @return String
+     * @throws UnsupportedEncodingException
+     *       ç¼–ç å¼‚å¸¸
+     */
+    public String encrypt(String source, String charSet)
+            throws UnsupportedEncodingException {
+        String encrypt = null;
+        byte[] ret = encrypt(source.getBytes(charSet));
+        encrypt = new String(Base64.encode(ret));
+        return encrypt;
+    }
+ 
+    /**
+     * 
+     * åŠŸèƒ½ï¼šè§£å¯†
+     * 
+     * @author å®‹ç«‹å›
+     * @date 2014å¹´07æœˆ03æ—¥
+     * @param encryptedData
+     *      è¢«åŠ å¯†åçš„å­—ç¬¦ä¸²
+     * @param charSet
+     *      ç¼–ç 
+     * @return String
+     * @throws UnsupportedEncodingException
+     *       ç¼–ç å¼‚å¸¸
+     */
+    public String decrypt(String encryptedData, String charSet)
+            throws UnsupportedEncodingException {
+        String descryptedData = null;
+        byte[] ret = descrypt(Base64.decode(encryptedData.toCharArray()));
+        descryptedData = new String(ret, charSet);
+        return descryptedData;
+    }
+ 
+    /**
+     * åŠ å¯†æ•°æ® ç”¨ç”Ÿæˆçš„å¯†é’¥åŠ å¯†åŸå§‹æ•°æ®
+     * 
+     * @param primaryData
+     *      åŸå§‹æ•°æ®
+     * @return byte[]
+     * @author å®‹ç«‹å›
+     * @date 2014å¹´07æœˆ03æ—¥
+     */
+    private byte[] encrypt(byte[] primaryData) {
+ 
+        /** å–å¾—å®‰å…¨å¯†é’¥ */
+        byte rawKeyData[] = getKey();
+ 
+        /** DESç®—æ³•è¦æ±‚æœ‰ä¸€ä¸ªå¯ä¿¡ä»»çš„éšæœºæ•°æº */
+        SecureRandom sr = new SecureRandom();
+ 
+        /** ä½¿ç”¨åŸå§‹å¯†é’¥æ•°æ®åˆ›å»ºDESKeySpecå¯¹è±¡ */
+        DESKeySpec dks = null;
+        try {
+            dks = new DESKeySpec(keyData.getBytes());
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
         }
-        return b;
-    }
-
-    /** 
-     * ¼ÓÃÜÊı¾İ
-     * @param data ´ı¼ÓÃÜÊı¾İ
-     * @param key ÃÜÔ¿
-     * @return ¼ÓÃÜºóµÄÊı¾İ 
-     */
-    public static String encrypt(String data, String key) throws Exception {
-        Key deskey = keyGenerator(key);
-        // ÊµÀı»¯Cipher¶ÔÏó£¬ËüÓÃÓÚÍê³ÉÊµ¼ÊµÄ¼ÓÃÜ²Ù×÷
-        Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
-        SecureRandom random = new SecureRandom();
-        // ³õÊ¼»¯Cipher¶ÔÏó£¬ÉèÖÃÎª¼ÓÃÜÄ£Ê½
-        cipher.init(Cipher.ENCRYPT_MODE, deskey, random);
-        byte[] results = cipher.doFinal(data.getBytes());
-        // ¸Ã²¿·ÖÊÇÎªÁËÓë¼Ó½âÃÜÔÚÏß²âÊÔÍøÕ¾£¨http://tripledes.online-domain-tools.com/£©µÄÊ®Áù½øÖÆ½á¹û½øĞĞºË¶Ô
-        for (int i = 0; i < results.length; i++) {
-            System.out.print(results[i] + " ");
+ 
+        /** åˆ›å»ºä¸€ä¸ªå¯†é’¥å·¥å‚ */
+        SecretKeyFactory keyFactory = null;
+        try {
+            keyFactory = SecretKeyFactory.getInstance("DES");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
         }
-        System.out.println();
-        // Ö´ĞĞ¼ÓÃÜ²Ù×÷¡£¼ÓÃÜºóµÄ½á¹ûÍ¨³£¶¼»áÓÃBase64±àÂë½øĞĞ´«Êä 
-        return Base64.encodeBase64String(results);
+ 
+        /** ç”¨å¯†é’¥å·¥å‚æŠŠDESKeySpecè½¬æ¢æˆä¸€ä¸ªSecretKeyå¯¹è±¡ */
+        SecretKey key = null;
+        try {
+            key = keyFactory.generateSecret(dks);
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
+ 
+        /** Cipherå¯¹è±¡å®é™…å®ŒæˆåŠ å¯†æ“ä½œ */
+        Cipher cipher = null;
+        try {
+            cipher = Cipher.getInstance("DES");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        }
+ 
+        /** ç”¨å¯†é’¥åˆå§‹åŒ–Cipherå¯¹è±¡ */
+        try {
+            cipher.init(Cipher.ENCRYPT_MODE, key, sr);
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        }
+ 
+        /** æ­£å¼æ‰§è¡ŒåŠ å¯†æ“ä½œ */
+        byte encryptedData[] = null;
+        try {
+            encryptedData = cipher.doFinal(primaryData);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        }
+ 
+        /** è¿”å›åŠ å¯†æ•°æ® */
+        return encryptedData;
     }
-
-    /** 
-     * ½âÃÜÊı¾İ 
-     * @param data ´ı½âÃÜÊı¾İ 
-     * @param key ÃÜÔ¿ 
-     * @return ½âÃÜºóµÄÊı¾İ 
+ 
+    /**
+     * ç”¨å¯†é’¥è§£å¯†æ•°æ®
+     * 
+     * @param encryptedData
+     *      åŠ å¯†åçš„æ•°æ®
+     * @return byte[]
+     * @author å®‹ç«‹å›
+     * @date 2014å¹´07æœˆ03æ—¥
      */
-    public static String decrypt(String data, String key) throws Exception {
-        Key deskey = keyGenerator(key);
-        Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
-        //³õÊ¼»¯Cipher¶ÔÏó£¬ÉèÖÃÎª½âÃÜÄ£Ê½
-        cipher.init(Cipher.DECRYPT_MODE, deskey);
-        // Ö´ĞĞ½âÃÜ²Ù×÷
-        return new String(cipher.doFinal(Base64.decodeBase64(data)));
+    private byte[] descrypt(byte[] encryptedData) {
+ 
+        /** DESç®—æ³•è¦æ±‚æœ‰ä¸€ä¸ªå¯ä¿¡ä»»çš„éšæœºæ•°æº */
+        SecureRandom sr = new SecureRandom();
+ 
+        /** å–å¾—å®‰å…¨å¯†é’¥ */
+        byte rawKeyData[] = getKey();
+ 
+        /** ä½¿ç”¨åŸå§‹å¯†é’¥æ•°æ®åˆ›å»ºDESKeySpecå¯¹è±¡ */
+        DESKeySpec dks = null;
+        try {
+            dks = new DESKeySpec(keyData.getBytes());
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        }
+ 
+        /** åˆ›å»ºä¸€ä¸ªå¯†é’¥å·¥å‚ */
+        SecretKeyFactory keyFactory = null;
+        try {
+            keyFactory = SecretKeyFactory.getInstance("DES");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+ 
+        /** ç”¨å¯†é’¥å·¥å‚æŠŠDESKeySpecè½¬æ¢æˆä¸€ä¸ªSecretKeyå¯¹è±¡ */
+        SecretKey key = null;
+        try {
+            key = keyFactory.generateSecret(dks);
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
+ 
+        /** Cipherå¯¹è±¡å®é™…å®ŒæˆåŠ å¯†æ“ä½œ */
+        Cipher cipher = null;
+        try {
+            cipher = Cipher.getInstance("DES");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        }
+ 
+        /** ç”¨å¯†é’¥åˆå§‹åŒ–Cipherå¯¹è±¡ */
+        try {
+            cipher.init(Cipher.DECRYPT_MODE, key, sr);
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        }
+ 
+        /** æ­£å¼æ‰§è¡Œè§£å¯†æ“ä½œ */
+        byte decryptedData[] = null;
+        try {
+            decryptedData = cipher.doFinal(encryptedData);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        }
+ 
+        return decryptedData;
     }
-
-    public static void main(String[] args) throws Exception {
-        String source = "amigoxie";
-        System.out.println("Ô­ÎÄ: " + source);
-        
-//        String key = "A1B2C3D4E5F60708";
-        String key = "wzp@dfa21&fdbnm!";
-        String encryptData = encrypt(source, key);
-        System.out.println("¼ÓÃÜºó: " + encryptData);
-        String decryptData = decrypt(encryptData, key);
-        System.out.println("½âÃÜºó: " + decryptData);
+ 
+    /**
+     * å–å¾—å®‰å…¨å¯†é’¥ æ­¤æ–¹æ³•ä½œåºŸ,å› ä¸ºæ¯æ¬¡keyç”Ÿæˆéƒ½ä¸ä¸€æ ·å¯¼è‡´è§£å¯†åŠ å¯†ç”¨çš„å¯†é’¥éƒ½ä¸ä¸€æ ·ï¼Œ ä»è€Œå¯¼è‡´Given final block not
+     * properly paddedé”™è¯¯.
+     * 
+     * @return byteæ•°ç»„
+     * @author å®‹ç«‹å›
+     * @date 2014å¹´07æœˆ03æ—¥
+     */
+    private byte[] getKey() {
+ 
+        /** DESç®—æ³•è¦æ±‚æœ‰ä¸€ä¸ªå¯ä¿¡ä»»çš„éšæœºæ•°æº */
+        SecureRandom sr = new SecureRandom();
+ 
+        /** ä¸ºæˆ‘ä»¬é€‰æ‹©çš„DESç®—æ³•ç”Ÿæˆä¸€ä¸ªå¯†é’¥ç”Ÿæˆå™¨å¯¹è±¡ */
+        KeyGenerator kg = null;
+        try {
+            kg = KeyGenerator.getInstance("DES");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        kg.init(sr);
+ 
+        /** ç”Ÿæˆå¯†é’¥å·¥å…·ç±» */
+        SecretKey key = kg.generateKey();
+ 
+        /** ç”Ÿæˆå¯†é’¥byteæ•°ç»„ */
+        byte rawKeyData[] = key.getEncoded();
+ 
+        return rawKeyData;
     }
+ 
 }

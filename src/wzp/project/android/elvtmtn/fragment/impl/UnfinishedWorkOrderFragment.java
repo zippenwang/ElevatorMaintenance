@@ -1,13 +1,14 @@
-package wzp.project.android.elvtmtn.fragment;
+package wzp.project.android.elvtmtn.fragment.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 
 import wzp.project.android.elvtmtn.R;
@@ -16,12 +17,13 @@ import wzp.project.android.elvtmtn.activity.impl.FaultOrderDetailActivity;
 import wzp.project.android.elvtmtn.activity.impl.FaultOrderSearchActivity;
 import wzp.project.android.elvtmtn.activity.impl.MaintainOrderDetailActivity;
 import wzp.project.android.elvtmtn.activity.impl.MaintainOrderSearchActivity;
+import wzp.project.android.elvtmtn.entity.Employee;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
-import wzp.project.android.elvtmtn.helper.adapter.FinishedMaintainOrderAdapter;
+import wzp.project.android.elvtmtn.fragment.IUnfinishedOrderSortFragment;
+import wzp.project.android.elvtmtn.fragment.IWorkOrderSearchFragment;
 import wzp.project.android.elvtmtn.helper.adapter.UnfinishedFaultOrderAdapter;
-import wzp.project.android.elvtmtn.helper.adapter.FinishedFaultOrderAdapter;
-import wzp.project.android.elvtmtn.helper.adapter.MaintainOrderAdapter;
+import wzp.project.android.elvtmtn.helper.adapter.UnfOvdMaintainOrderAdapter;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderState;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
@@ -41,30 +43,31 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.AdapterView.OnItemClickListener;
 
-public class FinishedWorkOrderFragment extends Fragment 
-		implements IWorkOrderSearchFragment, IFinishedOrderSortFragment {
-	
-	private PullToRefreshListView ptrlvFinished;			// 提供下拉刷新功能的ListView
+public class UnfinishedWorkOrderFragment extends Fragment 
+		implements IWorkOrderSearchFragment, IUnfinishedOrderSortFragment {
+
+	private PullToRefreshListView ptrlvUnfinished;			// 提供下拉刷新、上拉加载功能的ListView
 	private LinearLayout linearTipInfo;						// 提示网络异常、或当前工单不存在的LinearLayout控件
 	private TextView tvTipInfo;								// 当ListView中传入的List为空，该控件用于提示数据为空
 	private Button btnRefreshAgain;							// 重试按钮
 	private ProgressDialog progressDialog;					// 进度对话框
-	private MyProgressDialog myProgressDialog;
-	
-	private int workOrderType;
+	private MyProgressDialog myProgressDialog;					// 进度对话框
+		
+	private int workOrderType;								// 工单类型
 	private ArrayAdapter<?> mAdapter;
 	
 	/*
@@ -81,23 +84,24 @@ public class FinishedWorkOrderFragment extends Fragment
 	
 //	private boolean isPtrlvHidden = false;			// PullToRefreshListView控件是否被隐藏
 	private String tipInfo;							// PullToRefreshListView控件被隐藏时的提示信息
-	private boolean isFirstAccessServer = true;
-	private int listIndex;
+	
+	private int listIndex;							// 查询工单详情时，所选中的list集合的元素的编号
+	private static final int REQUEST_REFRESH = 0x30;
 	
 	private SharedPreferences preferences 
 		= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
 	private long groupId;
 	
 	// 记录当前PullToRefreshListView控件显示的是否是下拉刷新的提示消息
-	private boolean isShowPullDownInfo = true;
+	private boolean isShowPullDownInfo = true;		
 	
-	private static final String tag = "FinishedWorkOrderFragment";
+	private static final String tag = "UnfinishedWorkOrderFragment";
 	
-	// 该方法只会被回调一次
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_finished_work_order, container, false);
+		View view = inflater.inflate(R.layout.fragment_unfinished_work_order, container, false);
 		
 		initWidget(view);
 	
@@ -118,45 +122,45 @@ public class FinishedWorkOrderFragment extends Fragment
 		
 		// 初始化ProgressDialog，必须在此处进行初始化，因为访问服务器时，需要调用ProgressDialog
 		progressDialog = new ProgressDialog(workOrderSearchActivity);
-		myProgressDialog = new MyProgressDialog(workOrderSearchActivity);
-				
+		myProgressDialog = new MyProgressDialog(workOrderSearchActivity);		
+		
 		groupId = preferences.getLong("groupId", -1);
+		Log.i(tag, "groupId:" + groupId);
 		
 		if (groupId == -1) {
 			throw new IllegalArgumentException("小组ID有误！");
 		}
-	}
-	
-
-	@Override
-	public void setUserVisibleHint(boolean isVisibleToUser) {
-		if (isVisibleToUser && isFirstAccessServer) {
-			curPage = 1;
-			if (WorkOrderType.MAINTAIN_ORDER == workOrderType) {
-				mAdapter = new FinishedMaintainOrderAdapter(workOrderSearchActivity, 
-						R.layout.listitem_finished_maintain_order, maintainOrderList);
-				workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.FINISHED, curPage++, 
-						ProjectContants.PAGE_SIZE, maintainOrderList);
-			} else if (WorkOrderType.FAULT_ORDER == workOrderType) {
-				mAdapter = new FinishedFaultOrderAdapter(workOrderSearchActivity, 
-						R.layout.listitem_finished_fault_order, faultOrderList);
-				workOrderSearchPresenter.searchFaultOrder(groupId, WorkOrderState.FINISHED, 
-						curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
-			}
-			isFirstAccessServer = false;
-			
-			ptrlvFinished.setAdapter(mAdapter);		// 该方法一定要在mAdapter创建成功后再调用，否则无效
-		}
 		
-		super.setUserVisibleHint(isVisibleToUser);
+		/*
+		 * 根据工单类型判断Adapter应该选用MaintainOrder还是FaultOrder
+		 * 1、List中的泛型需要区分；
+		 * 2、URL需要进行区分；
+		 * 2、Adapter需要区分；
+		 */		
+		curPage = 1;
+		if (WorkOrderType.MAINTAIN_ORDER == workOrderType) {
+			mAdapter = new UnfOvdMaintainOrderAdapter(workOrderSearchActivity, 
+					R.layout.listitem_unfinished_overdue_maintain_order, maintainOrderList);
+			workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.UNFINISHED,
+					curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
+		} else if (WorkOrderType.FAULT_ORDER == workOrderType) {
+			mAdapter = new UnfinishedFaultOrderAdapter(workOrderSearchActivity, 
+					R.layout.listitem_unfinished_fault_order, faultOrderList);
+			workOrderSearchPresenter.searchFaultOrder(groupId, WorkOrderState.UNFINISHED, 
+					curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
+		}	
 	}
 
+	/**
+	 * 控件初始化
+	 * @param view
+	 */
 	private void initWidget(View view) {
-		ptrlvFinished = (PullToRefreshListView) view.findViewById(R.id.ptrlv_finished);
+		ptrlvUnfinished = (PullToRefreshListView) view.findViewById(R.id.ptrlv_unfinished);
 		linearTipInfo = (LinearLayout) view.findViewById(R.id.linear_tipInfo);
 		tvTipInfo = (TextView) view.findViewById(R.id.tv_tipInfo);
 		btnRefreshAgain = (Button) view.findViewById(R.id.btn_refreshAgain);
-		
+				
 		btnRefreshAgain.setOnClickListener(new OnClickListener() {		
 			@Override
 			public void onClick(View v) {
@@ -164,16 +168,18 @@ public class FinishedWorkOrderFragment extends Fragment
 				new RefreshDataTask().execute();
 			}
 		});
-				
-		ptrlvFinished.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
-		ptrlvFinished.getLoadingLayoutProxy().setPullLabel("下拉刷新...");
-		ptrlvFinished.getLoadingLayoutProxy().setReleaseLabel("释放开始刷新...");
 		
-		ptrlvFinished.setOnRefreshListener(new OnRefreshListener2<ListView>() {
+		ptrlvUnfinished.setAdapter(mAdapter);
+				
+		ptrlvUnfinished.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
+		ptrlvUnfinished.getLoadingLayoutProxy().setPullLabel("下拉刷新...");
+		ptrlvUnfinished.getLoadingLayoutProxy().setReleaseLabel("释放开始刷新...");
+		
+		ptrlvUnfinished.setOnRefreshListener(new OnRefreshListener2<ListView>() {
 			@Override
 			public void onPullDownToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
-				ptrlvFinished.setMode(Mode.PULL_FROM_START);				
+				ptrlvUnfinished.setMode(Mode.PULL_FROM_START);				
 				new RefreshDataTask().execute();
 			}
 
@@ -184,7 +190,7 @@ public class FinishedWorkOrderFragment extends Fragment
 			}
 		});
 		
-		ptrlvFinished.setOnScrollListener(new OnScrollListener() {			
+		ptrlvUnfinished.setOnScrollListener(new OnScrollListener() {			
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
 				
@@ -197,39 +203,90 @@ public class FinishedWorkOrderFragment extends Fragment
 				
 				if (0 == firstVisibleItem
 						&& !isShowPullDownInfo) {
-					ptrlvFinished.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
-					ptrlvFinished.getLoadingLayoutProxy().setPullLabel("下拉刷新...");
-					ptrlvFinished.getLoadingLayoutProxy().setReleaseLabel("释放开始刷新...");
+					ptrlvUnfinished.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
+					ptrlvUnfinished.getLoadingLayoutProxy().setPullLabel("下拉刷新...");
+					ptrlvUnfinished.getLoadingLayoutProxy().setReleaseLabel("释放开始刷新...");
 					isShowPullDownInfo = true;
 				} else if ((totalItemCount - visibleItemCount) == firstVisibleItem
 						&& isShowPullDownInfo) {
-					ptrlvFinished.getLoadingLayoutProxy().setRefreshingLabel("正在加载");
-					ptrlvFinished.getLoadingLayoutProxy().setPullLabel("上拉加载更多...");
-					ptrlvFinished.getLoadingLayoutProxy().setReleaseLabel("释放开始加载...");
+					ptrlvUnfinished.getLoadingLayoutProxy().setRefreshingLabel("正在加载");
+					ptrlvUnfinished.getLoadingLayoutProxy().setPullLabel("上拉加载更多...");
+					ptrlvUnfinished.getLoadingLayoutProxy().setReleaseLabel("释放开始加载...");
 					isShowPullDownInfo = false;
 				}
 			}
 		});
 		
-		ptrlvFinished.setOnItemClickListener(new OnItemClickListener() {
+		ptrlvUnfinished.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
+					int position, long id) {				
 				listIndex = position - 1;
 				
 				if (workOrderType == WorkOrderType.FAULT_ORDER) {
-					FaultOrderDetailActivity.myStartActivity(workOrderSearchActivity,
-							WorkOrderState.FINISHED, JSON.toJSONString(faultOrderList.get(listIndex)));	
+					FaultOrderDetailActivity.myStartActivityForResult(UnfinishedWorkOrderFragment.this, 
+							REQUEST_REFRESH, WorkOrderState.UNFINISHED, 
+							JSON.toJSONString(faultOrderList.get(listIndex)));				
 				} else if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
-					MaintainOrderDetailActivity.myStartActivity(workOrderSearchActivity,
-							WorkOrderState.FINISHED, JSON.toJSONString(maintainOrderList.get(listIndex)));					
+					MaintainOrderDetailActivity.myStartActivityForResult(UnfinishedWorkOrderFragment.this,
+							REQUEST_REFRESH, WorkOrderState.UNFINISHED,
+							JSON.toJSONString(maintainOrderList.get(listIndex)));
 				}
 			}
 		});
 		
+		
+		
 		/*if (isPtrlvHidden) {
 			hidePtrlvAndShowLinearLayout(tipInfo);
 		}*/
+	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Log.i(tag, "进入onActivityResult");
+		switch (requestCode) {
+			case REQUEST_REFRESH:
+				if (resultCode == Activity.RESULT_OK) {
+					boolean isNeedRefresh = data.getBooleanExtra("isNeedRefresh", false);
+					Log.i(tag, "" + isNeedRefresh);
+					if (isNeedRefresh) {
+						/*Date receivingTime = (Date) data.getSerializableExtra("receivingTime");
+						if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
+							maintainOrderList.get(listIndex).setReceivingTime(receivingTime);
+							// 接单时间为空，Employee也同时为空
+							if (receivingTime != null) {
+								maintainOrderList.get(listIndex).setEmployee(employee);
+							} else {
+								maintainOrderList.get(listIndex).setEmployee(null);
+							}
+							
+						} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
+							faultOrderList.get(listIndex).setReceivingTime(receivingTime);
+							// 接单时间为空，Employee也同时为空
+							if (receivingTime != null) {
+								faultOrderList.get(listIndex).setEmployee(employee);
+							} else {
+								faultOrderList.get(listIndex).setEmployee(null);
+							}
+						}
+						updateInterface();*/
+						
+						if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
+							workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.UNFINISHED, 
+									1, (curPage - 1) * ProjectContants.PAGE_SIZE, maintainOrderList);
+						} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
+							workOrderSearchPresenter.searchFaultOrder(groupId, WorkOrderState.UNFINISHED, 
+									1, (curPage - 1) * ProjectContants.PAGE_SIZE, faultOrderList);
+						}
+						ptrlvUnfinished.getRefreshableView().setSelection(listIndex + 1);
+					}
+				}
+				break;
+	
+			default:
+				break;
+		}
 	}
 
 	private class RefreshDataTask extends AsyncTask<Void, Void, Void> {
@@ -239,9 +296,9 @@ public class FinishedWorkOrderFragment extends Fragment
 			curPage = 1;
 			
         	if (WorkOrderType.MAINTAIN_ORDER == workOrderType) {
-        		workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.FINISHED, curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
+        		workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.UNFINISHED, curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
 			} else if (WorkOrderType.FAULT_ORDER == workOrderType) {
-				workOrderSearchPresenter.searchFaultOrder(groupId, WorkOrderState.FINISHED, curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
+				workOrderSearchPresenter.searchFaultOrder(groupId, WorkOrderState.UNFINISHED, curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
 			}
         	
             // 返回执行的结果
@@ -251,7 +308,7 @@ public class FinishedWorkOrderFragment extends Fragment
         @Override  
         protected void onPostExecute(Void result) {            
             // 当下拉更新完成后，一定要调用该方法，否则更新进度条会一直存在！！
-            ptrlvFinished.onRefreshComplete();
+            ptrlvUnfinished.onRefreshComplete();
         }	
 	}
 	
@@ -259,9 +316,9 @@ public class FinishedWorkOrderFragment extends Fragment
         @Override  
         protected Void doInBackground(Void... params) {
         	if (WorkOrderType.MAINTAIN_ORDER == workOrderType) {
-        		workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.FINISHED, curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
+        		workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.UNFINISHED, curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
 			} else if (WorkOrderType.FAULT_ORDER == workOrderType) {
-				workOrderSearchPresenter.searchFaultOrder(groupId, WorkOrderState.FINISHED, curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
+				workOrderSearchPresenter.searchFaultOrder(groupId, WorkOrderState.UNFINISHED, curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
 			}
             return null;    
         }  
@@ -269,10 +326,9 @@ public class FinishedWorkOrderFragment extends Fragment
         @Override  
         protected void onPostExecute(Void result) {            
             // 当下拉更新完成后，一定要调用该方法，否则更新进度条会一直存在！！
-            ptrlvFinished.onRefreshComplete();
+            ptrlvUnfinished.onRefreshComplete();
         }	
 	}
-	
 	
 	@Override
 	public void showProgressDialog() {
@@ -284,7 +340,7 @@ public class FinishedWorkOrderFragment extends Fragment
 				
 				myProgressDialog.show();
 			}
-		});	
+		});
 	}
 	
 	@Override
@@ -302,7 +358,7 @@ public class FinishedWorkOrderFragment extends Fragment
 	public void backToLoginInterface() {
 		EmployeeLoginActivity.myForceStartActivity(workOrderSearchActivity);
 	}
-
+	
 	@Override
 	public void showToast(final String text) {
 		workOrderSearchActivity.runOnUiThread(new Runnable() {		
@@ -310,41 +366,47 @@ public class FinishedWorkOrderFragment extends Fragment
 			public void run() {
 				Toast.makeText(workOrderSearchActivity, text, Toast.LENGTH_SHORT).show();
 			}
-		});	
+		});		
 	}
-
+	
 	@Override
 	public void updateInterface() {
 		workOrderSearchActivity.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				ptrlvFinished.setVisibility(View.VISIBLE);
+				ptrlvUnfinished.setVisibility(View.VISIBLE);
 				linearTipInfo.setVisibility(View.GONE);
 				mAdapter.notifyDataSetChanged();
 			}
 		});
+		
+	}
+	
+	@Override
+	public void locateToFirstItem() {
+		ptrlvUnfinished.getRefreshableView().setSelection(1);
 	}
 
 	@Override
 	public void closePullUpToRefresh() {
-		if (ptrlvFinished.getMode() != Mode.PULL_FROM_START) {
+		if (ptrlvUnfinished.getMode() != Mode.PULL_FROM_START) {
 			workOrderSearchActivity.runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					ptrlvFinished.setMode(Mode.PULL_FROM_START);
+					ptrlvUnfinished.setMode(Mode.PULL_FROM_START);
 				}
 			});
 		}
 	}
-
+	
 	@Override
 	public void openPullUpToRefresh() {
-		if (ptrlvFinished.getMode() != Mode.BOTH) {	
+		if (ptrlvUnfinished.getMode() != Mode.BOTH) {	
 			workOrderSearchActivity.runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					ptrlvFinished.setMode(Mode.DISABLED);
-					ptrlvFinished.setMode(Mode.BOTH);
+					ptrlvUnfinished.setMode(Mode.DISABLED);
+					ptrlvUnfinished.setMode(Mode.BOTH);
 				}
 			});
 		}
@@ -358,7 +420,7 @@ public class FinishedWorkOrderFragment extends Fragment
 //				isPtrlvHidden = true;
 				tipInfo = info;
 				
-				ptrlvFinished.setVisibility(View.GONE);
+				ptrlvUnfinished.setVisibility(View.GONE);
 				linearTipInfo.setVisibility(View.VISIBLE);
 				tvTipInfo.setText(info);
 			}
@@ -371,22 +433,40 @@ public class FinishedWorkOrderFragment extends Fragment
 	}*/
 
 	@Override
-	public void sortMaintainOrderByFinishedTimeIncrease() {
-		workOrderSortPresenter.sortMaintainOrderByFinishedTimeIncrease(maintainOrderList);
+	public void sortMaintainOrderByFinalTimeIncrease() {
+		workOrderSortPresenter.sortMaintainOrderByFinalTimeIncrease(maintainOrderList);
+//		workOrderSortPresenter.sortMaintainOrderByFinalTimeIncrease(maintainOrderList, 
+//				WorkOrderState.UNFINISHED);
 	}
 
 	@Override
-	public void sortMaintainOrderByFinishedTimeDecrease() {
-		workOrderSortPresenter.sortMaintainOrderByFinishedTimeDecrease(maintainOrderList);
+	public void sortMaintainOrderByFinalTimeDecrease() {
+		workOrderSortPresenter.sortMaintainOrderByFinalTimeDecrease(maintainOrderList);
+//		workOrderSortPresenter.sortMaintainOrderByFinalTimeDecrease(maintainOrderList, 
+//				WorkOrderState.UNFINISHED);
 	}
 
 	@Override
-	public void sortFaultOrderByFixedTimeIncrease() {
-		workOrderSortPresenter.sortFaultOrderByFinishedTimeIncrease(faultOrderList);
+	public void sortFaultOrderByOccurredTimeIncrease() {
+		workOrderSortPresenter.sortFaultOrderByOccurredTimeIncrease(faultOrderList);
 	}
 
 	@Override
-	public void sortFaultOrderByFixedTimeDecrease() {
-		workOrderSortPresenter.sortFaultOrderByFinishedTimeDecrease(faultOrderList);
+	public void sortFaultOrderByOccurredTimeDecrease() {
+		workOrderSortPresenter.sortFaultOrderByOccurredTimeDecrease(faultOrderList);
 	}
+
+	@Override
+	public void sortMaintainOrderByReceivingTime() {
+		workOrderSortPresenter.sortMaintainOrderByReceivingTime(maintainOrderList);
+//		workOrderSortPresenter.sortMaintainOrderByReceivingTime(maintainOrderList,
+//				WorkOrderState.UNFINISHED);
+	}
+
+	@Override
+	public void sortFaultOrderByReceivingTime() {
+		workOrderSortPresenter.sortFaultOrderByReceivingTime(faultOrderList);
+	}
+
+
 }

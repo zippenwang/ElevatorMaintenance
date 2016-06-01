@@ -43,12 +43,11 @@ import wzp.project.android.elvtmtn.activity.IWorkOrderSortContainer;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
-import wzp.project.android.elvtmtn.fragment.FinishedWorkOrderFragment;
 import wzp.project.android.elvtmtn.fragment.IFinishedOrderSortFragment;
-import wzp.project.android.elvtmtn.fragment.IUnfOvdOrderSortFragment;
 import wzp.project.android.elvtmtn.fragment.IWorkOrderSearchFragment;
-import wzp.project.android.elvtmtn.fragment.OverdueWorkOrderFragment;
-import wzp.project.android.elvtmtn.fragment.UnfinishedWorkOrderFragment;
+import wzp.project.android.elvtmtn.fragment.impl.FinishedWorkOrderFragment;
+import wzp.project.android.elvtmtn.fragment.impl.OverdueWorkOrderFragment;
+import wzp.project.android.elvtmtn.fragment.impl.UnfinishedWorkOrderFragment;
 import wzp.project.android.elvtmtn.helper.adapter.FaultOrderSignInAdapter;
 import wzp.project.android.elvtmtn.helper.adapter.MaintainOrderSignInAdapter;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
@@ -389,7 +388,11 @@ public class EmployeeSignInActivity extends BaseActivity
 				mAdapter.notifyDataSetChanged();
 			}
 		});
-		
+	}
+	
+	@Override
+	public void locateToFirstItem() {
+		ptrlvSignIn.getRefreshableView().setSelection(1);
 	}
 
 	@Override

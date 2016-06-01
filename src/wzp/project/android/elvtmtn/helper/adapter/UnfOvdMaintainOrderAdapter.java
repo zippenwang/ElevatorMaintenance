@@ -13,12 +13,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class MaintainOrderAdapter extends ArrayAdapter<MaintainOrder> {
+public class UnfOvdMaintainOrderAdapter extends ArrayAdapter<MaintainOrder> {
 
 	private int resourceId;
-	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
-	public MaintainOrderAdapter(Context context, int textViewResourceId,
+	public UnfOvdMaintainOrderAdapter(Context context, int textViewResourceId,
 			List<MaintainOrder> objects) {
 		super(context, textViewResourceId, objects);
 		resourceId = textViewResourceId;
@@ -56,7 +56,7 @@ public class MaintainOrderAdapter extends ArrayAdapter<MaintainOrder> {
 			subViewHolder.tvAddress.setText("电梯档案为空");
 		}
 		if (maintainOrder.getFinalTime() != null) {
-			subViewHolder.tvFinalTime.setText(UnfinishedFaultOrderAdapter.sdf.format(maintainOrder.getFinalTime()));
+			subViewHolder.tvFinalTime.setText(sdf.format(maintainOrder.getFinalTime()));
 		} else {
 			subViewHolder.tvFinalTime.setText("暂无该信息");
 		}

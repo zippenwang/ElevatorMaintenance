@@ -296,6 +296,11 @@ public class FaultHistorySearchActivity extends BaseActivity
 			}
 		});
 	}
+	
+	@Override
+	public void locateToFirstItem() {
+		ptrlvFaultHistory.getRefreshableView().setSelection(1);
+	}
 
 	@Override
 	public void closePullUpToRefresh() {

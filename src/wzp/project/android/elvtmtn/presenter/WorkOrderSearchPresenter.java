@@ -82,7 +82,7 @@ public class WorkOrderSearchPresenter implements IWorkOrderSearchListener {
 			@Override
 			public void onSearchSuccess(int successType) {				
 				if (successType == ProjectContants.ORDER_SHOW_COMPLETE) {
-					workOrderSearchFragment.showToast("已显示出所有记录");
+//					workOrderSearchFragment.showToast("已显示出所有记录");
 					workOrderSearchFragment.closePullUpToRefresh();		// 关闭上拉加载功能，只提供下拉刷新功能
 				} else if (successType == ProjectContants.ORDER_SHOW_UNCOMPLETE) {
 					workOrderSearchFragment.openPullUpToRefresh();		// 打开上拉加载功能，此时包含上拉和下拉两种功能
@@ -150,7 +150,7 @@ public class WorkOrderSearchPresenter implements IWorkOrderSearchListener {
 //		workOrderSearchFragment.setIsPtrlvHidden(false);
 		
 		if (successType == ProjectContants.ORDER_SHOW_COMPLETE) {
-			workOrderSearchFragment.showToast("当前已经显示出所有工单了");
+//			workOrderSearchFragment.showToast("当前已经显示出所有工单了");
 			workOrderSearchFragment.closePullUpToRefresh();		// 关闭上拉加载功能，只提供下拉刷新功能
 		} else if (successType == ProjectContants.ORDER_SHOW_UNCOMPLETE) {
 			workOrderSearchFragment.openPullUpToRefresh();		// 打开上拉加载功能，此时包含上拉和下拉两种功能
