@@ -9,6 +9,7 @@ import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
 import android.content.Context;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +38,6 @@ public class ElevatorRecordAdapter extends ArrayAdapter<ElevatorRecord> {
 		SubViewHolder subViewHolder = null;
 		
 		if (convertView == null) {
-//			view = LayoutInflater.from(getContext()).inflate(resourceId, null);
 			view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
 			subViewHolder = new SubViewHolder();
 			subViewHolder.tvElevatorNumber = (TextView) view.findViewById(R.id.tv_elevatorNumber);
@@ -51,10 +51,33 @@ public class ElevatorRecordAdapter extends ArrayAdapter<ElevatorRecord> {
 		}
 		
 //		subViewHolder.tvElevatorNumber.setText(elevatorRecord.getId() + "");
-		subViewHolder.tvElevatorNumber.setText(elevatorRecord.getNo());
-		subViewHolder.tvElevatorType.setText(elevatorRecord.getType());		
-		subViewHolder.tvAddress.setText(elevatorRecord.getAddress());
-		subViewHolder.tvPhone.setText(elevatorRecord.getPhone());
+		String no = elevatorRecord.getNo();
+		if (!TextUtils.isEmpty(no)) {
+			subViewHolder.tvElevatorNumber.setText(no);
+		} else {
+			subViewHolder.tvElevatorNumber.setText("无");
+		}
+		
+		String elevatorType = elevatorRecord.getType();
+		if (!TextUtils.isEmpty(elevatorType)) {
+			subViewHolder.tvElevatorType.setText(elevatorType);		
+		} else {
+			subViewHolder.tvElevatorType.setText("暂无");		
+		}
+		
+		String elevatorAddress = elevatorRecord.getAddress();
+		if (!TextUtils.isEmpty(elevatorAddress)) {
+			subViewHolder.tvAddress.setText(elevatorAddress);
+		} else {
+			subViewHolder.tvAddress.setText("暂无地址信息");
+		}
+		
+		String phone = elevatorRecord.getPhone();
+		if (!TextUtils.isEmpty(phone)) {
+			subViewHolder.tvPhone.setText(phone);
+		} else {
+			subViewHolder.tvPhone.setText("暂无联系方式");
+		}
 		
 		return view;
 	}

@@ -74,6 +74,7 @@ public class MaintainOrderDetailActivity extends BaseActivity
 	private TextView tvMaintainType;
 	private TextView tvMaintainItem;
 	private TextView tvFinalTime;
+	private LinearLayout linearReceiveState;
 	private TextView tvReceiveState;
 	private LinearLayout linearReceiveTime;
 	private TextView tvReceiveTime;
@@ -113,7 +114,7 @@ public class MaintainOrderDetailActivity extends BaseActivity
 	private ConnectivityManager mConnectivityManager;
 	private boolean isNetworkActive = true;
 	
-	private static final String tag = "WorkOrderDetailActivity";
+	private static final String LOG_TAG = "WorkOrderDetailActivity";
 	
 	
 	@Override
@@ -124,13 +125,26 @@ public class MaintainOrderDetailActivity extends BaseActivity
 		SDKInitializer.initialize(getApplicationContext());
 		setContentView(R.layout.activity_maintain_order_detail);
 		
-		initData();
+		try {
+			initData();
+		} catch (IllegalArgumentException expection) {
+			Log.e(LOG_TAG, Log.getStackTraceString(expection));
+			showToast("缺失重要数据，请重新登录");
+			EmployeeLoginActivity.myForceStartActivity(this);
+			return;
+		} catch (Exception exp2) {
+			Log.e(LOG_TAG, Log.getStackTraceString(exp2));
+			showToast("程序异常，请重新登录");
+			EmployeeLoginActivity.myForceStartActivity(this);
+			return;
+		}
+		
 		initWidget();
 	}
 	
 	@Override
 	protected void onStart() {
-		Log.d(tag, "开启定位功能");
+		Log.d(LOG_TAG, "开启定位功能");
 		if (locationClient != null
 				&& !locationClient.isStarted())
 		{
@@ -142,7 +156,7 @@ public class MaintainOrderDetailActivity extends BaseActivity
 
 	@Override
 	protected void onStop() {
-		Log.d(tag, "关闭定位功能");
+		Log.d(LOG_TAG, "关闭定位功能");
 		if (locationClient != null
 				&& locationClient.isStarted()) {
 			locationClient.stop();
@@ -159,11 +173,16 @@ public class MaintainOrderDetailActivity extends BaseActivity
 			throw new IllegalArgumentException("没有接收到工单状态的参数");
 		}
 		
-		maintainOrder = JSON.parseObject(intent.getStringExtra("workOrder"), MaintainOrder.class);
+		String jsonWorkOrder = intent.getStringExtra("workOrder");
+		if (null == jsonWorkOrder) {
+			throw new IllegalArgumentException("没有接收到工单json字符串");
+		}
+		
+		maintainOrder = JSON.parseObject(jsonWorkOrder, MaintainOrder.class);
 		
 		employeeId = preferences.getLong("employeeId", -1);
 		if (-1 == employeeId) {
-			throw new IllegalArgumentException("员工id有误");
+			throw new IllegalArgumentException("缺失employeeId");
 		}
 		
 		mConnectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -174,6 +193,7 @@ public class MaintainOrderDetailActivity extends BaseActivity
 			isNetworkActive = false;
 			return;
 		}
+		
 		if (workOrderState != WorkOrderState.FINISHED) {
 			initLocationClient();
 			mSearch = GeoCoder.newInstance();
@@ -200,12 +220,11 @@ public class MaintainOrderDetailActivity extends BaseActivity
 		myProgressDialog = new MyProgressDialog(this);
 		
 		// btnDestNavi按钮需要等待获取了电梯对应的经纬度之后，才能起作用
-		btnDestNavi.setEnabled(false);		
+		btnDestNavi.setEnabled(false);
 
 		/*
 		 * 为未完成、已完成、超期的保养工单均需要显示的控件设置数值
 		 */
-//		tvWorkOrderId.setText(String.valueOf(maintainOrder.getId()));
 		
 		/*
 		 * 工单号
@@ -307,6 +326,7 @@ public class MaintainOrderDetailActivity extends BaseActivity
 		 */
 		if (workOrderState == WorkOrderState.FINISHED) {
 			linearFinished = (LinearLayout) findViewById(R.id.linear_finished);
+			linearReceiveState = (LinearLayout) findViewById(R.id.linear_receiveState);
 			tvFixEmployee = (TextView) findViewById(R.id.tv_fixEmployee);
 			tvFixGroup = (TextView) findViewById(R.id.tv_fixGroup);
 			tvSignInTime = (TextView) findViewById(R.id.tv_signInTime);
@@ -318,6 +338,7 @@ public class MaintainOrderDetailActivity extends BaseActivity
 			 * 为已完成的保养工单需要显示的控件设置数值
 			 */
 			linearFinished.setVisibility(View.VISIBLE);
+			linearReceiveState.setVisibility(View.GONE);
 			btnReceiveOrder.setVisibility(View.GONE);
 			btnCancelReceiveOrder.setVisibility(View.GONE);
 			btnDestNavi.setVisibility(View.GONE);
@@ -391,13 +412,8 @@ public class MaintainOrderDetailActivity extends BaseActivity
 			@Override
 			public void onClick(View v) {
 				if (workOrderState != WorkOrderState.FINISHED) {
-//					Log.i(tag, "" + isReceiveOrCancelOrder);
 					Intent fragIntent = new Intent(MaintainOrderDetailActivity.this, MaintainOrderSearchActivity.class);
 					fragIntent.putExtra("isNeedRefresh", isReceiveOrCancelOrder);
-					/*if (isReceiveOrCancelOrder) {
-						fragIntent.putExtra("receivingTime", maintainOrder.getReceivingTime());
-					}*/
-					
 					setResult(RESULT_OK, fragIntent);
 				}
 				finish();
@@ -446,14 +462,14 @@ public class MaintainOrderDetailActivity extends BaseActivity
 							"百度地图定位失败，无法进行\n" +
 							"导航操作，检查网络后重试", 
 							Toast.LENGTH_SHORT).show();
-					Log.e(tag, "curAddressLatLng is null");
+					Log.e(LOG_TAG, "curAddressLatLng is null");
 					return;
 				}
 				
 				if (elvtAddressLatLng == null) {
 					Toast.makeText(MaintainOrderDetailActivity.this, 
 							"解析电梯地址失败，刷新网络后重试", Toast.LENGTH_SHORT).show();
-					Log.e(tag, "elvtAddressLatLng is null");
+					Log.e(LOG_TAG, "elvtAddressLatLng is null");
 					return;
 				}
 				
@@ -470,7 +486,7 @@ public class MaintainOrderDetailActivity extends BaseActivity
 							MaintainOrderDetailActivity.this);
 				} catch (BaiduMapAppNotSupportNaviException e) {
 					closeProgressDialog();
-					Log.e(tag, Log.getStackTraceString(e));
+					Log.e(LOG_TAG, Log.getStackTraceString(e));
 					AlertDialog.Builder builder = new AlertDialog.Builder(MaintainOrderDetailActivity.this);
 					builder.setMessage("您尚未安装百度地图app或app版本过低，请安装或更新app后重试 ！");
 					builder.setTitle("提示消息");
@@ -488,13 +504,8 @@ public class MaintainOrderDetailActivity extends BaseActivity
 	@Override
 	public void onBackPressed() {
 		if (workOrderState != WorkOrderState.FINISHED) {
-			Log.i(tag, "" + isReceiveOrCancelOrder);
 			Intent fragIntent = new Intent(MaintainOrderDetailActivity.this, MaintainOrderSearchActivity.class);
-			fragIntent.putExtra("isNeedRefresh", isReceiveOrCancelOrder);
-			if (isReceiveOrCancelOrder) {
-				fragIntent.putExtra("receivingTime", maintainOrder.getReceivingTime());
-			}
-			
+			fragIntent.putExtra("isNeedRefresh", isReceiveOrCancelOrder);			
 			setResult(RESULT_OK, fragIntent);
 		}
 		finish();
@@ -521,7 +532,6 @@ public class MaintainOrderDetailActivity extends BaseActivity
 				tvReceiveState.setText("已接单");
 				tvReceiveState.setTextColor(Color.BLACK);
 				linearReceiveTime.setVisibility(View.VISIBLE);
-//				maintainOrder.setReceivingTime(receivingTime);
 				tvReceiveTime.setText(sdf2.format(receivingTime));
 			}
 		});
@@ -538,7 +548,6 @@ public class MaintainOrderDetailActivity extends BaseActivity
 				tvReceiveState.setText("未接单");
 				tvReceiveState.setTextColor(Color.RED);
 				linearReceiveTime.setVisibility(View.GONE);
-//				maintainOrder.setReceivingTime(null);
 			}
 		});
 	}
@@ -546,14 +555,14 @@ public class MaintainOrderDetailActivity extends BaseActivity
 	private class MyLocationListener implements BDLocationListener {
 		@Override
 		public void onReceiveLocation(BDLocation location) {
-			Log.d(tag, "进入MyLocationListener");
+			Log.d(LOG_TAG, "进入MyLocationListener");
 			
 			// MapView销毁后不再处理新接收的位置
 			if (location == null)
 				return;
 			
 			curAddressLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-			Log.i(tag, "当前位置，纬度：" + curAddressLatLng.latitude 
+			Log.i(LOG_TAG, "当前位置，纬度：" + curAddressLatLng.latitude 
 					+ ",经度：" + curAddressLatLng.longitude);
 		}
 	}
@@ -596,12 +605,12 @@ public class MaintainOrderDetailActivity extends BaseActivity
 			return;
 		}
 		
-		Log.d(tag, "成功编码地理位置");
+		Log.d(LOG_TAG, "成功编码地理位置");
 		
 		elvtAddressLatLng = null;
 		elvtAddressLatLng = result.getLocation();
 		
-		Log.i(tag, "电梯地址,纬度：" + elvtAddressLatLng.latitude + ",经度：" + elvtAddressLatLng.longitude);
+		Log.i(LOG_TAG, "电梯地址,纬度：" + elvtAddressLatLng.latitude + ",经度：" + elvtAddressLatLng.longitude);
 		
 		
 		btnDestNavi.setEnabled(true);

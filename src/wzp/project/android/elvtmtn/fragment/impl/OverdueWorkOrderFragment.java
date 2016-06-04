@@ -64,8 +64,7 @@ public class OverdueWorkOrderFragment extends Fragment
 	private LinearLayout linearTipInfo;						// 提示网络异常、或当前工单不存在的LinearLayout控件
 	private TextView tvTipInfo;								// 当ListView中传入的List为空，该控件用于提示数据为空
 	private Button btnRefreshAgain;							// 重试按钮
-	private ProgressDialog progressDialog;					// 进度对话框
-	private MyProgressDialog myProgressDialog;
+	private MyProgressDialog myProgressDialog;				// 自定义进度对话框
 	
 	private ArrayAdapter<MaintainOrder> mAdapter;
 	
@@ -80,8 +79,6 @@ public class OverdueWorkOrderFragment extends Fragment
 	
 	private volatile int curPage = 1;				// 当前需要访问的页码
 	
-//	private boolean isPtrlvHidden = false;			// PullToRefreshListView控件是否被隐藏
-	private String tipInfo;							// PullToRefreshListView控件被隐藏时的提示信息
 	private boolean isFirstAccessServer = true;
 	
 	private SharedPreferences preferences 
@@ -114,29 +111,25 @@ public class OverdueWorkOrderFragment extends Fragment
 		workOrderSearchActivity = (MaintainOrderSearchActivity) activity;
 		
 		// 初始化ProgressDialog，必须在此处进行初始化，因为访问服务器时，需要调用ProgressDialog
-		progressDialog = new ProgressDialog(workOrderSearchActivity);
 		myProgressDialog = new MyProgressDialog(workOrderSearchActivity);
 		
 		groupId = preferences.getLong("groupId", -1);
 		if (groupId == -1) {
-			throw new IllegalArgumentException("小组ID有误！");
+			Log.e(tag, "缺失groupId");
+			showToast("缺失重要数据，请重新登录");
+			EmployeeLoginActivity.myForceStartActivity(workOrderSearchActivity);
+			return;
 		}
 	}
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.i(tag, "进入onActivityResult");
 		switch (requestCode) {
 			case REQUEST_REFRESH:
 				if (resultCode == Activity.RESULT_OK) {
 					boolean isNeedRefresh = data.getBooleanExtra("isNeedRefresh", false);
 					Log.i(tag, "" + isNeedRefresh);
 					if (isNeedRefresh) {
-						/*Date receivingTime = (Date) data.getSerializableExtra("receivingTime");
-						maintainOrderList.get(listIndex).setReceivingTime(receivingTime);				
-						updateInterface();*/
-						
-						Log.i(tag, "准备再次刷新Overdue");
 						workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.OVERDUE, 
 								1, (curPage - 1) * ProjectContants.PAGE_SIZE, maintainOrderList);						
 						ptrlvOverdue.getRefreshableView().setSelection(listIndex + 1);
@@ -234,10 +227,6 @@ public class OverdueWorkOrderFragment extends Fragment
 						WorkOrderState.OVERDUE, JSON.toJSONString(maintainOrderList.get(listIndex)));
 			}
 		});
-		
-		/*if (isPtrlvHidden) {
-			hidePtrlvAndShowLinearLayout(tipInfo);
-		}*/
 	}
 	
 	private class RefreshDataTask extends AsyncTask<Void, Void, Void> {
@@ -356,9 +345,6 @@ public class OverdueWorkOrderFragment extends Fragment
 		workOrderSearchActivity.runOnUiThread(new Runnable() {		
 			@Override
 			public void run() {
-//				isPtrlvHidden = true;
-				tipInfo = info;
-				
 				ptrlvOverdue.setVisibility(View.GONE);
 				linearTipInfo.setVisibility(View.VISIBLE);
 				tvTipInfo.setText(info);

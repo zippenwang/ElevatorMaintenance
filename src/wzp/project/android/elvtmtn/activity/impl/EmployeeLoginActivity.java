@@ -129,7 +129,6 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 	public void loginSuccess(Employee employee) {
 		SharedPreferences.Editor editor 
 			= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext()).edit();
-		Log.i(tag, "employeeId:" + employee.getId() + ";groupId" + employee.getGroup().getId());
 		editor.putLong("employeeId", employee.getId());
 		editor.putLong("groupId", employee.getGroup().getId());
 //		editor.putString("username", caedtUsername.getEditableText().toString());
@@ -143,7 +142,6 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 		editor.putString("username", username);
 		editor.putBoolean("isRemember", cbIsRemember.isChecked());
 		editor.putBoolean("isAutoLogin", cbIsAutoLogin.isChecked());
-		editor.putString("employeeJson", JSON.toJSONString(employee));
 		editor.putString("token", MyApplication.token);
 		editor.commit();
 		
@@ -201,11 +199,14 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 	}
 	
 	public static void myForceStartActivity(Context context) {
+		// 强制跳转至登录界面，需要销毁所有还未销毁的Activity
 		ActivityCollector.finishAll();
 		SharedPreferences.Editor editor =
 				PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext()).edit();
 //		editor.clear();
 		editor.putString("token", "");
+		editor.putString("employeeId", "");
+		editor.putString("groupId", "");
 		editor.commit();
 		MyApplication.token = null;
 		myStartActivity(context);

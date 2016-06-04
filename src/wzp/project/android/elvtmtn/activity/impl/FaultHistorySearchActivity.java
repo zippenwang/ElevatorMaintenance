@@ -61,7 +61,6 @@ public class FaultHistorySearchActivity extends BaseActivity
 	
 	private volatile int curPage = 1;				// 当前需要访问的页码
 	
-	private String tipInfo;							// PullToRefreshListView控件被隐藏时的提示信息
 	private long elevatorRecordId;
 	private int listIndex;
 	// 记录当前PullToRefreshListView控件显示的是否是下拉刷新的提示消息
@@ -74,17 +73,29 @@ public class FaultHistorySearchActivity extends BaseActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_fault_history);
 		
-		initData();
+		try {
+			initData();
+		} catch (IllegalArgumentException expection) {
+			Log.e(tag, Log.getStackTraceString(expection));
+			showToast("缺失重要数据，请重新登录");
+			EmployeeLoginActivity.myForceStartActivity(this);
+			return;
+		} catch (Exception exp2) {
+			Log.e(tag, Log.getStackTraceString(exp2));
+			showToast("程序异常，请重新登录");
+			EmployeeLoginActivity.myForceStartActivity(this);
+			return;
+		}
+		
 		initWidget();
 	}
 	
 	private void initData() {
 		Intent intent = getIntent();
 		elevatorRecordId = intent.getLongExtra("elevatorRecordId", -1);
-		Log.d(tag, "" + elevatorRecordId);
 		
 		if (elevatorRecordId == -1) {
-			throw new IllegalArgumentException("电梯id有误！");
+			throw new IllegalArgumentException("未传入电梯档案id号elevatorRecordId");
 		}
 		
 		myProgressDialog = new MyProgressDialog(this);
@@ -332,9 +343,6 @@ public class FaultHistorySearchActivity extends BaseActivity
 		runOnUiThread(new Runnable() {		
 			@Override
 			public void run() {
-//				isPtrlvHidden = true;
-				tipInfo = info;
-				
 				ptrlvFaultHistory.setVisibility(View.GONE);
 				linearTipInfo.setVisibility(View.VISIBLE);
 				tvTipInfo.setText(info);

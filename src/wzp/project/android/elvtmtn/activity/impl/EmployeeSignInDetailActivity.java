@@ -65,7 +65,6 @@ public class EmployeeSignInDetailActivity extends BaseActivity
 	private LinearLayout linearSignInAddress;
 	private TextView tvSignInAddress;
 	private Button btnSignIn;
-	private ProgressDialog progressDialog;
 	private MyProgressDialog myProgressDialog;
 	
 	private EmployeeSignInPresenter employeeSignInPresenter = new EmployeeSignInPresenter(this); 
@@ -100,32 +99,49 @@ public class EmployeeSignInDetailActivity extends BaseActivity
 		SDKInitializer.initialize(getApplicationContext());
 		setContentView(R.layout.activity_sign_in_detail);
 
-		initData();
+		try {
+			initData();
+		} catch (IllegalArgumentException exp) {
+			Log.e(tag, Log.getStackTraceString(exp));
+			showToast("缺失重要数据，请重新登录");
+			EmployeeLoginActivity.myForceStartActivity(this);
+			return;
+		} catch (Exception exp2) {
+			Log.e(tag, Log.getStackTraceString(exp2));
+			showToast("程序异常，请重新登录");
+			EmployeeLoginActivity.myForceStartActivity(this);
+			return;
+		}
+		
 		initWidget();
 	}
 	
 	private void initData() {
 		Intent intent = getIntent();
-		workOrderType = intent.getIntExtra("workOrderType", -1);		
 		
+		workOrderType = intent.getIntExtra("workOrderType", -1);
 		if (-1 == workOrderType) {
 			throw new IllegalArgumentException("没有接收到工单类型的参数");
 		}
 
+		String jsonWorkOrder = intent.getStringExtra("workOrder");
+		if (null == jsonWorkOrder) {
+			throw new IllegalArgumentException("没有接收到工单json字符串");
+		}
+		
 		if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
-			maintainOrder = JSON.parseObject(intent.getStringExtra("workOrder"), MaintainOrder.class);
+			maintainOrder = JSON.parseObject(jsonWorkOrder, MaintainOrder.class);
 			workOrderId = maintainOrder.getId();
 		} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
-			faultOrder = JSON.parseObject(intent.getStringExtra("workOrder"), FaultOrder.class);
+			faultOrder = JSON.parseObject(jsonWorkOrder, FaultOrder.class);
 			workOrderId = faultOrder.getId();
 		}
 		
 		mConnectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);				
 	}
 	
-	private void initWidget() {
+	private void initWidget() {		
 		btnBack = (Button) findViewById(R.id.btn_back);
-//		btnRefreshCurAddress = (Button) findViewById(R.id.btn_refreshCurAddress);
 		ibtnRefreshCurAddress = (ImageButton) findViewById(R.id.ibtn_refreshCurAddress);
 		tvWorkOrderType = (TextView) findViewById(R.id.tv_workOrderType);
 		tvWorkOrderId = (TextView) findViewById(R.id.tv_workOrderId);
@@ -140,12 +156,11 @@ public class EmployeeSignInDetailActivity extends BaseActivity
 		tvCurrentAddress = (TextView) findViewById(R.id.tv_currentAddress);
 		btnSignIn = (Button) findViewById(R.id.btn_signIn);
 		
-		progressDialog = new ProgressDialog(this);
 		myProgressDialog = new MyProgressDialog(this);
 				
 		if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
 			tvWorkOrderType.setText("保养工单 ");
-//			tvWorkOrderId.setText(String.valueOf(maintainOrder.getId()));
+			
 			String no = maintainOrder.getNo();
 			if (!TextUtils.isEmpty(no)) {
 				tvWorkOrderId.setText(no);
@@ -164,7 +179,6 @@ public class EmployeeSignInDetailActivity extends BaseActivity
 				tvSignInTime.setText(sdf.format(maintainOrder.getSignInTime()));
 				tvSignInAddress.setText(maintainOrder.getSignInAddress());
 				linearCurrentAddress.setVisibility(View.GONE);
-//				btnRefreshCurAddress.setVisibility(View.GONE);
 				ibtnRefreshCurAddress.setVisibility(View.GONE);
 			} else {
 				linearSignInAddress.setVisibility(View.GONE);
@@ -181,7 +195,7 @@ public class EmployeeSignInDetailActivity extends BaseActivity
 			}
 		} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
 			tvWorkOrderType.setText("故障工单 ");
-//			tvWorkOrderId.setText(String.valueOf(faultOrder.getId()));
+
 			String no = faultOrder.getNo();
 			if (!TextUtils.isEmpty(no)) {
 				tvWorkOrderId.setText(no);
@@ -200,7 +214,6 @@ public class EmployeeSignInDetailActivity extends BaseActivity
 				tvSignInTime.setText(sdf.format(faultOrder.getSignInTime()));
 				tvSignInAddress.setText(faultOrder.getSignInAddress());
 				linearCurrentAddress.setVisibility(View.GONE);
-//				btnRefreshCurAddress.setVisibility(View.GONE);
 				ibtnRefreshCurAddress.setVisibility(View.GONE);
 			} else {
 				linearSignInAddress.setVisibility(View.GONE);
@@ -272,8 +285,8 @@ public class EmployeeSignInDetailActivity extends BaseActivity
 				showProgressDialog();
 				mSearch.geocode(new GeoCodeOption().city("").address(elevatorAddress));*/
 				
-				// 误差范围定为200米
-				if (isInDistanceScope(elvtAddressLatLng, curAddressLatLng, 200)) {
+				// 误差范围定为300米
+				if (isInDistanceScope(elvtAddressLatLng, curAddressLatLng, 300)) {
 					employeeSignInPresenter.signIn(workOrderType, workOrderId, currentAddress);			
 				} else {
 					Toast.makeText(EmployeeSignInDetailActivity.this, "超出误差范围，签到失败", Toast.LENGTH_SHORT).show();

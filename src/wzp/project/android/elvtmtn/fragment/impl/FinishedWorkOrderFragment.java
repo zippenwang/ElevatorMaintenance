@@ -63,8 +63,7 @@ public class FinishedWorkOrderFragment extends Fragment
 	private LinearLayout linearTipInfo;						// 提示网络异常、或当前工单不存在的LinearLayout控件
 	private TextView tvTipInfo;								// 当ListView中传入的List为空，该控件用于提示数据为空
 	private Button btnRefreshAgain;							// 重试按钮
-	private ProgressDialog progressDialog;					// 进度对话框
-	private MyProgressDialog myProgressDialog;
+	private MyProgressDialog myProgressDialog;				// 自定义进度对话框
 	
 	private int workOrderType;
 	private ArrayAdapter<?> mAdapter;
@@ -81,8 +80,6 @@ public class FinishedWorkOrderFragment extends Fragment
 	
 	private volatile int curPage = 1;				// 当前需要访问的页码
 	
-//	private boolean isPtrlvHidden = false;			// PullToRefreshListView控件是否被隐藏
-	private String tipInfo;							// PullToRefreshListView控件被隐藏时的提示信息
 	private boolean isFirstAccessServer = true;
 	private int listIndex;
 	
@@ -119,13 +116,15 @@ public class FinishedWorkOrderFragment extends Fragment
 		}
 		
 		// 初始化ProgressDialog，必须在此处进行初始化，因为访问服务器时，需要调用ProgressDialog
-		progressDialog = new ProgressDialog(workOrderSearchActivity);
 		myProgressDialog = new MyProgressDialog(workOrderSearchActivity);
 				
 		groupId = preferences.getLong("groupId", -1);
 		
 		if (groupId == -1) {
-			throw new IllegalArgumentException("小组ID有误！");
+			Log.e(tag, "缺失groupId");
+			showToast("缺失重要数据，请重新登录");
+			EmployeeLoginActivity.myForceStartActivity(workOrderSearchActivity);
+			return;
 		}
 	}
 	
@@ -195,8 +194,6 @@ public class FinishedWorkOrderFragment extends Fragment
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem,
 					int visibleItemCount, int totalItemCount) {
-				Log.i(tag, "onScroll#" + firstVisibleItem + "," + visibleItemCount + "," + totalItemCount);
-				
 				if (0 == firstVisibleItem
 						&& !isShowPullDownInfo) {
 					ptrlvFinished.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
@@ -228,10 +225,6 @@ public class FinishedWorkOrderFragment extends Fragment
 				}
 			}
 		});
-		
-		/*if (isPtrlvHidden) {
-			hidePtrlvAndShowLinearLayout(tipInfo);
-		}*/
 	}
 
 	private class RefreshDataTask extends AsyncTask<Void, Void, Void> {
@@ -362,20 +355,12 @@ public class FinishedWorkOrderFragment extends Fragment
 		workOrderSearchActivity.runOnUiThread(new Runnable() {		
 			@Override
 			public void run() {
-//				isPtrlvHidden = true;
-				tipInfo = info;
-				
 				ptrlvFinished.setVisibility(View.GONE);
 				linearTipInfo.setVisibility(View.VISIBLE);
 				tvTipInfo.setText(info);
 			}
 		});
 	}
-
-	/*@Override
-	public void setIsPtrlvHidden(boolean isPtrlvHidden) {
-		this.isPtrlvHidden = isPtrlvHidden;
-	}*/
 
 	@Override
 	public void sortMaintainOrderByFinishedTimeIncrease() {

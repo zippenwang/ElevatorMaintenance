@@ -124,7 +124,7 @@ public class MainActivity extends BaseActivity {
 	public void onBackPressed() {
 //		moveTaskToBack(true);		// 退出后并没有销毁Activity，只是将应用程序的back stack保存至后台中
 		/*
-		 * 按一次退出，提示“再按一次推出系统”，1.5秒内再按一次退出，则真正退出应用程序
+		 * 按一次退出，提示“再按一次退出系统”，1.5秒内再按一次退出，则真正退出应用程序
 		 */
 		pressBackTimes++;
 		if (pressBackTimes == 2) {

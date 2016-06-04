@@ -1,13 +1,16 @@
 package wzp.project.android.elvtmtn.helper.adapter;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import wzp.project.android.elvtmtn.R;
+import wzp.project.android.elvtmtn.entity.ElevatorRecord;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
 import android.content.Context;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +39,6 @@ public class UnfinishedFaultOrderAdapter extends ArrayAdapter<FaultOrder> {
 		SubViewHolder subViewHolder = null;
 		
 		if (convertView == null) {
-//			view = LayoutInflater.from(getContext()).inflate(resourceId, null);
 			view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
 			subViewHolder = new SubViewHolder();
 			subViewHolder.tvWorkOrderId = (TextView) view.findViewById(R.id.tv_workOrderId);
@@ -49,22 +51,30 @@ public class UnfinishedFaultOrderAdapter extends ArrayAdapter<FaultOrder> {
 			subViewHolder = (SubViewHolder) view.getTag();
 		}
 		
-//		subViewHolder.tvWorkOrderId.setText(faultOrder.getId() + "");
-		subViewHolder.tvWorkOrderId.setText(faultOrder.getNo());
-//		subViewHolder.tvAddress.setText(faultOrder.getElevatorRecord().getAddress());
-		if (faultOrder.getElevatorRecord() != null) {
-			if (faultOrder.getElevatorRecord().getAddress() == null) {
-				subViewHolder.tvAddress.setText("暂无地址信息");
+		String no = faultOrder.getNo();
+		if (!TextUtils.isEmpty(no)) {
+			subViewHolder.tvWorkOrderId.setText(no);
+		} else {
+			subViewHolder.tvWorkOrderId.setText("无");
+		}
+		
+		ElevatorRecord elevatorRecord = faultOrder.getElevatorRecord();
+		if (elevatorRecord != null) {
+			String elevatorAddress = elevatorRecord.getAddress();
+			if (!TextUtils.isEmpty(elevatorAddress)) {
+				subViewHolder.tvAddress.setText(elevatorAddress);
 			} else {
-				subViewHolder.tvAddress.setText(faultOrder.getElevatorRecord().getAddress());
+				subViewHolder.tvAddress.setText("暂无地址信息");
 			}
 		} else {
 			subViewHolder.tvAddress.setText("电梯档案为空");
 		}
-		if (faultOrder.getOccuredTime() != null) {
-			subViewHolder.tvOccuredTime.setText(UnfinishedFaultOrderAdapter.sdf.format(faultOrder.getOccuredTime()));
+		
+		Date occurredTime = faultOrder.getOccuredTime();
+		if (occurredTime != null) {
+			subViewHolder.tvOccuredTime.setText(sdf.format(occurredTime));
 		} else {
-			subViewHolder.tvOccuredTime.setText("无");
+			subViewHolder.tvOccuredTime.setText("暂无");
 		}
 		
 		if (faultOrder.getReceivingTime() != null) {

@@ -1,9 +1,12 @@
 package wzp.project.android.elvtmtn.helper.adapter;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import wzp.project.android.elvtmtn.R;
+import wzp.project.android.elvtmtn.entity.ElevatorRecord;
+import wzp.project.android.elvtmtn.entity.Employee;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
 import android.content.Context;
 import android.graphics.Color;
@@ -49,11 +52,18 @@ public class FinishedMaintainOrderAdapter extends ArrayAdapter<MaintainOrder> {
 		}
 		
 //		subViewHolder.tvWorkOrderId.setText(maintainOrder.getId() + "");
-		subViewHolder.tvWorkOrderId.setText(maintainOrder.getNo());
+		String no = maintainOrder.getNo();
+		if (!TextUtils.isEmpty(no)) {
+			subViewHolder.tvWorkOrderId.setText(no);
+		} else {
+			subViewHolder.tvWorkOrderId.setText("无");
+		}
 		
-		if (maintainOrder.getEmployee() != null) {
-			if (!TextUtils.isEmpty(maintainOrder.getEmployee().getName())) {
-				subViewHolder.tvFixEmployee.setText(maintainOrder.getEmployee().getName());
+		Employee employee = maintainOrder.getEmployee();
+		if (employee != null) {
+			String employeeName = employee.getName();
+			if (!TextUtils.isEmpty(employeeName)) {
+				subViewHolder.tvFixEmployee.setText(employeeName);
 				subViewHolder.tvFixEmployee.setTextColor(Color.BLACK);
 			} else {
 				subViewHolder.tvFixEmployee.setText("姓名未知");
@@ -64,21 +74,24 @@ public class FinishedMaintainOrderAdapter extends ArrayAdapter<MaintainOrder> {
 			subViewHolder.tvFixEmployee.setTextColor(Color.RED);
 		}
 		
-		if (maintainOrder.getSignOutTime() != null) {
-			subViewHolder.tvFinishedTime.setText(sdf2.format(maintainOrder.getSignOutTime()));
+		Date signOutTime = maintainOrder.getSignOutTime();
+		if (signOutTime != null) {
+			subViewHolder.tvFinishedTime.setText(sdf2.format(signOutTime));
 			subViewHolder.tvFinishedTime.setTextColor(Color.BLACK);
 		} else {
 			subViewHolder.tvFinishedTime.setText("暂无");
 			subViewHolder.tvFinishedTime.setTextColor(Color.RED);
 		}
 		
-		if (maintainOrder.getElevatorRecord() != null) {
-			if (maintainOrder.getElevatorRecord().getAddress() == null) {
+		ElevatorRecord elevatorRecord = maintainOrder.getElevatorRecord();
+		if (elevatorRecord != null) {
+			String elevatorAddress = elevatorRecord.getAddress();
+			if (!TextUtils.isEmpty(elevatorAddress)) {
+				subViewHolder.tvAddress.setText(elevatorAddress);
+				subViewHolder.tvAddress.setTextColor(Color.BLACK);
+			} else {
 				subViewHolder.tvAddress.setText("暂无地址信息");
 				subViewHolder.tvAddress.setTextColor(Color.RED);
-			} else {
-				subViewHolder.tvAddress.setText(maintainOrder.getElevatorRecord().getAddress());
-				subViewHolder.tvAddress.setTextColor(Color.BLACK);
 			}
 		} else {
 			subViewHolder.tvAddress.setText("电梯档案为空");

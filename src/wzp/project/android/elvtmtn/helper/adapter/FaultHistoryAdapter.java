@@ -1,9 +1,11 @@
 package wzp.project.android.elvtmtn.helper.adapter;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import wzp.project.android.elvtmtn.R;
+import wzp.project.android.elvtmtn.entity.Employee;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
 import android.annotation.SuppressLint;
@@ -51,35 +53,37 @@ public class FaultHistoryAdapter extends ArrayAdapter<FaultOrder> {
 			subViewHolder = (SubViewHolder) view.getTag();
 		}
 
-		subViewHolder.tvWorkOrderId.setText(faultOrder.getNo());
+		String no = faultOrder.getNo();
+		if (!TextUtils.isEmpty(no)) {
+			subViewHolder.tvWorkOrderId.setText(no);
+		} else {
+			subViewHolder.tvWorkOrderId.setText("无");
+		}
 		
-		if (faultOrder.getEmployee() != null) {
-			if (!TextUtils.isEmpty(faultOrder.getEmployee().getName())) {
-				subViewHolder.tvFixEmployee.setText(faultOrder.getEmployee().getName());
-				subViewHolder.tvFixEmployee.setTextColor(Color.BLACK);
+		Employee employee = faultOrder.getEmployee();
+		if (employee != null) {
+			String employeeName = employee.getName();
+			if (!TextUtils.isEmpty(employeeName)) {
+				subViewHolder.tvFixEmployee.setText(employeeName);
 			} else {
 				subViewHolder.tvFixEmployee.setText("姓名未知");
-				subViewHolder.tvFixEmployee.setTextColor(Color.RED);
 			}
 		} else {
 			subViewHolder.tvFixEmployee.setText("暂无员工信息");
-			subViewHolder.tvFixEmployee.setTextColor(Color.RED);
 		}
 		
-		if (faultOrder.getSignOutTime() != null) {
-			subViewHolder.tvFixedTime.setText(sdf2.format(faultOrder.getSignOutTime()));
-			subViewHolder.tvFixedTime.setTextColor(Color.BLACK);
+		Date signOutTime = faultOrder.getSignOutTime();
+		if (signOutTime != null) {
+			subViewHolder.tvFixedTime.setText(sdf2.format(signOutTime));
 		} else {
 			subViewHolder.tvFixedTime.setText("暂无");
-			subViewHolder.tvFixedTime.setTextColor(Color.RED);
 		}
 
-		if (faultOrder.getReason() == null) {
-			subViewHolder.tvFaultReason.setText("暂无故障原因描述");
-			subViewHolder.tvFaultReason.setTextColor(Color.RED);
+		String reason = faultOrder.getReason();
+		if (!TextUtils.isEmpty(reason)) {
+			subViewHolder.tvFaultReason.setText(reason);
 		} else {
-			subViewHolder.tvFaultReason.setText(faultOrder.getReason());
-			subViewHolder.tvFaultReason.setTextColor(Color.BLACK);
+			subViewHolder.tvFaultReason.setText("暂无");
 		}
 		
 		return view;
@@ -96,5 +100,4 @@ public class FaultHistoryAdapter extends ArrayAdapter<FaultOrder> {
 		TextView tvFixEmployee;
 		TextView tvFixedTime;
 	}
-
 }

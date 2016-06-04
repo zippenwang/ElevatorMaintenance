@@ -59,7 +59,6 @@ public class ElevatorRecordSearchActivity extends BaseActivity
 	private LinearLayout linearTipInfo;						// 提示网络异常、或当前工单不存在的LinearLayout控件
 	private TextView tvTipInfo;								// 当ListView中传入的List为空，该控件用于提示数据为空
 	private Button btnRefreshAgain;							// 重试按钮
-	private ProgressDialog progressDialog;					// 进度对话框
 	private MyProgressDialog myProgressDialog;
 	
 	private ArrayAdapter<ElevatorRecord> mAdapter;
@@ -94,22 +93,34 @@ public class ElevatorRecordSearchActivity extends BaseActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_elevator_record);
 		
-		initData();
+		try {
+			initData();
+		} catch (IllegalArgumentException expection) {
+			Log.e(tag, Log.getStackTraceString(expection));
+			showToast("缺失重要数据，请重新登录");
+			EmployeeLoginActivity.myForceStartActivity(this);
+			return;
+		} catch (Exception exp2) {
+			Log.e(tag, Log.getStackTraceString(exp2));
+			showToast("程序异常，请重新登录");
+			EmployeeLoginActivity.myForceStartActivity(this);
+			return;
+		}
+		
 		initWidget();
 	}
 
 	private void initData() {
 		employeeId = preferences.getLong("employeeId", -1);
 		if (employeeId == -1) {
-			throw new IllegalArgumentException("员工ID有误！");
+			throw new IllegalArgumentException("缺失employeeId");
 		}
 		
 		groupId = preferences.getLong("groupId", -1);
 		if (groupId == -1) {
-			throw new IllegalArgumentException("员工所在小组ID有误！");
+			throw new IllegalArgumentException("缺失groupId");
 		}
 		
-		progressDialog = new ProgressDialog(this);
 		myProgressDialog = new MyProgressDialog(this);
 		
 		curPage = 1;
@@ -161,14 +172,6 @@ public class ElevatorRecordSearchActivity extends BaseActivity
 			@Override
 			public void onClick(View v) {
 				searchCondition = caedtCondition.getText().toString();
-				
-				// 此次不需要进行非空判断，如果查询条件为空，默认为查询所有电梯档案
-				/*if (TextUtils.isEmpty(searchCondition)) {
-					Toast.makeText(ElevatorRecordSearchActivity.this, 
-							"查询条件不能为空", Toast.LENGTH_SHORT).show();
-					return;
-				}*/
-				
 				currentSearchMode = ELEVATOR_RECORDS_BY_CONDITION;
 				curPage = 1;
 				presenter.searchElevatorRecordsByCondition(curPage++, ProjectContants.PAGE_SIZE, 
@@ -214,8 +217,6 @@ public class ElevatorRecordSearchActivity extends BaseActivity
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem,
 					int visibleItemCount, int totalItemCount) {
-				Log.i(tag, "onScroll#" + firstVisibleItem + "," + visibleItemCount + "," + totalItemCount);
-
 				if (0 == firstVisibleItem
 						&& !isShowPullDownInfo) {
 					ptrlvElevatorRecord.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");

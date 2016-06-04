@@ -1,13 +1,16 @@
 package wzp.project.android.elvtmtn.helper.adapter;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import wzp.project.android.elvtmtn.R;
+import wzp.project.android.elvtmtn.entity.ElevatorRecord;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
 import android.content.Context;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,28 +52,40 @@ public class MaintainOrderFeedbackAdapter extends ArrayAdapter<MaintainOrder> {
 		}
 		
 //		subViewHolder.tvWorkOrderNo.setText(maintainOrder.getId() + "");
-		subViewHolder.tvWorkOrderNo.setText(maintainOrder.getNo());
+		String no = maintainOrder.getNo();
+		if (!TextUtils.isEmpty(no)) {
+			subViewHolder.tvWorkOrderNo.setText(no);
+		} else {
+			subViewHolder.tvWorkOrderNo.setText("无");
+		}
 		
-		if (maintainOrder.getElevatorRecord() != null) {
-			if (maintainOrder.getElevatorRecord().getAddress() == null) {
-				subViewHolder.tvAddress.setText("暂无地址信息");
+		ElevatorRecord elevatorRecord = maintainOrder.getElevatorRecord();
+		if (elevatorRecord != null) {
+			String elevatorAddress = elevatorRecord.getAddress();
+			if (!TextUtils.isEmpty(elevatorAddress)) {
+				subViewHolder.tvAddress.setText(elevatorAddress);
 			} else {
-				subViewHolder.tvAddress.setText(maintainOrder.getElevatorRecord().getAddress());
+				subViewHolder.tvAddress.setText("暂无地址信息");
 			}
 		} else {
 			subViewHolder.tvAddress.setText("电梯档案为空");
 		}
 		
-		if (maintainOrder.getSignInTime() != null) {
-			subViewHolder.tvSignInTime.setText(MaintainOrderFeedbackAdapter.sdf.format(maintainOrder.getSignInTime()));
+		Date signInTime = maintainOrder.getSignInTime();
+		if (signInTime != null) {
+			subViewHolder.tvSignInTime.setText(sdf.format(signInTime));
 		} else {
 			subViewHolder.tvSignInTime.setText("无");
 		}
 		
-		if (maintainOrder.getSignOutTime() != null
-				&& !maintainOrder.getFinished()) {
-			subViewHolder.tvIsPartFinished.setText("部分反馈");
-			subViewHolder.tvIsPartFinished.setTextColor(Color.BLACK);
+		if (maintainOrder.getSignOutTime() != null) {
+			if (!maintainOrder.getFinished()) {
+				subViewHolder.tvIsPartFinished.setText("部分反馈");
+				subViewHolder.tvIsPartFinished.setTextColor(Color.BLACK);
+			} else {
+				subViewHolder.tvIsPartFinished.setText("已反馈");
+				subViewHolder.tvIsPartFinished.setTextColor(Color.BLACK);
+			}
 		} else {
 			subViewHolder.tvIsPartFinished.setText("未反馈");
 			subViewHolder.tvIsPartFinished.setTextColor(Color.RED);

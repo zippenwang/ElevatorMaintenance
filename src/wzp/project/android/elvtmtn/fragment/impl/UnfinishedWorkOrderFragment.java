@@ -64,7 +64,6 @@ public class UnfinishedWorkOrderFragment extends Fragment
 	private LinearLayout linearTipInfo;						// 提示网络异常、或当前工单不存在的LinearLayout控件
 	private TextView tvTipInfo;								// 当ListView中传入的List为空，该控件用于提示数据为空
 	private Button btnRefreshAgain;							// 重试按钮
-	private ProgressDialog progressDialog;					// 进度对话框
 	private MyProgressDialog myProgressDialog;					// 进度对话框
 		
 	private int workOrderType;								// 工单类型
@@ -81,9 +80,6 @@ public class UnfinishedWorkOrderFragment extends Fragment
 	private Activity workOrderSearchActivity;
 	
 	private volatile int curPage = 1;				// 当前需要访问的页码
-	
-//	private boolean isPtrlvHidden = false;			// PullToRefreshListView控件是否被隐藏
-	private String tipInfo;							// PullToRefreshListView控件被隐藏时的提示信息
 	
 	private int listIndex;							// 查询工单详情时，所选中的list集合的元素的编号
 	private static final int REQUEST_REFRESH = 0x30;
@@ -121,22 +117,17 @@ public class UnfinishedWorkOrderFragment extends Fragment
 		}
 		
 		// 初始化ProgressDialog，必须在此处进行初始化，因为访问服务器时，需要调用ProgressDialog
-		progressDialog = new ProgressDialog(workOrderSearchActivity);
 		myProgressDialog = new MyProgressDialog(workOrderSearchActivity);		
 		
 		groupId = preferences.getLong("groupId", -1);
-		Log.i(tag, "groupId:" + groupId);
 		
 		if (groupId == -1) {
-			throw new IllegalArgumentException("小组ID有误！");
+			Log.e(tag, "缺失groupId");
+			showToast("缺失重要数据，请重新登录");
+			EmployeeLoginActivity.myForceStartActivity(workOrderSearchActivity);
+			return;
 		}
-		
-		/*
-		 * 根据工单类型判断Adapter应该选用MaintainOrder还是FaultOrder
-		 * 1、List中的泛型需要区分；
-		 * 2、URL需要进行区分；
-		 * 2、Adapter需要区分；
-		 */		
+
 		curPage = 1;
 		if (WorkOrderType.MAINTAIN_ORDER == workOrderType) {
 			mAdapter = new UnfOvdMaintainOrderAdapter(workOrderSearchActivity, 
@@ -199,8 +190,6 @@ public class UnfinishedWorkOrderFragment extends Fragment
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem,
 					int visibleItemCount, int totalItemCount) {
-				Log.i(tag, "onScroll#" + firstVisibleItem + "," + visibleItemCount + "," + totalItemCount);
-				
 				if (0 == firstVisibleItem
 						&& !isShowPullDownInfo) {
 					ptrlvUnfinished.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
@@ -234,44 +223,15 @@ public class UnfinishedWorkOrderFragment extends Fragment
 				}
 			}
 		});
-		
-		
-		
-		/*if (isPtrlvHidden) {
-			hidePtrlvAndShowLinearLayout(tipInfo);
-		}*/
 	}
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.i(tag, "进入onActivityResult");
 		switch (requestCode) {
 			case REQUEST_REFRESH:
 				if (resultCode == Activity.RESULT_OK) {
 					boolean isNeedRefresh = data.getBooleanExtra("isNeedRefresh", false);
-					Log.i(tag, "" + isNeedRefresh);
 					if (isNeedRefresh) {
-						/*Date receivingTime = (Date) data.getSerializableExtra("receivingTime");
-						if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
-							maintainOrderList.get(listIndex).setReceivingTime(receivingTime);
-							// 接单时间为空，Employee也同时为空
-							if (receivingTime != null) {
-								maintainOrderList.get(listIndex).setEmployee(employee);
-							} else {
-								maintainOrderList.get(listIndex).setEmployee(null);
-							}
-							
-						} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
-							faultOrderList.get(listIndex).setReceivingTime(receivingTime);
-							// 接单时间为空，Employee也同时为空
-							if (receivingTime != null) {
-								faultOrderList.get(listIndex).setEmployee(employee);
-							} else {
-								faultOrderList.get(listIndex).setEmployee(null);
-							}
-						}
-						updateInterface();*/
-						
 						if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
 							workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.UNFINISHED, 
 									1, (curPage - 1) * ProjectContants.PAGE_SIZE, maintainOrderList);
@@ -379,7 +339,6 @@ public class UnfinishedWorkOrderFragment extends Fragment
 				mAdapter.notifyDataSetChanged();
 			}
 		});
-		
 	}
 	
 	@Override
@@ -417,9 +376,6 @@ public class UnfinishedWorkOrderFragment extends Fragment
 		workOrderSearchActivity.runOnUiThread(new Runnable() {		
 			@Override
 			public void run() {
-//				isPtrlvHidden = true;
-				tipInfo = info;
-				
 				ptrlvUnfinished.setVisibility(View.GONE);
 				linearTipInfo.setVisibility(View.VISIBLE);
 				tvTipInfo.setText(info);
@@ -427,23 +383,14 @@ public class UnfinishedWorkOrderFragment extends Fragment
 		});
 	}
 
-	/*@Override
-	public void setIsPtrlvHidden(boolean isPtrlvHidden) {
-		this.isPtrlvHidden = isPtrlvHidden;
-	}*/
-
 	@Override
 	public void sortMaintainOrderByFinalTimeIncrease() {
 		workOrderSortPresenter.sortMaintainOrderByFinalTimeIncrease(maintainOrderList);
-//		workOrderSortPresenter.sortMaintainOrderByFinalTimeIncrease(maintainOrderList, 
-//				WorkOrderState.UNFINISHED);
 	}
 
 	@Override
 	public void sortMaintainOrderByFinalTimeDecrease() {
 		workOrderSortPresenter.sortMaintainOrderByFinalTimeDecrease(maintainOrderList);
-//		workOrderSortPresenter.sortMaintainOrderByFinalTimeDecrease(maintainOrderList, 
-//				WorkOrderState.UNFINISHED);
 	}
 
 	@Override
@@ -459,8 +406,6 @@ public class UnfinishedWorkOrderFragment extends Fragment
 	@Override
 	public void sortMaintainOrderByReceivingTime() {
 		workOrderSortPresenter.sortMaintainOrderByReceivingTime(maintainOrderList);
-//		workOrderSortPresenter.sortMaintainOrderByReceivingTime(maintainOrderList,
-//				WorkOrderState.UNFINISHED);
 	}
 
 	@Override

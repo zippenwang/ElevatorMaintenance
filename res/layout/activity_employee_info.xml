@@ -83,7 +83,6 @@
 		            android:layout_weight="3"
 		            android:layout_height="wrap_content"
 		            android:gravity="left"
-		            android:text="001"
 		            android:textSize="@dimen/work_order_detail" />        
 		    </LinearLayout>
 		
@@ -171,7 +170,6 @@
 		            android:layout_weight="3"
 		            android:layout_height="wrap_content"
 		            android:gravity="left"
-		            android:text="xxx"
 		            android:textSize="@dimen/work_order_detail" />
 		    </LinearLayout>
 		    
@@ -201,9 +199,18 @@
 		            android:id="@+id/tv_groupMember"
 		            android:layout_height="wrap_content"
 		            android:gravity="left"
-		            android:text="xxx"
 		            android:textSize="@dimen/work_order_detail" />
 		    </LinearLayout>		    
+		    
+		    <LinearLayout
+		        android:id="@+id/linear_groupMember"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="10dp"
+		        android:paddingLeft="50dp"
+		        android:paddingRight="50dp"
+		        android:orientation="vertical">
+		    </LinearLayout>	
 		    
 		    <!-- 退出当前登录 -->
 		    <LinearLayout 

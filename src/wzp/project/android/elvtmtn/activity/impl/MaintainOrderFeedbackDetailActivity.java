@@ -2,6 +2,7 @@ package wzp.project.android.elvtmtn.activity.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
@@ -49,6 +50,7 @@ import android.widget.Toast;
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.activity.IWorkOrderFeedbackActivity;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
+import wzp.project.android.elvtmtn.entity.ElevatorRecord;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainItem;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
@@ -61,7 +63,6 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 		implements IWorkOrderFeedbackActivity, OnGetGeoCoderResultListener {
 
 	private Button btnBack;
-//	private Button btnRefreshCurAddress;
 	private ImageButton ibtnRefreshCurAddress;
 	private TextView tvWorkOrderId;
 	private TextView tvElevatorAddress;
@@ -75,7 +76,6 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 	private RadioButton rbYes;
 	private RadioButton rbNo;
 	private Button btnSubmit;
-	private ProgressDialog progressDialog;
 	private MyProgressDialog myProgressDialog;
 	private AlertDialog.Builder altDlgBuilder;
 	
@@ -116,7 +116,20 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 		SDKInitializer.initialize(getApplicationContext());
 		setContentView(R.layout.activity_maintain_order_feedback_detail);
 		
-		initData();
+		try {
+			initData();
+		} catch (IllegalArgumentException exp) {
+			Log.e(tag, Log.getStackTraceString(exp));
+			showToast("缺失重要数据，请重新登录");
+			EmployeeLoginActivity.myForceStartActivity(this);
+			return;
+		} catch (Exception exp2) {
+			Log.e(tag, Log.getStackTraceString(exp2));
+			showToast("程序异常，请重新登录");
+			EmployeeLoginActivity.myForceStartActivity(this);
+			return;
+		}
+
 		initWidget();
 		
 		mSearch = GeoCoder.newInstance();
@@ -148,12 +161,18 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 	}
 	
 	private void initData() {
-		maintainOrder = JSON.parseObject(getIntent().getStringExtra("workOrder"), MaintainOrder.class);
+		String jsonWorkOrder = getIntent().getStringExtra("workOrder");
+		if (null == jsonWorkOrder) {
+			throw new IllegalArgumentException("没有接收到工单json字符串");
+		}
+		maintainOrder = JSON.parseObject(jsonWorkOrder, MaintainOrder.class);	
 		workOrderId = maintainOrder.getId();
+		
 		employeeId = preferences.getLong("employeeId", -1);
 		if (employeeId == -1) {
-			throw new IllegalArgumentException("员工ID有误！");
+			throw new IllegalArgumentException("缺失employeeId");
 		}
+		
 		itemList = maintainOrder.getMaintainType().getMaintainItems();
 //		finishedItemList = Arrays.asList(maintainOrder.getFinishedItems().split(";"));
 		String finishedItems = maintainOrder.getFinishedItems();
@@ -168,7 +187,6 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 	
 	private void initWidget() {
 		btnBack = (Button) findViewById(R.id.btn_back);
-//		btnRefreshCurAddress = (Button) findViewById(R.id.btn_refreshCurAddress);
 		ibtnRefreshCurAddress = (ImageButton) findViewById(R.id.ibtn_refreshCurAddress);
 		tvWorkOrderId = (TextView) findViewById(R.id.tv_workOrderId);
 		tvElevatorAddress = (TextView) findViewById(R.id.tv_elevatorAddress);
@@ -184,7 +202,6 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 		rbNo = (RadioButton) findViewById(R.id.rb_no);
 		btnSubmit = (Button) findViewById(R.id.btn_submit);
 		
-		progressDialog = new ProgressDialog(this);
 		myProgressDialog = new MyProgressDialog(this);
 		altDlgBuilder = new AlertDialog.Builder(this);
 				
@@ -220,7 +237,7 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 				
 				final String remark = edtRemark.getEditableText().toString().trim();				
 				final boolean isDone = (rgIsFinished.getCheckedRadioButtonId() == R.id.rb_yes);
-				String message = isDone ? "您当前已完成工单，是否确定提交？" : "您当前还未完成工单，是否确定提交？";
+				String message = isDone ? "您已完成保养工单，是否确定提交？" : "您还未完成保养工单，是否确定提交？";
 			
 				if (checkedNum > 0) {
 					// 访问网络
@@ -247,12 +264,7 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 					});
 					
 					// 取消按钮，默认不执行任何操作
-					altDlgBuilder.setNegativeButton("取消", new DialogInterface.OnClickListener() {						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							
-						}
-					});
+					altDlgBuilder.setNegativeButton("取消", null);
 
 					altDlgBuilder.show();
 				} else {
@@ -265,15 +277,46 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 		/*
 		 * 为控件设值
 		 */
-//		tvWorkOrderId.setText(String.valueOf(maintainOrder.getId()));
-		tvWorkOrderId.setText(maintainOrder.getNo());
-		tvElevatorAddress.setText(maintainOrder.getElevatorRecord().getAddress());
-		tvSignInTime.setText(sdf.format(maintainOrder.getSignInTime()));
-		tvSignInAddress.setText(maintainOrder.getSignInAddress());
+		String no = maintainOrder.getNo();
+		if (!TextUtils.isEmpty(no)) {
+			tvWorkOrderId.setText(no);
+		} else {
+			tvWorkOrderId.setText("无");
+		}
 		
-		if (maintainOrder.getSignOutTime() != null
-				&& !maintainOrder.getFinished()) {
-			tvFeedbackState.setText("部分反馈");
+		ElevatorRecord elevatorRecord = maintainOrder.getElevatorRecord();
+		if (elevatorRecord != null) {
+			String elevatorAddrress = elevatorRecord.getAddress();
+			if (!TextUtils.isEmpty(elevatorAddrress)) {
+				tvElevatorAddress.setText(elevatorAddrress);
+			} else {
+				tvElevatorAddress.setText("暂无地址信息");
+			}
+		} else {
+			tvElevatorAddress.setText("电梯档案为空");
+		}
+		
+		Date signInTime = maintainOrder.getSignInTime();
+		if (signInTime != null) {
+			tvSignInTime.setText(sdf.format(signInTime));
+		} else {
+			tvSignInTime.setText("暂无该信息");
+		}
+		
+		String signInAddress = maintainOrder.getSignInAddress();
+		if (!TextUtils.isEmpty(signInAddress)) {
+			tvSignInAddress.setText(signInAddress);
+		} else {
+			tvSignInAddress.setText("暂无该信息");
+		}
+		
+		if (maintainOrder.getSignOutTime() != null) {
+			tvFeedbackState.setTextColor(Color.BLACK);
+			if (!maintainOrder.getFinished()) {
+				tvFeedbackState.setText("部分反馈");
+			} else {
+				tvFeedbackState.setText("已反馈");
+			}
 		} else {
 			tvFeedbackState.setText("未反馈");
 			tvFeedbackState.setTextColor(Color.RED);
@@ -295,7 +338,7 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 					} else {
 						checkedNum--;
 					}
-					Log.i(tag, "" + checkedNum);
+//					Log.i(tag, "" + checkedNum);
 					if (checkedNum == linearMaintainItem.getChildCount()) {
 						rbYes.setEnabled(true);
 					} else {
@@ -312,8 +355,9 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 			ckBox = null;
 		}
 
-		if (!TextUtils.isEmpty(maintainOrder.getRemark())) {
-			edtRemark.setText(maintainOrder.getRemark());
+		String remark = maintainOrder.getRemark();
+		if (!TextUtils.isEmpty(remark)) {
+			edtRemark.setText(remark);
 		}
 	}
 	
@@ -370,15 +414,6 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 			}
 		}
 	}
-	
-	// 自定义一个startActivity()方法
-/*	public static void myStartActivity(Context context,
-			int workOrderType, String jsonWorkOrder) {
-		Intent actIntent = new Intent(context, FaultOrderDetailActivity.class);
-		actIntent.putExtra("workOrderType", workOrderType);
-		actIntent.putExtra("workOrder", jsonWorkOrder);
-		context.startActivity(actIntent);
-	}*/
 	
 	public static void myStartActivityForResult(Activity context, 
 			int requestCode, String jsonWorkOrder) {
@@ -465,6 +500,7 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 				btnSubmit.setEnabled(false);
 				rbYes.setEnabled(false);
 				rbNo.setEnabled(false);
+				tvFeedbackState.setTextColor(Color.BLACK);
 				if (rbYes.isChecked()) {
 					tvFeedbackState.setText("已反馈");
 				} else {
@@ -476,7 +512,6 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 				}
 				
 				locationClient.unRegisterLocationListener(locationListener);
-//				btnRefreshCurAddress.setVisibility(View.GONE);
 				ibtnRefreshCurAddress.setVisibility(View.GONE);
 			}
 		});

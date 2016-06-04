@@ -67,11 +67,9 @@ public class EmployeeSignInActivity extends BaseActivity
 	private LinearLayout linearTipInfo;						// 提示网络异常、或当前工单不存在的LinearLayout控件
 	private TextView tvTipInfo;								// 当ListView中传入的List为空，该控件用于提示数据为空
 	private Button btnRefreshAgain;							// 重试按钮
-	private ProgressDialog progressDialog;					// 进度对话框
-	private MyProgressDialog myProgressDialog;
+	private MyProgressDialog myProgressDialog;				// 自定义进度对话框
 	
 	private PopupMenu pmSort;
-	private Menu menu;
 	
 	private int workOrderType;
 	private ArrayAdapter<?> mAdapter;
@@ -87,9 +85,6 @@ public class EmployeeSignInActivity extends BaseActivity
 	
 	private volatile int curPage = 1;				// 当前需要访问的页码
 	
-//	private boolean isPtrlvHidden = false;			// PullToRefreshListView控件是否被隐藏
-	private String tipInfo;							// PullToRefreshListView控件被隐藏时的提示信息
-	
 	private SharedPreferences preferences 
 		= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
 	private long employeeId;	
@@ -98,7 +93,7 @@ public class EmployeeSignInActivity extends BaseActivity
 	private static final int REQUEST_REFRESH = 0x30;
 	
 	// 记录当前PullToRefreshListView控件显示的是否是下拉刷新的提示消息
-	private boolean isShowPullDownInfo = true;
+	private boolean isShowPullDownInfo = true;	
 		
 	private static final String tag = "EmployeeSignInActivity";
 	
@@ -108,7 +103,20 @@ public class EmployeeSignInActivity extends BaseActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sign_in);
 	
-		initData();
+		try {
+			initData();
+		} catch (IllegalArgumentException expection) {
+			Log.e(tag, Log.getStackTraceString(expection));
+			showToast("缺失重要数据，请重新登录");
+			EmployeeLoginActivity.myForceStartActivity(this);
+			return;
+		} catch (Exception exp2) {
+			Log.e(tag, Log.getStackTraceString(exp2));
+			showToast("程序异常，请重新登录");
+			EmployeeLoginActivity.myForceStartActivity(this);
+			return;
+		}
+		
 		initWidget();
 	}
 	
@@ -138,17 +146,17 @@ public class EmployeeSignInActivity extends BaseActivity
 
 	private void initData() {
 		Intent intent = getIntent();
+		
 		workOrderType = intent.getIntExtra("workOrderType", -1);
 		if (workOrderType == -1) {
-			throw new IllegalArgumentException("工单类型错误");
+			throw new IllegalArgumentException("没有接收到工单类型的参数");
 		}
 		
 		employeeId = preferences.getLong("employeeId", -1);
 		if (employeeId == -1) {
-			throw new IllegalArgumentException("员工ID有误！");
+			throw new IllegalArgumentException("缺失employeeId");
 		}
 		
-		progressDialog = new ProgressDialog(this);
 		myProgressDialog = new MyProgressDialog(this);
 		
 		curPage = 1;
@@ -221,9 +229,6 @@ public class EmployeeSignInActivity extends BaseActivity
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem,
 					int visibleItemCount, int totalItemCount) {
-				Log.i(tag, "onScroll#" + firstVisibleItem + "," + visibleItemCount + "," + totalItemCount);
-				
-				// 此处可以进行一下优化，没必要每次滑动时都执行如下操作
 				if (0 == firstVisibleItem
 						&& !isShowPullDownInfo) {
 					ptrlvSignIn.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
@@ -284,22 +289,16 @@ public class EmployeeSignInActivity extends BaseActivity
 				pmSort.show();
 			}
 		});
-		
-		/*if (isPtrlvHidden) {
-			hidePtrlvAndShowLinearLayout(tipInfo);
-		}*/
 	}
 	
 	private class RefreshDataTask extends AsyncTask<Void, Void, Void> {
         @Override  
         protected Void doInBackground(Void... params) {
-        	// pageNumber一定是为1，表示只加载第一页的内容
 			curPage = 1;
 			
         	if (WorkOrderType.MAINTAIN_ORDER == workOrderType) {
         		workOrderSearchPresenter.searchReceivedMaintainOrders(employeeId, curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
         	} else if (WorkOrderType.FAULT_ORDER == workOrderType) {
-//				workOrderSearchPresenter.searchFaultOrder(groupId, WorkOrderState.UNFINISHED, curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
         		workOrderSearchPresenter.searchReceivedFaultOrders(employeeId, curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
         	}
         	
@@ -320,7 +319,6 @@ public class EmployeeSignInActivity extends BaseActivity
         	if (WorkOrderType.MAINTAIN_ORDER == workOrderType) {
         		workOrderSearchPresenter.searchReceivedMaintainOrders(employeeId, curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
 			} else if (WorkOrderType.FAULT_ORDER == workOrderType) {
-//				workOrderSearchPresenter.searchFaultOrder(groupId, WorkOrderState.UNFINISHED, curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
 				workOrderSearchPresenter.searchReceivedFaultOrders(employeeId, curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
 			}
             return null;    
@@ -425,9 +423,6 @@ public class EmployeeSignInActivity extends BaseActivity
 		runOnUiThread(new Runnable() {		
 			@Override
 			public void run() {
-//				isPtrlvHidden = true;
-				tipInfo = info;
-				
 				ptrlvSignIn.setVisibility(View.GONE);
 				linearTipInfo.setVisibility(View.VISIBLE);
 				tvTipInfo.setText(info);
@@ -435,9 +430,5 @@ public class EmployeeSignInActivity extends BaseActivity
 		});
 	}
 
-	/*@Override
-	public void setIsPtrlvHidden(boolean isPtrlvHidden) {
-		this.isPtrlvHidden = isPtrlvHidden;
-	}*/
 
 }

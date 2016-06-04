@@ -1,6 +1,7 @@
 package wzp.project.android.elvtmtn.activity.impl;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.alibaba.fastjson.JSON;
 import com.baidu.location.BDLocation;
@@ -43,6 +44,7 @@ import android.widget.Toast;
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.activity.IWorkOrderFeedbackActivity;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
+import wzp.project.android.elvtmtn.entity.ElevatorRecord;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 import wzp.project.android.elvtmtn.presenter.WorkOrderFeedbackPresenter;
@@ -53,7 +55,6 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 		implements IWorkOrderFeedbackActivity, OnGetGeoCoderResultListener {
 
 	private Button btnBack;
-//	private Button btnRefreshCurAddress;
 	private ImageButton ibtnRefreshCurAddress;
 	private TextView tvWorkOrderId;
 	private TextView tvElevatorAddress;
@@ -63,12 +64,10 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 	private TextView tvCurrentAddress;
 	private EditText edtFaultReason;
 	private EditText edtRemark;
-	private LinearLayout linearIsFixed; 
 	private RadioGroup rgIsFixed;
 	private RadioButton rbYes;
 	private RadioButton rbNo;
 	private Button btnSubmit;
-	private ProgressDialog progressDialog;
 	private MyProgressDialog myProgressDialog;
 	private AlertDialog.Builder altDlgBuilder;
 	
@@ -104,7 +103,20 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 		SDKInitializer.initialize(getApplicationContext());
 		setContentView(R.layout.activity_fault_order_feedback_detail);
 		
-		initData();
+		try {
+			initData();
+		} catch (IllegalArgumentException exp) {
+			Log.e(tag, Log.getStackTraceString(exp));
+			showToast("缺失重要数据，请重新登录");
+			EmployeeLoginActivity.myForceStartActivity(this);
+			return;
+		} catch (Exception exp2) {
+			Log.e(tag, Log.getStackTraceString(exp2));
+			showToast("程序异常，请重新登录");
+			EmployeeLoginActivity.myForceStartActivity(this);
+			return;
+		}
+		
 		initWidget();
 		
 		mSearch = GeoCoder.newInstance();
@@ -136,11 +148,17 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 	}
 	
 	private void initData() {
-		faultOrder = JSON.parseObject(getIntent().getStringExtra("workOrder"), FaultOrder.class);
+		String jsonWorkOrder = getIntent().getStringExtra("workOrder");
+		if (null == jsonWorkOrder) {
+			throw new IllegalArgumentException("没有接收到工单类型的参数");
+		}
+		
+		faultOrder = JSON.parseObject(jsonWorkOrder, FaultOrder.class);
 		workOrderId = faultOrder.getId();
+		
 		employeeId = preferences.getLong("employeeId", -1);
 		if (employeeId == -1) {
-			throw new IllegalArgumentException("员工ID有误！");
+			throw new IllegalArgumentException("缺失employeeId");
 		}
 		
 		mConnectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -157,13 +175,11 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 		tvCurrentAddress = (TextView) findViewById(R.id.tv_currentAddress);
 		edtFaultReason = (EditText) findViewById(R.id.edt_faultReason);
 		edtRemark = (EditText) findViewById(R.id.edt_remark);
-		linearIsFixed = (LinearLayout) findViewById(R.id.linear_isFixed);
 		rgIsFixed = (RadioGroup) findViewById(R.id.rg_isFixed);
 		rbYes = (RadioButton) findViewById(R.id.rb_yes);
 		rbNo = (RadioButton) findViewById(R.id.rb_no);
 		btnSubmit = (Button) findViewById(R.id.btn_submit);
 		
-		progressDialog = new ProgressDialog(this);
 		myProgressDialog = new MyProgressDialog(this);
 		altDlgBuilder = new AlertDialog.Builder(this);
 				
@@ -200,7 +216,7 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 				final String faultReason = edtFaultReason.getEditableText().toString();
 				final String remark = edtRemark.getEditableText().toString();				
 				final boolean isDone = (rgIsFixed.getCheckedRadioButtonId() == R.id.rb_yes);
-				String message = isDone ? "您当前已完成工单，是否确定提交？" : "您当前还未完成工单，是否确定提交？";
+				String message = isDone ? "您已完成故障工单的维修，是否确定提交？" : "您还未完成故障工单的维修，是否确定提交？";
 								
 				if (!TextUtils.isEmpty(faultReason)) {
 					// 访问网络
@@ -235,25 +251,59 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 		/*
 		 * 为控件设值
 		 */
-//		tvWorkOrderId.setText(String.valueOf(faultOrder.getId()));
-		tvWorkOrderId.setText(faultOrder.getNo());
-		tvElevatorAddress.setText(faultOrder.getElevatorRecord().getAddress());
-		tvSignInTime.setText(sdf.format(faultOrder.getSignInTime()));
-		tvSignInAddress.setText(faultOrder.getSignInAddress());
+		String no = faultOrder.getNo();
+		if (!TextUtils.isEmpty(no)) {
+			tvWorkOrderId.setText(no);
+		} else {
+			tvWorkOrderId.setText("无");
+		}
 		
-		if (faultOrder.getSignOutTime() != null
-				&& !faultOrder.getFixed()) {
-			tvFeedbackState.setText("部分反馈");
+		ElevatorRecord elevatorRecord = faultOrder.getElevatorRecord();
+		if (elevatorRecord != null) {
+			String elevatorAddress = elevatorRecord.getAddress();
+			if (!TextUtils.isEmpty(elevatorAddress)) {
+				tvElevatorAddress.setText(elevatorAddress);
+			} else {
+				tvElevatorAddress.setText("暂无地址信息");
+			}
+		} else {
+			tvElevatorAddress.setText("电梯档案为空");
+		}
+		
+		Date signInTime = faultOrder.getSignInTime();
+		if (signInTime != null) {
+			tvSignInTime.setText(sdf.format(signInTime));
+		} else {
+			tvSignInTime.setText("暂无该信息");
+		}
+		
+		String signInAddress = faultOrder.getSignInAddress();
+		if (!TextUtils.isEmpty(signInAddress)) {
+			tvSignInAddress.setText(signInAddress);
+		} else {
+			tvSignInAddress.setText("暂无地址信息");
+		}
+		
+		if (faultOrder.getSignOutTime() != null) {
+			tvFeedbackState.setTextColor(Color.BLACK);
+			if (!faultOrder.getFixed()) {
+				tvFeedbackState.setText("部分反馈");
+			} else {
+				tvFeedbackState.setText("已反馈");
+			}
 		} else {
 			tvFeedbackState.setText("未反馈");
 			tvFeedbackState.setTextColor(Color.RED);
 		}
 		
-		if (!TextUtils.isEmpty(faultOrder.getReason())) {
-			edtFaultReason.setText(faultOrder.getReason());
+		String reason = faultOrder.getReason();
+		if (!TextUtils.isEmpty(reason)) {
+			edtFaultReason.setText(reason);
 		}
-		if (!TextUtils.isEmpty(faultOrder.getRemark())) {
-			edtRemark.setText(faultOrder.getRemark());
+		
+		String remark = faultOrder.getRemark();
+		if (!TextUtils.isEmpty(remark)) {
+			edtRemark.setText(remark);
 		}
 	}
 	
@@ -310,16 +360,7 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 			}
 		}		
 	}
-	
-	// 自定义一个startActivity()方法
-/*	public static void myStartActivity(Context context,
-			int workOrderType, String jsonWorkOrder) {
-		Intent actIntent = new Intent(context, FaultOrderDetailActivity.class);
-		actIntent.putExtra("workOrderType", workOrderType);
-		actIntent.putExtra("workOrder", jsonWorkOrder);
-		context.startActivity(actIntent);
-	}*/
-	
+
 	public static void myStartActivityForResult(Activity context, 
 			int requestCode, String jsonWorkOrder) {
 		Intent actIntent = new Intent(context, FaultOrderFeedbackDetailActivity.class);
@@ -404,9 +445,9 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 				edtFaultReason.setEnabled(false);
 				edtRemark.setEnabled(false);
 				btnSubmit.setEnabled(false);
-//				linearIsFixed.setEnabled(false);
 				rbYes.setEnabled(false);
 				rbNo.setEnabled(false);
+				tvFeedbackState.setTextColor(Color.BLACK);
 				if (rbYes.isChecked()) {
 					tvFeedbackState.setText("已反馈");
 				} else {
