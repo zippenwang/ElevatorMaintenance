@@ -97,7 +97,7 @@ public class WorkOrderSearchPresenter implements IWorkOrderSearchListener {
 
 			@Override
 			public void onSearchFailure(String tipInfo) {
-				workOrderSearchFragment.showToast(tipInfo);
+//				workOrderSearchFragment.showToast(tipInfo);
 				workOrderSearchFragment.hidePtrlvAndShowLinearLayout("服务器正在打盹，" +
 						"请检查网络后重试...");
 			}
@@ -165,7 +165,7 @@ public class WorkOrderSearchPresenter implements IWorkOrderSearchListener {
 
 	@Override
 	public void onSearchFailure(String tipInfo) {
-		workOrderSearchFragment.showToast(tipInfo);
+//		workOrderSearchFragment.showToast(tipInfo);
 		workOrderSearchFragment.hidePtrlvAndShowLinearLayout("服务器正在打盹，请检查网络后重试...");
 	}
 

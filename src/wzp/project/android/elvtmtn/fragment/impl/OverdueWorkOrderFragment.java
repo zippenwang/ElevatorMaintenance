@@ -159,6 +159,7 @@ public class OverdueWorkOrderFragment extends Fragment
 
 	private void initWidget(View view) {
 		ptrlvOverdue = (PullToRefreshListView) view.findViewById(R.id.ptrlv_overdue);
+		ptrlvOverdue.getRefreshableView().setSelector(R.drawable.listview_bg);
 		linearTipInfo = (LinearLayout) view.findViewById(R.id.linear_tipInfo);
 		tvTipInfo = (TextView) view.findViewById(R.id.tv_tipInfo);
 		btnRefreshAgain = (Button) view.findViewById(R.id.btn_refreshAgain);

@@ -199,7 +199,8 @@ public class EmployeeInfoActivity extends BaseActivity implements IEmployeeInfoA
 						tvPhone.setOnClickListener(new OnClickListener() {
 							@Override
 							public void onClick(View v) {
-								dialogBuilder.setItems(operateItems, new DialogInterface.OnClickListener() {
+								dialogBuilder
+								.setItems(operateItems, new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog, int which) {
 										if (0 == which) {

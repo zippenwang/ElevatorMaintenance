@@ -53,7 +53,7 @@ public class ElevatorRecordSearchPresenter implements IElevatorRecordSearchListe
 					
 					@Override
 					public void onSearchFailure(String tipInfo) {
-						elevatorRecordSearchActivity.showToast(tipInfo);
+//						elevatorRecordSearchActivity.showToast(tipInfo);
 						elevatorRecordSearchActivity.hidePtrlvAndShowLinearLayout("服务器正在打盹，请检查网络后重试...");
 					}
 					
@@ -89,7 +89,7 @@ public class ElevatorRecordSearchPresenter implements IElevatorRecordSearchListe
 	
 	@Override
 	public void onSearchFailure(String tipInfo) {
-		elevatorRecordSearchActivity.showToast(tipInfo);
+//		elevatorRecordSearchActivity.showToast(tipInfo);
 		elevatorRecordSearchActivity.hidePtrlvAndShowLinearLayout(tipInfo);
 	}
 	

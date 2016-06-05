@@ -166,6 +166,8 @@ public class FinishedWorkOrderFragment extends Fragment
 			}
 		});
 				
+		ptrlvFinished.getRefreshableView().setSelector(R.drawable.listview_bg);
+		
 		ptrlvFinished.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
 		ptrlvFinished.getLoadingLayoutProxy().setPullLabel("下拉刷新...");
 		ptrlvFinished.getLoadingLayoutProxy().setReleaseLabel("释放开始刷新...");
