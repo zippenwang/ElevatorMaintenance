@@ -1,68 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#AFEEEE"
+<TableLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="#AFEEEE"
 	android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin">
-    
-    <TableLayout
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_centerInParent="true"
-	    android:stretchColumns="*" >
+	android:paddingLeft="@dimen/activity_horizontal_margin"
+	android:paddingRight="@dimen/activity_horizontal_margin"
+	android:paddingTop="@dimen/activity_vertical_margin"
+	android:gravity="center"
+	android:stretchColumns="*" >
 
-	    <TableRow>
-	        <wzp.project.android.elvtmtn.util.MyImageButton 
-	            android:id="@+id/mibtn_workOrderSearch"
-	            android:layout_height="wrap_content"
-	            android:src="@drawable/order_search"
-	            android:scaleType="fitXY"
-	            android:background="@drawable/main_mibtn_bg"
-	            android:text="工单查询"
-	            android:textSize="18sp"/>	        
-	        
-	        <wzp.project.android.elvtmtn.util.MyImageButton
-	            android:id="@+id/mibtn_signIn"
-	            android:layout_height="wrap_content"
-	            android:src="@drawable/sign_in"
-	            android:scaleType="fitXY"
-	            android:background="@drawable/main_mibtn_bg"
-	            android:text="一键签到"
-	            android:textSize="18sp" />
-	    </TableRow>
-    
-	    <TableRow>
-	        <wzp.project.android.elvtmtn.util.MyImageButton 
-	            android:id="@+id/mibtn_workOrderFeedback"
-	            android:layout_height="wrap_content"
-	            android:src="@drawable/feedback"
-	            android:scaleType="fitXY"
-	            android:background="@drawable/main_mibtn_bg"
-	            android:text="工单反馈"
-	            android:textSize="18sp"/>	        
-	        
-	        <wzp.project.android.elvtmtn.util.MyImageButton
-	            android:id="@+id/mibtn_elevatorRecord"
-	            android:layout_height="wrap_content"
-	            android:src="@drawable/elevator_record"
-	            android:scaleType="fitXY"
-	            android:background="@drawable/main_mibtn_bg"
-	            android:text="电梯档案"
-	            android:textSize="18sp" />
-	    </TableRow>
+	<TableRow>
+	    <wzp.project.android.elvtmtn.util.MyImageButton 
+	        android:id="@+id/mibtn_workOrderSearch"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/order_search"
+	        android:scaleType="fitXY"
+	        android:background="@drawable/main_mibtn_bg"
+	        android:text="工单查询"
+	        android:textSize="18sp"/>	        
 	    
-	    <TableRow>     
-	        <wzp.project.android.elvtmtn.util.MyImageButton 
-	            android:id="@+id/mibtn_userInfo"
-	            android:layout_height="wrap_content"
-	            android:src="@drawable/user_info"
-	            android:scaleType="fitXY"
-	            android:background="@drawable/main_mibtn_bg"
-	            android:text="员工信息"
-	            android:textSize="18sp"/>
-	    </TableRow>
-    </TableLayout>
-</RelativeLayout>
+	    <wzp.project.android.elvtmtn.util.MyImageButton
+	        android:id="@+id/mibtn_signIn"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/sign_in"
+	        android:scaleType="fitXY"
+	        android:background="@drawable/main_mibtn_bg"
+	        android:text="一键签到"
+	        android:textSize="18sp" />
+	</TableRow>
+
+	<TableRow>
+	    <wzp.project.android.elvtmtn.util.MyImageButton 
+	        android:id="@+id/mibtn_workOrderFeedback"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/feedback"
+	        android:scaleType="fitXY"
+	        android:background="@drawable/main_mibtn_bg"
+	        android:text="工单反馈"
+	        android:textSize="18sp"/>	        
+	    
+	    <wzp.project.android.elvtmtn.util.MyImageButton
+	        android:id="@+id/mibtn_elevatorRecord"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/elevator_record"
+	        android:scaleType="fitXY"
+	        android:background="@drawable/main_mibtn_bg"
+	        android:text="电梯档案"
+	        android:textSize="18sp" />
+	</TableRow>
+	
+	<TableRow>     
+	    <wzp.project.android.elvtmtn.util.MyImageButton 
+	        android:id="@+id/mibtn_userInfo"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/user_info"
+	        android:scaleType="fitXY"
+	        android:background="@drawable/main_mibtn_bg"
+	        android:text="员工信息"
+	        android:textSize="18sp"/>
+	</TableRow>
+</TableLayout>

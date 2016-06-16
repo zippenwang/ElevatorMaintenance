@@ -3,14 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    
-    <!-- <TextView 
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="未完成的工单"
-        android:textSize="30sp"
-        android:gravity="center"/> -->
-   
+
     <com.handmark.pulltorefresh.library.PullToRefreshListView  
         android:id="@+id/ptrlv_unfinished"  
         android:layout_width="match_parent"  
@@ -39,7 +32,7 @@
             android:layout_gravity="center_horizontal"
             android:background="@drawable/try_again_btn_bg"
             android:layout_marginTop="5dp"
-            android:text="重试"
+            android:text="@string/tryAgain"
             android:textColor="#FFFFFF"/>
     </LinearLayout>
 

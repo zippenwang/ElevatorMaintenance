@@ -2,7 +2,11 @@ package wzp.project.android.elvtmtn.helper.contant;
 
 import java.text.SimpleDateFormat;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
 import wzp.project.android.elvtmtn.util.DESUtil;
+import wzp.project.android.elvtmtn.util.MyApplication;
 
 public interface ProjectContants {
 
@@ -15,12 +19,17 @@ public interface ProjectContants {
 	
 	int PAGE_SIZE = 10;
 	
-	String key = "wzp@d!108Y#d2s-*yq&";
-	DESUtil desUtil = new DESUtil("wzp@d!108Y#d2s-*yq&");
+	DESUtil desUtil = new DESUtil("wzp@d!108Y#d2s-*yq&");	
 	
 	/*
 	 * 日期显示格式
 	 */
 	SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy年MM月dd日");
+	
+	SharedPreferences preferences 
+		= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
+	SharedPreferences.Editor editor = preferences.edit();
+	
+	
 }

@@ -46,44 +46,6 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 		}
 		
 		String strUrl = ProjectContants.basePath + "/login";
-		
-		/*OkHttpUtils.post().url(strUrl)
-			.addParams("username", employee.getUsername())
-			.addParams("password", employee.getPassword())
-			.addParams("cid", MyApplication.getCid())
-			.build()
-			.execute(new StringCallback() {
-				@Override
-				public void onAfter() {
-					listener.onAfter();
-				}
-
-				@Override
-				public void onResponse(String response) {
-					Log.i(tag, response);
-					JSONObject jo = JSON.parseObject(response);
-					String result = jo.getString("result");
-					
-					if (!TextUtils.isEmpty(result)) {
-						if (result.equals("success")) {
-							listener.onLoginSuccess((JSON.toJavaObject((JSONObject) jo.get("employee"), Employee.class)));
-						} else if (result.equals("failed")) {
-							listener.onLoginFailure("用户名或密码错误！");
-						}
-					} else {
-//						listener.onServerException("服务器故障，响应数据有误！");
-						listener.onLoginFailure("服务器故障，响应数据有误！");
-					}
-				}
-				
-				@Override
-				public void onError(Call call, Exception e) {
-					Log.e(tag, Log.getStackTraceString(e));
-//					listener.onServerException("访问服务器失败，请\n检查网络连接后重试");
-					listener.onLoginFailure("访问服务器失败，请\n检查网络连接后重试");
-				}
-			});*/
-		
 		MyOkHttpUtils.post().url(strUrl)
 			.addParams("username", employee.getUsername())
 			.addParams("password", employee.getPassword())
@@ -97,20 +59,18 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 	
 				@Override
 				public void onResponse(String response) {
-					Log.i(tag, response);
 					JSONObject jo = JSON.parseObject(response);
 					String result = jo.getString("result");
 					
 					if (!TextUtils.isEmpty(result)) {
 						if (result.equals("success")) {
 							MyApplication.token = jo.getString("token");
-							Log.d(tag, MyApplication.token);
 							listener.onLoginSuccess((JSON.toJavaObject((JSONObject) jo.get("employee"), Employee.class)));
 						} else if (result.equals("failed")) {
 							listener.onLoginFailure("用户名或密码错误！");
 						}
 					} else {
-						listener.onLoginFailure("服务器故障，响应数据有误！");
+						listener.onLoginFailure("服务器故障，请联系管理员");
 					}
 				}
 
@@ -122,7 +82,6 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 				
 				@Override
 				public void onError(Call call, Exception e, int respCode) {
-					Log.e(tag, "响应码为：" + respCode);
 					Log.e(tag, Log.getStackTraceString(e));
 					listener.onLoginFailure("访问服务器失败，请\n检查网络连接后重试");
 				}
@@ -194,37 +153,6 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 	public void getInfo(Long groupId, final IEmployeeInfoSearchListener listener) {
 		String url = ProjectContants.basePath + "/group/employees";
 		
-		/*OkHttpUtils.get().url(url)
-			.addParams("id", String.valueOf(groupId))
-			.build()
-			.execute(new StringCallback() {
-				@Override
-				public void onResponse(String response) {
-					Log.i(tag, response);
-					
-					if (!TextUtils.isEmpty(response)) {
-						List<Employee> employeeList = JSON.parseObject(response, 
-								new TypeReference<List<Employee>>() {});
-						listener.onSearchSuccess(employeeList);						
-					} else {
-						listener.onSearchFailure("服务器故障，响应数据有误！");
-					}
-				}
-				
-				@Override
-				public void onError(Call call, Exception e) {
-					Log.e(tag, Log.getStackTraceString(e));
-					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");		
-				}
-
-				@Override
-				public void onAfter() {
-					listener.onAfter();
-				}
-				
-				
-			});*/
-		
 		MyOkHttpUtils.get().url(url)
 			.addHeader("token", MyApplication.token)
 			.addParams("id", String.valueOf(groupId))
@@ -239,7 +167,7 @@ public class EmployeeBizImpl implements IEmployeeBiz {
 								new TypeReference<List<Employee>>() {});
 						listener.onSearchSuccess(employeeList);						
 					} else {
-						listener.onSearchFailure("服务器故障，响应数据有误！");
+						listener.onSearchFailure("服务器故障，请联系管理员");
 					}
 				}
 				

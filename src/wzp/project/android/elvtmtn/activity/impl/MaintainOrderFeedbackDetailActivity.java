@@ -54,6 +54,7 @@ import wzp.project.android.elvtmtn.entity.ElevatorRecord;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainItem;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
+import wzp.project.android.elvtmtn.entity.MaintainType;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 import wzp.project.android.elvtmtn.presenter.WorkOrderFeedbackPresenter;
 import wzp.project.android.elvtmtn.util.MyApplication;
@@ -100,12 +101,11 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 	private int checkedNum;
 	private List<MaintainItem> itemList;
 	private List<String> finishedItemList;
-//	private String finishedItems;
 	
 	private ConnectivityManager mConnectivityManager;
 	
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	private static final String tag = "FaultOrderFeedbackDetailActivity";
+	private static final String tag = "MaintainOrderFeedbackDetailActivity";
 	
 	
 	@Override
@@ -165,22 +165,31 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 		if (null == jsonWorkOrder) {
 			throw new IllegalArgumentException("没有接收到工单json字符串");
 		}
-		maintainOrder = JSON.parseObject(jsonWorkOrder, MaintainOrder.class);	
+		
+		maintainOrder = JSON.parseObject(jsonWorkOrder, MaintainOrder.class);
 		workOrderId = maintainOrder.getId();
+		if (0 == workOrderId) {
+			throw new IllegalArgumentException("缺失工单id号");
+		}
+		
+		MaintainType maintainType = maintainOrder.getMaintainType();
+		if (null == maintainType) {
+			throw new IllegalArgumentException("缺失保养类型maintainType");
+		}
+		
+		itemList = maintainType.getMaintainItems();
+		
+		String finishedItems = maintainOrder.getFinishedItems();
+		if (!TextUtils.isEmpty(finishedItems)) {
+			finishedItemList = Arrays.asList(finishedItems.split(";"));
+		} else {
+			finishedItemList = null;
+		}
 		
 		employeeId = preferences.getLong("employeeId", -1);
 		if (employeeId == -1) {
 			throw new IllegalArgumentException("缺失employeeId");
 		}
-		
-		itemList = maintainOrder.getMaintainType().getMaintainItems();
-//		finishedItemList = Arrays.asList(maintainOrder.getFinishedItems().split(";"));
-		String finishedItems = maintainOrder.getFinishedItems();
-		if (TextUtils.isEmpty(finishedItems)) {
-			finishedItemList = null;
-		} else {
-			finishedItemList = Arrays.asList(finishedItems.split(";"));
-		}		
 		
 		mConnectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 	}
@@ -198,12 +207,21 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 		edtRemark = (EditText) findViewById(R.id.edt_remark);
 		rgIsFinished = (RadioGroup) findViewById(R.id.rg_isFinished);
 		rbYes = (RadioButton) findViewById(R.id.rb_yes);
-		rbYes.setEnabled(false);
 		rbNo = (RadioButton) findViewById(R.id.rb_no);
 		btnSubmit = (Button) findViewById(R.id.btn_submit);
 		
 		myProgressDialog = new MyProgressDialog(this);
-		altDlgBuilder = new AlertDialog.Builder(this);
+		altDlgBuilder = new AlertDialog.Builder(this)
+			.setTitle("注意 ")
+			.setCancelable(true)
+			.setNegativeButton("取消", null);;
+		
+		rbYes.setEnabled(false);			// 初始状态下rbYes默认为不可选中
+		if (itemList != null && finishedItemList != null) {
+			if (itemList.size() == finishedItemList.size()) {
+				rbYes.setEnabled(true);
+			}
+		}
 				
 		btnBack.setOnClickListener(new OnClickListener() {
 			@Override
@@ -239,34 +257,29 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 				final boolean isDone = (rgIsFinished.getCheckedRadioButtonId() == R.id.rb_yes);
 				String message = isDone ? "您已完成保养工单，是否确定提交？" : "您还未完成保养工单，是否确定提交？";
 			
-				if (checkedNum > 0) {
-					// 访问网络
-					altDlgBuilder.setTitle("注意 ");
-					altDlgBuilder.setMessage(message);
-					altDlgBuilder.setCancelable(true);
-					altDlgBuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							StringBuilder finishedItems = new StringBuilder();
-							CheckBox ckbxItem = null;
-							for (int i=0; i<linearMaintainItem.getChildCount(); i++) {
-								ckbxItem = (CheckBox) linearMaintainItem.getChildAt(i);
-								if (ckbxItem.isChecked()) {
-									finishedItems.append(itemList.get(i).getId());
-									finishedItems.append(";");
+				if (checkedNum > 0
+						|| null == itemList
+						|| itemList.size() < 1) {
+					altDlgBuilder.setMessage(message)
+						.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								StringBuilder finishedItems = new StringBuilder();
+								CheckBox ckbxItem = null;
+								for (int i=0; i<linearMaintainItem.getChildCount(); i++) {
+									ckbxItem = (CheckBox) linearMaintainItem.getChildAt(i);
+									if (ckbxItem.isChecked()) {
+										finishedItems.append(itemList.get(i).getId());
+										finishedItems.append(";");
+									}
+									ckbxItem = null;
 								}
-								ckbxItem = null;
+								workOrderFeedbackPresenter.feedbackOrder(WorkOrderType.MAINTAIN_ORDER, 
+										workOrderId, employeeId, null, isDone, 
+										remark, currentAddress, finishedItems.toString());
 							}
-							workOrderFeedbackPresenter.feedbackOrder(WorkOrderType.MAINTAIN_ORDER, 
-									workOrderId, employeeId, null, isDone, 
-									remark, currentAddress, finishedItems.toString());
-						}
-					});
-					
-					// 取消按钮，默认不执行任何操作
-					altDlgBuilder.setNegativeButton("取消", null);
-
-					altDlgBuilder.show();
+						})
+						.show();
 				} else {
 					Toast.makeText(MaintainOrderFeedbackDetailActivity.this, "至少完成一个保养项目", Toast.LENGTH_SHORT).show();
 				}
@@ -326,33 +339,38 @@ public class MaintainOrderFeedbackDetailActivity extends BaseActivity
 		 * 动态生成保养项目复选框
 		 */		
 		CheckBox ckBox = null;
-		for (MaintainItem item : itemList) {
-			ckBox = new CheckBox(this);
-			ckBox.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-			ckBox.setText(item.getName());
-			ckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {				
-				@Override
-				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-					if (isChecked) {
-						checkedNum++;
-					} else {
-						checkedNum--;
+		if (itemList != null 
+				&& itemList.size() > 0) {
+			for (MaintainItem item : itemList) {
+				ckBox = new CheckBox(this);
+				ckBox.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+				ckBox.setText(item.getName());
+				ckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {				
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+						if (isChecked) {
+							checkedNum++;
+						} else {
+							checkedNum--;
+						}
+						
+						if (checkedNum == itemList.size()) {
+							rbYes.setEnabled(true);
+						} else {
+							rbYes.setEnabled(false);
+//							rbNo.setChecked(true);
+						}
 					}
-//					Log.i(tag, "" + checkedNum);
-					if (checkedNum == linearMaintainItem.getChildCount()) {
-						rbYes.setEnabled(true);
-					} else {
-						rbYes.setEnabled(false);
-						rbNo.setChecked(true);
-					}
+				});
+				if (finishedItemList != null
+						&& finishedItemList.contains(String.valueOf(item.getId()))) {
+					ckBox.setChecked(true);
 				}
-			});
-			if (finishedItemList != null
-					&& finishedItemList.contains(String.valueOf(item.getId()))) {
-				ckBox.setChecked(true);
+				linearMaintainItem.addView(ckBox);
+				ckBox = null;
 			}
-			linearMaintainItem.addView(ckBox);
-			ckBox = null;
+		} else {
+			rbYes.setEnabled(true);
 		}
 
 		String remark = maintainOrder.getRemark();

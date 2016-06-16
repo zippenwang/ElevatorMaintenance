@@ -9,44 +9,24 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="#484E61">
-        <!-- <Button 
-            android:id="@+id/btn_back"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentLeft="true"
-            android:background="@drawable/back"
-            android:layout_marginLeft="10dp"
-            android:layout_centerVertical="true"/> -->        
-        
-        <!-- <ImageButton 
-            android:id="@+id/ibtn_back"
-            android:layout_width="40dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:src="@drawable/back"
-            android:scaleType="centerInside"
-            android:background="@drawable/back_ibtn_bg"
-            android:layout_marginLeft="5dp"
-            android:layout_centerVertical="true"/> -->
-            
         <Button 
             android:id="@+id/btn_back"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:background="@drawable/back_btn_bg"
-            android:text="返回"
+            android:text="@string/back"
             android:textSize="14sp"
-            android:textColor="@android:color/white"
+            android:textColor="@color/whiteColor"
             android:layout_marginLeft="5dp"
             android:layout_centerVertical="true"/>
         
         <TextView
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:text="工单查询"
+	        android:text="@string/workOrderSearch"
 	        android:textSize="24sp"
-	        android:textColor="#FFFFFF"
+	        android:textColor="@color/whiteColor"
 	        android:gravity="center"
 	        android:layout_centerInParent="true"
 	        android:layout_centerVertical="true"/>
@@ -66,9 +46,9 @@
 		    android:id="@+id/tv_workOrderType"
 	        android:layout_width="wrap_content"
 	        android:layout_height="match_parent"
-	        android:text="保养"
+	        android:text="@string/maintain"
 	        android:textSize="18sp"
-	        android:textColor="#FFFFFF"
+	        android:textColor="@color/whiteColor"
 	        android:gravity="right|center_vertical"
 	        android:layout_toLeftOf="@id/ibtn_sort"
 	        android:layout_centerVertical="true"/>
@@ -100,11 +80,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_centerHorizontal="true"
-                android:text="未完成"
+                android:text="@string/unfinished"
                 android:textSize="20sp"
                 android:textColor="#FF0000"
-                android:gravity="center"
-                android:src="@drawable/ic_launcher"/>
+                android:gravity="center"/>
 
             <TextView
                 android:id="@+id/tv_unfinished_hidden"
@@ -128,10 +107,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_centerHorizontal="true"
-                android:text="已完成"
+                android:text="@string/finished"
                 android:textSize="20sp"
-                android:gravity="center"
-                android:src="@drawable/ic_launcher"/>
+                android:gravity="center"/>
 
             <TextView
                 android:layout_width="0.5dp"
@@ -172,10 +150,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_centerHorizontal="true"
-                android:text="超期"
+                android:text="@string/overdue"
                 android:textSize="20sp"
-                android:gravity="center"
-                android:src="@drawable/ic_launcher"/>
+                android:gravity="center"/>
 
             <TextView
                 android:id="@+id/tv_overdue_hidden"

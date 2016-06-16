@@ -68,14 +68,7 @@
         android:layout_marginTop="10dp"
         android:background="@drawable/login_btn_bg"
         android:text="登录"/>
-	
-    <Button 
-        android:id="@+id/btn_intoNext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="跳转"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"/>
+
 </LinearLayout>
 
 

@@ -31,10 +31,10 @@ import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 import wzp.project.android.elvtmtn.R;
+import wzp.project.android.elvtmtn.activity.IWorkOrderSearchContainer;
 import wzp.project.android.elvtmtn.activity.IWorkOrderSortContainer;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
-import wzp.project.android.elvtmtn.fragment.IWorkOrderSearchFragment;
 import wzp.project.android.elvtmtn.helper.adapter.FaultHistoryAdapter;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import wzp.project.android.elvtmtn.presenter.WorkOrderSearchPresenter;
@@ -42,7 +42,7 @@ import wzp.project.android.elvtmtn.presenter.WorkOrderSortPresenter;
 import wzp.project.android.elvtmtn.util.MyProgressDialog;
 
 public class FaultHistorySearchActivity extends BaseActivity 
-		implements IWorkOrderSearchFragment, IWorkOrderSortContainer {
+		implements IWorkOrderSearchContainer, IWorkOrderSortContainer {
 	
 	private Button btnBack;
 	private ImageButton ibtnSort;

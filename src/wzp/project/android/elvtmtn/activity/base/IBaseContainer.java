@@ -1,6 +1,11 @@
 package wzp.project.android.elvtmtn.activity.base;
 
-public interface IBaseFragmentOrActivity {
+/**
+ * 从Activity或Fragment中抽象出来的接口
+ * @author Zippen
+ *
+ */
+public interface IBaseContainer {
 	
 	/**
 	 * 显示进度对话框，对话框的提示内容固定

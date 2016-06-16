@@ -19,7 +19,6 @@ import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -36,7 +35,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -154,7 +152,11 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 		}
 		
 		faultOrder = JSON.parseObject(jsonWorkOrder, FaultOrder.class);
+		
 		workOrderId = faultOrder.getId();
+		if (0 == workOrderId) {
+			throw new IllegalArgumentException("缺失工单id号");
+		}
 		
 		employeeId = preferences.getLong("employeeId", -1);
 		if (employeeId == -1) {
@@ -181,7 +183,10 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 		btnSubmit = (Button) findViewById(R.id.btn_submit);
 		
 		myProgressDialog = new MyProgressDialog(this);
-		altDlgBuilder = new AlertDialog.Builder(this);
+		altDlgBuilder = new AlertDialog.Builder(this)
+			.setTitle("注意 ")
+			.setCancelable(true)
+			.setNegativeButton("取消", null);
 				
 		btnBack.setOnClickListener(new OnClickListener() {
 			@Override
@@ -219,28 +224,16 @@ public class FaultOrderFeedbackDetailActivity extends BaseActivity
 				String message = isDone ? "您已完成故障工单的维修，是否确定提交？" : "您还未完成故障工单的维修，是否确定提交？";
 								
 				if (!TextUtils.isEmpty(faultReason)) {
-					// 访问网络
-					altDlgBuilder.setTitle("注意 ");
-					altDlgBuilder.setMessage(message);
-					altDlgBuilder.setCancelable(true);
-					altDlgBuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							workOrderFeedbackPresenter.feedbackOrder(WorkOrderType.FAULT_ORDER, 
-									workOrderId, employeeId, faultReason, isDone, 
-									remark, currentAddress, null);
-						}
-					});
-					
-					// 取消按钮，默认不执行任何操作
-					altDlgBuilder.setNegativeButton("取消", new DialogInterface.OnClickListener() {						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							
-						}
-					});
-
-					altDlgBuilder.show();
+					altDlgBuilder.setMessage(message)
+						.setPositiveButton("确定", new DialogInterface.OnClickListener() {						
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								workOrderFeedbackPresenter.feedbackOrder(WorkOrderType.FAULT_ORDER, 
+										workOrderId, employeeId, faultReason, isDone, 
+										remark, currentAddress, null);
+							}
+						})
+						.show();
 				} else {
 					Toast.makeText(FaultOrderFeedbackDetailActivity.this, "故障原因不能为空", Toast.LENGTH_SHORT).show();
 				}

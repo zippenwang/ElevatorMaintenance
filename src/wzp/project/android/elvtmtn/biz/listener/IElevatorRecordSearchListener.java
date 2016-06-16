@@ -6,7 +6,7 @@ public interface IElevatorRecordSearchListener extends IBaseListener {
 
 	void onSearchSuccess(int successType);
 	
-	void onSearchFailure(String tipInfo);
+	void onSearchFailure(String tipInfo, int tipMethod);
 	
 	void onAfter();
 }

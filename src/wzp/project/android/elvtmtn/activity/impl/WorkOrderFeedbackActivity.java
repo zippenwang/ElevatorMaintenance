@@ -34,10 +34,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import wzp.project.android.elvtmtn.R;
+import wzp.project.android.elvtmtn.activity.IWorkOrderSearchContainer;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
-import wzp.project.android.elvtmtn.fragment.IWorkOrderSearchFragment;
 import wzp.project.android.elvtmtn.helper.adapter.FaultOrderFeedbackAdapter;
 import wzp.project.android.elvtmtn.helper.adapter.MaintainOrderFeedbackAdapter;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
@@ -46,7 +46,7 @@ import wzp.project.android.elvtmtn.presenter.WorkOrderSearchPresenter;
 import wzp.project.android.elvtmtn.util.MyApplication;
 import wzp.project.android.elvtmtn.util.MyProgressDialog;
 
-public class WorkOrderFeedbackActivity extends BaseActivity implements IWorkOrderSearchFragment {
+public class WorkOrderFeedbackActivity extends BaseActivity implements IWorkOrderSearchContainer {
 
 	private Button btnBack;
 	private TextView tvWorkOrderType;

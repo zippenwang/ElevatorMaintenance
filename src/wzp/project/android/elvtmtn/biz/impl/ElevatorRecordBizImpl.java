@@ -16,6 +16,7 @@ import wzp.project.android.elvtmtn.activity.impl.EmployeeLoginActivity;
 import wzp.project.android.elvtmtn.biz.IElevatorRecordBiz;
 import wzp.project.android.elvtmtn.biz.listener.IElevatorRecordSearchListener;
 import wzp.project.android.elvtmtn.entity.ElevatorRecord;
+import wzp.project.android.elvtmtn.helper.contant.FailureTipMethod;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import wzp.project.android.elvtmtn.util.MyApplication;
 import wzp.project.android.elvtmtn.util.myokhttp.MyOkHttpUtils;
@@ -66,14 +67,14 @@ public class ElevatorRecordBizImpl implements IElevatorRecordBiz {
 							}
 						}
 					} else {
-						listener.onSearchFailure("服务器故障，响应数据有误！");
+						listener.onSearchFailure("服务器故障，请联系管理员", FailureTipMethod.VIEW);
 					}
 				}
 				
 				@Override
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
-					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+					listener.onSearchFailure("服务器正在打盹，请检查网络连接后重试", FailureTipMethod.VIEW);
 				}
 
 				@Override
@@ -81,10 +82,10 @@ public class ElevatorRecordBizImpl implements IElevatorRecordBiz {
 					Log.e(tag, "响应码为：" + respCode);
 					Log.e(tag, Log.getStackTraceString(e));
 					if (respCode == 401) {
-						listener.onSearchFailure("您的账号无效或已过期，请重新登录");
+						listener.onSearchFailure("您的账号无效或已\n过期，请重新登录", FailureTipMethod.TOAST);
 						listener.onBackToLoginInterface();
 					} else {
-						listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+						listener.onSearchFailure("服务器正在打盹，请检查网络连接后重试", FailureTipMethod.VIEW);
 					}
 				}
 			});
@@ -132,14 +133,14 @@ public class ElevatorRecordBizImpl implements IElevatorRecordBiz {
 							}
 						}
 					} else {
-						listener.onSearchFailure("服务器故障，响应数据有误！");
+						listener.onSearchFailure("服务器故障，请联系管理员", FailureTipMethod.VIEW);
 					}
 				}
 				
 				@Override
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
-					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+					listener.onSearchFailure("服务器正在打盹，请检查网络连接后重试", FailureTipMethod.VIEW);
 				}
 				
 				@Override
@@ -147,10 +148,10 @@ public class ElevatorRecordBizImpl implements IElevatorRecordBiz {
 					Log.e(tag, "响应码为：" + respCode);
 					Log.e(tag, Log.getStackTraceString(e));
 					if (respCode == 401) {
-						listener.onSearchFailure("您的账号无效或已过期，请重新登录");
+						listener.onSearchFailure("您的账号无效或已\n过期，请重新登录", FailureTipMethod.TOAST);
 						listener.onBackToLoginInterface();
 					} else {
-						listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+						listener.onSearchFailure("服务器正在打盹，请检查网络连接后重试", FailureTipMethod.VIEW);
 					}
 				}
 			});
@@ -200,14 +201,14 @@ public class ElevatorRecordBizImpl implements IElevatorRecordBiz {
 							}
 						}
 					} else {
-						listener.onSearchFailure("服务器故障，响应数据有误！");
+						listener.onSearchFailure("服务器故障，请联系管理员", FailureTipMethod.VIEW);
 					}
 				}
 				
 				@Override
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
-					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+					listener.onSearchFailure("服务器正在打盹，请检查网络连接后重试", FailureTipMethod.VIEW);
 				}
 
 				@Override
@@ -215,10 +216,10 @@ public class ElevatorRecordBizImpl implements IElevatorRecordBiz {
 					Log.e(tag, "响应码为：" + respCode);
 					Log.e(tag, Log.getStackTraceString(e));
 					if (respCode == 401) {
-						listener.onSearchFailure("您的账号无效或已过期，请重新登录");
+						listener.onSearchFailure("您的账号无效或已\n过期，请重新登录", FailureTipMethod.TOAST);
 						listener.onBackToLoginInterface();
 					} else {
-						listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+						listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试", FailureTipMethod.VIEW);
 					}
 				}
 			});

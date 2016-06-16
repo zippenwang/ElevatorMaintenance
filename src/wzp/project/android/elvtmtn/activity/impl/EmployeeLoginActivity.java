@@ -2,7 +2,6 @@ package wzp.project.android.elvtmtn.activity.impl;
 
 import java.io.UnsupportedEncodingException;
 
-import com.alibaba.fastjson.JSON;
 import com.igexin.sdk.PushManager;
 
 import wzp.project.android.elvtmtn.R;
@@ -13,14 +12,12 @@ import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import wzp.project.android.elvtmtn.presenter.EmployeeLoginPresenter;
 import wzp.project.android.elvtmtn.util.ActivityCollector;
 import wzp.project.android.elvtmtn.util.ClearAllEditText;
-import wzp.project.android.elvtmtn.util.DESUtil;
 import wzp.project.android.elvtmtn.util.MyApplication;
 import wzp.project.android.elvtmtn.util.MyProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -31,20 +28,19 @@ import android.widget.Toast;
 
 public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLoginActivity {
 
+	/*
+	 * 控件定义
+	 */
 	private ClearAllEditText caedtUsername;
 	private ClearAllEditText caedtPassword;
 	private Button btnLogin;
 	private CheckBox cbIsRemember;
 	private CheckBox cbIsAutoLogin;
-	
-	// 用于测试的跳转按钮
-	private Button btnIntoNext;
-	
 	private MyProgressDialog myProgressDialog;
 	
 	private EmployeeLoginPresenter userLoginPresenter = new EmployeeLoginPresenter(this);
 	
-	private PushManager pushManager = PushManager.getInstance();
+	private PushManager pushManager = PushManager.getInstance();		// 个推核心类
 	
 	private static final String tag = "EmployeeLoginActivity";
 	
@@ -70,27 +66,29 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 		cbIsAutoLogin = (CheckBox) findViewById(R.id.cb_isAutoLogin);
 		
 		myProgressDialog = new MyProgressDialog(this);
+		myProgressDialog.setMessage("正在访问服务器，请稍后...");
+		myProgressDialog.setCancelable(true);
 		
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
+		SharedPreferences preferences = ProjectContants.preferences;
 		boolean isRemember = preferences.getBoolean("isRemember", false);
 		if (isRemember) {
 			cbIsRemember.setChecked(true);
-//			caedtUsername.setText(preferences.getString("username", ""));
+			
+			/*
+			 * 获取username，解密后显示在输入框中
+			 */
 			String username = "";
 			try {
 				username = ProjectContants.desUtil.decrypt(preferences.getString("username", ""));
 			} catch (UnsupportedEncodingException e) {
 				Log.e(tag, Log.getStackTraceString(e));
-				throw new IllegalArgumentException("解密出现异常");
+//				throw new IllegalArgumentException("解密出现异常");
 			}
 			caedtUsername.setText(username);
-			
-//			caedtPassword.setText(preferences.getString("password", ""));
-//			Drawable[] drawables = caedtPassword.getCompoundDrawables();
-//			caedtPassword.setCompoundDrawables(drawables[0], drawables[1], null, drawables[3]);
 		} else {
 			cbIsRemember.setChecked(false);
 		}
+		
 		boolean isAutoLogin = preferences.getBoolean("isAutoLogin", false);
 		if (isAutoLogin) {
 			cbIsAutoLogin.setChecked(true);
@@ -105,6 +103,9 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 				String password = caedtPassword.getText().toString();
 				
 				// 可以在此处对输入的内容进行正则表达式判断
+				/*
+				 * 暂时单纯判断输入是否为空
+				 */
 				if (TextUtils.isEmpty(username.trim())
 						|| TextUtils.isEmpty(password.trim())) {
 					Toast.makeText(EmployeeLoginActivity.this, "用户名或密码不能为空", Toast.LENGTH_SHORT).show();
@@ -114,30 +115,21 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 				userLoginPresenter.login(username, password);
 			}
 		});
-		
-		btnIntoNext = (Button) findViewById(R.id.btn_intoNext);
-		btnIntoNext.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(EmployeeLoginActivity.this, MainActivity.class);
-				startActivity(intent);
-			}
-		});
 	}
 
 	@Override
 	public void loginSuccess(Employee employee) {
 		SharedPreferences.Editor editor 
-			= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext()).edit();
+			= ProjectContants.preferences.edit();
 		editor.putLong("employeeId", employee.getId());
 		editor.putLong("groupId", employee.getGroup().getId());
-//		editor.putString("username", caedtUsername.getEditableText().toString());
 		String username = caedtUsername.getEditableText().toString();
 		try {
 			username = ProjectContants.desUtil.encrypt(username);
 		} catch (UnsupportedEncodingException e) {
 			Log.e(tag, Log.getStackTraceString(e));
-			throw new IllegalArgumentException("加密出现异常");
+//			throw new IllegalArgumentException("加密出现异常");
+			username = "";
 		}
 		editor.putString("username", username);
 		editor.putBoolean("isRemember", cbIsRemember.isChecked());
@@ -164,9 +156,6 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 		runOnUiThread(new Runnable() {		
 			@Override
 			public void run() {
-				myProgressDialog.setMessage("正在访问服务器，请稍后...");
-				myProgressDialog.setCancelable(true);
-				
 				myProgressDialog.show();
 			}
 		});
@@ -193,16 +182,24 @@ public class EmployeeLoginActivity extends BaseActivity implements IEmployeeLogi
 		});		
 	}
 	
+	/**
+	 * 正常启动登录界面的方法
+	 * @param context 当前所在的Context实例
+	 */
 	public static void myStartActivity(Context context) {
 		Intent actIntent = new Intent(context, EmployeeLoginActivity.class);
 		context.startActivity(actIntent);
 	}
 	
+	/**
+	 * 强制跳转登陆界面的方法
+	 * @param context 当前所在的Context实例
+	 */
 	public static void myForceStartActivity(Context context) {
 		// 强制跳转至登录界面，需要销毁所有还未销毁的Activity
 		ActivityCollector.finishAll();
-		SharedPreferences.Editor editor =
-				PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext()).edit();
+		
+		SharedPreferences.Editor editor = ProjectContants.editor;
 //		editor.clear();
 		editor.putString("token", "");
 		editor.putString("employeeId", "");

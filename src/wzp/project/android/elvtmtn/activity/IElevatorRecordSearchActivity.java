@@ -1,8 +1,8 @@
 package wzp.project.android.elvtmtn.activity;
 
-import wzp.project.android.elvtmtn.activity.base.IBaseFragmentOrActivity;
+import wzp.project.android.elvtmtn.activity.base.IBaseContainer;
 
-public interface IElevatorRecordSearchActivity extends IBaseFragmentOrActivity {
+public interface IElevatorRecordSearchActivity extends IBaseContainer {
 	
 	void updateInterface();
 	

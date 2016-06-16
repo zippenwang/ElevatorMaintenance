@@ -11,13 +11,13 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 import wzp.project.android.elvtmtn.R;
+import wzp.project.android.elvtmtn.activity.IWorkOrderSearchContainer;
 import wzp.project.android.elvtmtn.activity.impl.EmployeeLoginActivity;
 import wzp.project.android.elvtmtn.activity.impl.MaintainOrderDetailActivity;
 import wzp.project.android.elvtmtn.activity.impl.MaintainOrderSearchActivity;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
 import wzp.project.android.elvtmtn.fragment.IOverdueOrderSortFragment;
-import wzp.project.android.elvtmtn.fragment.IWorkOrderSearchFragment;
 import wzp.project.android.elvtmtn.helper.adapter.UnfinishedFaultOrderAdapter;
 import wzp.project.android.elvtmtn.helper.adapter.UnfOvdMaintainOrderAdapter;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
@@ -58,7 +58,7 @@ import android.widget.Toast;
  *
  */
 public class OverdueWorkOrderFragment extends Fragment 
-		implements IWorkOrderSearchFragment, IOverdueOrderSortFragment {
+		implements IWorkOrderSearchContainer, IOverdueOrderSortFragment {
 	
 	private PullToRefreshListView ptrlvOverdue;			// 提供下拉刷新功能的ListView
 	private LinearLayout linearTipInfo;						// 提示网络异常、或当前工单不存在的LinearLayout控件
@@ -130,7 +130,7 @@ public class OverdueWorkOrderFragment extends Fragment
 					boolean isNeedRefresh = data.getBooleanExtra("isNeedRefresh", false);
 					Log.i(tag, "" + isNeedRefresh);
 					if (isNeedRefresh) {
-						workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.OVERDUE, 
+						workOrderSearchPresenter.searchMaintainOrders(groupId, WorkOrderState.OVERDUE, 
 								1, (curPage - 1) * ProjectContants.PAGE_SIZE, maintainOrderList);						
 						ptrlvOverdue.getRefreshableView().setSelection(listIndex + 1);
 					}
@@ -148,7 +148,7 @@ public class OverdueWorkOrderFragment extends Fragment
 			curPage = 1;
 			mAdapter = new UnfOvdMaintainOrderAdapter(workOrderSearchActivity, 
 					R.layout.listitem_unfinished_overdue_maintain_order, maintainOrderList);
-			workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.OVERDUE, curPage++, 
+			workOrderSearchPresenter.searchMaintainOrders(groupId, WorkOrderState.OVERDUE, curPage++, 
 					ProjectContants.PAGE_SIZE, maintainOrderList);
 			isFirstAccessServer = false;
 			ptrlvOverdue.setAdapter(mAdapter);
@@ -235,7 +235,7 @@ public class OverdueWorkOrderFragment extends Fragment
         protected Void doInBackground(Void... params) {
         	// pageNumber一定是为1，表示只加载第一页的内容
 			curPage = 1;
-        	workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.OVERDUE, curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
+        	workOrderSearchPresenter.searchMaintainOrders(groupId, WorkOrderState.OVERDUE, curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
             return null;    
         }  
  
@@ -249,7 +249,7 @@ public class OverdueWorkOrderFragment extends Fragment
 	private class SearchMoreTask extends AsyncTask<Void, Void, Void> {
         @Override  
         protected Void doInBackground(Void... params) {
-        	workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.OVERDUE, curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
+        	workOrderSearchPresenter.searchMaintainOrders(groupId, WorkOrderState.OVERDUE, curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
             return null;    
         }  
  

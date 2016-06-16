@@ -7,6 +7,11 @@ import wzp.project.android.elvtmtn.entity.Employee;
 
 public interface IEmployeeBiz {
 
+	/**
+	 * 用户登录
+	 * @param employee
+	 * @param listener
+	 */
 	void login(Employee employee, IEmployeeLoginListener listener);
 	
 	void signIn(int workOrderType, Long workOrderId, 

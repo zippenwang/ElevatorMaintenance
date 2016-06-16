@@ -32,6 +32,7 @@ import wzp.project.android.elvtmtn.biz.listener.IWorkOrderSearchListener;
 import wzp.project.android.elvtmtn.entity.Employee;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
+import wzp.project.android.elvtmtn.helper.contant.FailureTipMethod;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderState;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
@@ -68,13 +69,12 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				}
 
 				@Override
-				public void onResponse(String response) {					
-					Log.i(tag, response);
-					
+				public void onResponse(String response) {
 					if (!TextUtils.isEmpty(response)) {
 						List<MaintainOrder> respDataList = JSON.parseObject(response, 
 								new TypeReference<List<MaintainOrder>>() {});
-						if (respDataList != null && respDataList.size() > 0) {
+						if (respDataList != null 
+								&& respDataList.size() > 0) {
 							if (1 == pageNumber) {
 								dataList.clear();
 							}
@@ -86,17 +86,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 								listener.onSearchSuccess(ProjectContants.ORDER_SHOW_COMPLETE);
 							}
 						} else {
-							/*
-							 * 响应数据为空，表示当前请求的数据不存在，有两种可能的情况
-							 * 1、压根就没有数据；
-							 * 2、表示当前pageNumber下，没有数据，即1~pageNumber-1之间的页面，就已经把数据完全显示出来了；
-							 * 
-							 * 解决方案：
-							 * 1、如果pageNumber等于1，属于上述第一种情况，此时应该提示“当前没有符合要求的工单”；
-							 * 2、如果pageNumber大于1，属于上述第二种情况，此时应该利用Toast提示已经显示出所有工单，并关闭上拉加载的功能；
-							 * 
-							 * 提供一个标志位，根据不同的情况，执行不同的操作；
-							 */
 							if (1 == pageNumber) {
 								listener.onSearchSuccess(ProjectContants.ORDER_IS_NULL);
 							} else if (pageNumber > 1) {
@@ -104,25 +93,24 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 							}
 						}
 					} else {
-						listener.onSearchFailure("服务器故障，响应数据有误！");
+						listener.onSearchFailure("服务器故障，请联系管理员！", FailureTipMethod.VIEW);
 					}
 				}
 				
 				@Override
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
-					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+					listener.onSearchFailure("服务器正在打盹，请检查网络连接后重试", FailureTipMethod.VIEW);
 				}
 
 				@Override
 				public void onError(Call call, Exception e, int respCode) {
-					Log.e(tag, "响应码为：" + respCode);
 					Log.e(tag, Log.getStackTraceString(e));
 					if (respCode == 401) {
-						listener.onSearchFailure("您的账号无效或已过期，请重新登录");
+						listener.onSearchFailure("您的账号无效或已\n过期，请重新登录", FailureTipMethod.TOAST);
 						listener.onBackToLoginInterface();
 					} else {
-						listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+						listener.onSearchFailure("服务器正在打盹，请检查网络连接后重试", FailureTipMethod.VIEW);
 					}
 				}
 			});		
@@ -187,14 +175,14 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 							}
 						}
 					} else {
-						listener.onSearchFailure("服务器故障，响应数据有误！");
+						listener.onSearchFailure("服务器故障，请联系管理员", FailureTipMethod.VIEW);
 					}
 				}
 				
 				@Override
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
-					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");	
+					listener.onSearchFailure("服务器正在打盹，请检查网络连接后重试", FailureTipMethod.VIEW);	
 				}
 
 				@Override
@@ -202,10 +190,10 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 					Log.e(tag, "响应码为：" + respCode);
 					Log.e(tag, Log.getStackTraceString(e));
 					if (respCode == 401) {
-						listener.onSearchFailure("您的账号无效或已过期，请重新登录");
+						listener.onSearchFailure("您的账号无效或已过期，请重新登录", FailureTipMethod.TOAST);
 						listener.onBackToLoginInterface();
 					} else {
-						listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+						listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试", FailureTipMethod.VIEW);
 					}
 				}
 			});
@@ -243,7 +231,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 					Log.e(tag, "响应码为：" + respCode);
 					Log.e(tag, Log.getStackTraceString(e));
 					if (respCode == 401) {
-						listener.onSearchFailure("您的账号无效或已过期，请重新登录");
+						listener.onSearchFailure("您的账号无效或已\n过期，请重新登录");
 						listener.onBackToLoginInterface();
 					} else {
 						listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
@@ -317,14 +305,14 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 							}
 						}
 					} else {
-						listener.onSearchFailure("服务器故障，响应数据有误！");
+						listener.onSearchFailure("服务器故障，请联系管理员", FailureTipMethod.VIEW);
 					}
 				}
 				
 				@Override
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
-					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");	
+					listener.onSearchFailure("服务器正在打盹，请检查网络连接后重试", FailureTipMethod.VIEW);	
 				}
 				
 				@Override
@@ -332,10 +320,10 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 					Log.e(tag, "响应码为：" + respCode);
 					Log.e(tag, Log.getStackTraceString(e));
 					if (respCode == 401) {
-						listener.onSearchFailure("您的账号无效或已过期，请重新登录");
+						listener.onSearchFailure("您的账号无效或已\n过期，请重新登录", FailureTipMethod.TOAST);
 						listener.onBackToLoginInterface();
 					} else {
-						listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+						listener.onSearchFailure("服务器正在打盹，请检查网络连接后重试", FailureTipMethod.VIEW);
 					}
 				}
 			});
@@ -406,14 +394,14 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 							}
 						}
 					} else {
-						listener.onSearchFailure("服务器故障，响应数据有误！");
+						listener.onSearchFailure("服务器故障，请联系管理员", FailureTipMethod.VIEW);
 					}
 				}
 				
 				@Override
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
-					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");	
+					listener.onSearchFailure("服务器正在打盹，请检查网络连接后重试", FailureTipMethod.VIEW);	
 				}
 				
 				@Override
@@ -421,10 +409,10 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 					Log.e(tag, "响应码为：" + respCode);
 					Log.e(tag, Log.getStackTraceString(e));
 					if (respCode == 401) {
-						listener.onSearchFailure("您的账号无效或已过期，请重新登录");
+						listener.onSearchFailure("您的账号无效或已\n过期，请重新登录", FailureTipMethod.TOAST);
 						listener.onBackToLoginInterface();
 					} else {
-						listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+						listener.onSearchFailure("服务器正在打盹，请检查网络连接后重试", FailureTipMethod.VIEW);
 					}
 				}
 			});
@@ -485,14 +473,14 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 							}
 						}
 					} else {
-						listener.onSearchFailure("服务器故障，响应数据有误！");
+						listener.onSearchFailure("服务器故障，请联系管理员", FailureTipMethod.VIEW);
 					}
 				}
 				
 				@Override
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
-					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");	
+					listener.onSearchFailure("服务器正在打盹，请检查网络连接后重试", FailureTipMethod.VIEW);	
 				}
 				
 				@Override
@@ -500,10 +488,10 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 					Log.e(tag, "响应码为：" + respCode);
 					Log.e(tag, Log.getStackTraceString(e));
 					if (respCode == 401) {
-						listener.onSearchFailure("您的账号无效或已过期，请重新登录");
+						listener.onSearchFailure("您的账号无效或已\n过期，请重新登录", FailureTipMethod.TOAST);
 						listener.onBackToLoginInterface();
 					} else {
-						listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+						listener.onSearchFailure("服务器正在打盹，请检查网络连接后重试", FailureTipMethod.VIEW);
 					}
 				}
 			});
@@ -565,14 +553,14 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 							}
 						}
 					} else {
-						listener.onSearchFailure("服务器故障，响应数据有误！");
+						listener.onSearchFailure("服务器故障，请联系管理员", FailureTipMethod.VIEW);
 					}
 				}
 				
 				@Override
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
-					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");	
+					listener.onSearchFailure("服务器正在打盹，请检查网络连接后重试", FailureTipMethod.VIEW);	
 				}
 				
 				@Override
@@ -580,10 +568,10 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 					Log.e(tag, "响应码为：" + respCode);
 					Log.e(tag, Log.getStackTraceString(e));
 					if (respCode == 401) {
-						listener.onSearchFailure("您的账号无效或已过期，请重新登录");
+						listener.onSearchFailure("您的账号无效或已\n过期，请重新登录", FailureTipMethod.TOAST);
 						listener.onBackToLoginInterface();
 					} else {
-						listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+						listener.onSearchFailure("服务器正在打盹，请检查网络连接后重试", FailureTipMethod.VIEW);
 					}
 				}
 			});
@@ -632,14 +620,14 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 							}
 						}
 					} else {
-						listener.onSearchFailure("服务器故障，响应数据有误！");
+						listener.onSearchFailure("服务器故障，请联系管理员", FailureTipMethod.VIEW);
 					}
 				}
 				
 				@Override
 				public void onError(Call call, Exception e) {
 					Log.e(tag, Log.getStackTraceString(e));
-					listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");	
+					listener.onSearchFailure("服务器正在打盹，请检查网络连接后重试", FailureTipMethod.VIEW);	
 				}
 				
 				@Override
@@ -647,10 +635,10 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 					Log.e(tag, "响应码为：" + respCode);
 					Log.e(tag, Log.getStackTraceString(e));
 					if (respCode == 401) {
-						listener.onSearchFailure("您的账号无效或已过期，请重新登录");
+						listener.onSearchFailure("您的账号无效或已\n过期，请重新登录", FailureTipMethod.TOAST);
 						listener.onBackToLoginInterface();
 					} else {
-						listener.onSearchFailure("服务器正在打盹，请\n检查网络连接后重试");
+						listener.onSearchFailure("服务器正在打盹，请检查网络连接后重试", FailureTipMethod.VIEW);
 					}
 				}
 			});
@@ -911,7 +899,8 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				if (idA > idB) {
 					minElementIndex = j;
-					idA =  maintainOrderList.get(minElementIndex).getId();
+//					idA =  maintainOrderList.get(minElementIndex).getId();
+					idA = idB;
 				}
 			}
 			
@@ -954,7 +943,8 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				if (idA < idB) {
 					maxElementIndex = j;
-					idA =  maintainOrderList.get(maxElementIndex).getId();
+//					idA =  maintainOrderList.get(maxElementIndex).getId();
+					idA =  idB;
 				}
 			}
 			
@@ -1001,7 +991,8 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				if (idA > idB) {
 					minElementIndex = j;
-					idA =  faultOrderList.get(minElementIndex).getId();
+//					idA =  faultOrderList.get(minElementIndex).getId();
+					idA =  idB;
 				}
 			}
 			
@@ -1048,7 +1039,8 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				if (idA < idB) {
 					minElementIndex = j;
-					idA =  faultOrderList.get(minElementIndex).getId();
+//					idA =  faultOrderList.get(minElementIndex).getId();
+					idA =  idB;
 				}
 			}
 			

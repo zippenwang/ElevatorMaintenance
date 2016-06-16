@@ -6,7 +6,6 @@ import java.util.TimerTask;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
@@ -30,6 +29,7 @@ public class WelcomeActivity extends BaseActivity {
 		preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
 		token = preferences.getString("token", "");
 		isAutoLogin = preferences.getBoolean("isAutoLogin", false);
+		
 		mConnectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
 		
@@ -37,15 +37,16 @@ public class WelcomeActivity extends BaseActivity {
 		 * 此处可以访问一次服务器，确定服务器是否正常连接
 		 */
 		
+		
+		/*
+		 * 定时任务，3s后执行
+		 */
 		new Timer().schedule(new TimerTask() {
 			@Override
 			public void run() {
-				/*if (token.equals("")) {
-					EmployeeLoginActivity.myStartActivity(WelcomeActivity.this);
-				} else {
-					MyApplication.token = token;
-					MainActivity.myStartActivity(WelcomeActivity.this);
-				}*/
+				/*
+				 * 检查网络连接
+				 */
 				if (null == mConnectivityManager.getActiveNetworkInfo()) {
 					runOnUiThread(new Runnable() {
 						@Override
@@ -55,6 +56,9 @@ public class WelcomeActivity extends BaseActivity {
 					});
 				}
 				
+				/*
+				 * 判断接下来应该进入主界面还是登录界面
+				 */
 				if (isAutoLogin && !token.equals("")) {
 					MyApplication.token = token;
 					MainActivity.myStartActivity(WelcomeActivity.this);
@@ -62,7 +66,7 @@ public class WelcomeActivity extends BaseActivity {
 					EmployeeLoginActivity.myStartActivity(WelcomeActivity.this);
 				}
 				
-				finish();
+				finish();			// 务必销毁当前Activity
 			}
 		}, 3000);
 	}

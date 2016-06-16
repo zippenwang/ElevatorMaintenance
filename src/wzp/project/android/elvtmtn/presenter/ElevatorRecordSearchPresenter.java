@@ -8,6 +8,7 @@ import wzp.project.android.elvtmtn.biz.IElevatorRecordBiz;
 import wzp.project.android.elvtmtn.biz.impl.ElevatorRecordBizImpl;
 import wzp.project.android.elvtmtn.biz.listener.IElevatorRecordSearchListener;
 import wzp.project.android.elvtmtn.entity.ElevatorRecord;
+import wzp.project.android.elvtmtn.helper.contant.FailureTipMethod;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 
 public class ElevatorRecordSearchPresenter implements IElevatorRecordSearchListener {
@@ -52,9 +53,24 @@ public class ElevatorRecordSearchPresenter implements IElevatorRecordSearchListe
 					}
 					
 					@Override
-					public void onSearchFailure(String tipInfo) {
+					public void onSearchFailure(String tipInfo, int tipMethod) {
 //						elevatorRecordSearchActivity.showToast(tipInfo);
-						elevatorRecordSearchActivity.hidePtrlvAndShowLinearLayout("服务器正在打盹，请检查网络后重试...");
+//						elevatorRecordSearchActivity.hidePtrlvAndShowLinearLayout("服务器正在打盹，请检查网络后重试...");
+						
+						switch (tipMethod) {
+							case FailureTipMethod.TOAST:
+								elevatorRecordSearchActivity.showToast(tipInfo);
+								break;
+							case FailureTipMethod.VIEW:
+								elevatorRecordSearchActivity.hidePtrlvAndShowLinearLayout(tipInfo);
+								break;
+							case FailureTipMethod.TOAST_AND_VIEW:
+								elevatorRecordSearchActivity.showToast(tipInfo);
+								elevatorRecordSearchActivity.hidePtrlvAndShowLinearLayout(tipInfo);
+								break;
+							default:
+								break;
+						}
 					}
 					
 					@Override
@@ -88,9 +104,24 @@ public class ElevatorRecordSearchPresenter implements IElevatorRecordSearchListe
 	}
 	
 	@Override
-	public void onSearchFailure(String tipInfo) {
+	public void onSearchFailure(String tipInfo, int tipMethod) {
 //		elevatorRecordSearchActivity.showToast(tipInfo);
-		elevatorRecordSearchActivity.hidePtrlvAndShowLinearLayout(tipInfo);
+//		elevatorRecordSearchActivity.hidePtrlvAndShowLinearLayout(tipInfo);
+		
+		switch (tipMethod) {
+			case FailureTipMethod.TOAST:
+				elevatorRecordSearchActivity.showToast(tipInfo);
+				break;
+			case FailureTipMethod.VIEW:
+				elevatorRecordSearchActivity.hidePtrlvAndShowLinearLayout(tipInfo);
+				break;
+			case FailureTipMethod.TOAST_AND_VIEW:
+				elevatorRecordSearchActivity.showToast(tipInfo);
+				elevatorRecordSearchActivity.hidePtrlvAndShowLinearLayout(tipInfo);
+				break;
+			default:
+				break;
+		}
 	}
 	
 	@Override

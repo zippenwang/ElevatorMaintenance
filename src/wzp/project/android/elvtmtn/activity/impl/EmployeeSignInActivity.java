@@ -39,12 +39,12 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 import wzp.project.android.elvtmtn.R;
+import wzp.project.android.elvtmtn.activity.IWorkOrderSearchContainer;
 import wzp.project.android.elvtmtn.activity.IWorkOrderSortContainer;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
 import wzp.project.android.elvtmtn.fragment.IFinishedOrderSortFragment;
-import wzp.project.android.elvtmtn.fragment.IWorkOrderSearchFragment;
 import wzp.project.android.elvtmtn.fragment.impl.FinishedWorkOrderFragment;
 import wzp.project.android.elvtmtn.fragment.impl.OverdueWorkOrderFragment;
 import wzp.project.android.elvtmtn.fragment.impl.UnfinishedWorkOrderFragment;
@@ -58,7 +58,7 @@ import wzp.project.android.elvtmtn.util.MyApplication;
 import wzp.project.android.elvtmtn.util.MyProgressDialog;
 
 public class EmployeeSignInActivity extends BaseActivity 
-		implements IWorkOrderSearchFragment, IWorkOrderSortContainer {
+		implements IWorkOrderSearchContainer, IWorkOrderSortContainer {
 	
 	private Button btnBack;
 	private TextView tvWorkOrderType;

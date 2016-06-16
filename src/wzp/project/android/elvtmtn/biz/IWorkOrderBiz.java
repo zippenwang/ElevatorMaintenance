@@ -78,8 +78,18 @@ public interface IWorkOrderBiz {
 	/*
 	 * 工单排序
 	 */
+	/**
+	 * 对保养工单，按截止日期的顺序排列
+	 * 
+	 * @param maintainOrderList 保养工单集合
+	 */
 	void sortMaintainOrderByFinalTimeIncrease(List<MaintainOrder> maintainOrderList);
 	
+	/**
+	 * 对保养工单，按截止日期的逆序排列
+	 * 
+	 * @param maintainOrderList 保养工单集合
+	 */
 	void sortMaintainOrderByFinalTimeDecrease(List<MaintainOrder> maintainOrderList);
 	
 	void sortFaultOrderByOccurredTimeIncrease(List<FaultOrder> faultOrderList);

@@ -6,4 +6,6 @@
 
     <dimen name="work_order_detail">18sp</dimen>
     <dimen name="exception_tip">18sp</dimen>
+    
+    <dimen name="main_activity">18sp</dimen>
 </resources>

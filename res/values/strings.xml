@@ -10,6 +10,28 @@
 	<string name="userId">员工号</string>
 	<string name="userPassword">密码</string>
 	
+	<!-- 主界面 -->
+	<string name="workOrderSearch">工单查询</string>
+	<string name="signIn">一键签到</string>
+	<string name="workOrderFeedback">工单反馈</string>
+	<string name="elevatorRecord">电梯档案</string>
+	<string name="employeeInfo">员工信息</string>
+	
+	<!-- 功能按钮 -->
+	<string name="back">返回</string>
+	<string name="tryAgain">重试</string>
+	
+	<!-- 工单类型 -->
+	<string name="maintainOrder">保养工单</string>
+	<string name="maintain">保养</string>
+	<string name="faultOrder">故障工单</string>
+	<string name="fault">故障</string>
+	
+	<!-- 工单完成状态 -->
+	<string name="unfinished">未完成</string>
+	<string name="finished">已完成</string>
+	<string name="overdue">超期</string>
+	
 	<!-- 工单详情 -->
 	<string name="workOrderId">工单号</string>
 	<string name="workOrderState">工单状态</string>

@@ -8,11 +8,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.format.Time;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.Toast;
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
@@ -21,6 +18,9 @@ import wzp.project.android.elvtmtn.util.MyImageButton;
 
 public class MainActivity extends BaseActivity {
 
+	/*
+	 * 控件定义
+	 */
 	private MyImageButton mibtnWorkOrderSearch;
 	private MyImageButton mibtnSignIn;
 	private MyImageButton mibtnWorkOrderFeedback;
@@ -28,9 +28,9 @@ public class MainActivity extends BaseActivity {
 	private MyImageButton mibtnUserInfo;
 	private AlertDialog.Builder altDlgBuilder;
 	
-	private int pressBackTimes;
+	private int pressBackTimes;				// Back键按下的次数
 	
-	private String[] items = new String[] {"保养工单", "故障工单"};
+	private String[] items = new String[] {"保养工单", "故障工单"};		// 工单类型数组
 	
 	
 	@Override
@@ -48,12 +48,12 @@ public class MainActivity extends BaseActivity {
 		mibtnElevatorRecord = (MyImageButton) findViewById(R.id.mibtn_elevatorRecord);
 		mibtnUserInfo = (MyImageButton) findViewById(R.id.mibtn_userInfo);
 		altDlgBuilder = new AlertDialog.Builder(this);
+		altDlgBuilder.setTitle("请选择工单类型 ");
+		altDlgBuilder.setCancelable(true);
 		
 		mibtnWorkOrderSearch.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-				altDlgBuilder.setTitle("请选择工单类型 ");
-				altDlgBuilder.setCancelable(true);
 				altDlgBuilder.setItems(items, new DialogInterface.OnClickListener() {			
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
@@ -71,8 +71,6 @@ public class MainActivity extends BaseActivity {
 		mibtnSignIn.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-				altDlgBuilder.setTitle("请选择工单类型 ");
-				altDlgBuilder.setCancelable(true);
 				altDlgBuilder.setItems(items, new DialogInterface.OnClickListener() {			
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
@@ -86,8 +84,6 @@ public class MainActivity extends BaseActivity {
 		mibtnWorkOrderFeedback.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-				altDlgBuilder.setTitle("请选择工单类型 ");
-				altDlgBuilder.setCancelable(true);
 				altDlgBuilder.setItems(items, new DialogInterface.OnClickListener() {			
 					@Override
 					public void onClick(DialogInterface dialog, int which) {

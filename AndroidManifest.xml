@@ -8,11 +8,9 @@
         android:minSdkVersion="14"
         android:targetSdkVersion="21" />
 
-    <!-- 访问网络一定要记得加该条权限 -->
-    <uses-permission android:name="android.permission.INTERNET"/>
-    
+
     <!-- 使用Baidu地图所需要的权限 -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" >
+    <!-- <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" >
     </uses-permission>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" >
     </uses-permission>
@@ -34,8 +32,62 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> -->
+    
+	<!-- baidumap官方Demo中声明的权限 Start -->
+    <uses-permission android:name="android.permission.BAIDU_LOCATION_SERVICE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" >
+    </uses-permission>
+    <!-- 访问网络一定要记得加该条权限 -->
+    <uses-permission android:name="android.permission.INTERNET" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" >
+    </uses-permission>
+    <!-- <uses-permission android:name="android.permission.WRITE_APN_SETTINGS"></uses-permission> -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" >
+    </uses-permission>
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_GPS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <!-- SDK1.5需要android.permission.GET_TASKS权限判断本程序是否为当前运行的应用? -->
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.CAMERA" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <!-- 来电消音 -->
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+	<!-- baidumap官方Demo中声明的权限 End -->
+    
+    
+	<!-- 兼容不同大小的屏幕 -->    
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="false"
+        android:resizeable="true"
+        android:smallScreens="true" />
        
+    
     <!-- 个推SDK权限配置开始 -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -62,7 +114,7 @@
         android:name="getui.permission.GetuiService.wzp.project.android.elvtmtn"
         android:protectionLevel="normal" >
     </permission>
-    
+    <!-- 个推SDK权限配置结束 -->
     
     <application
         android:name="wzp.project.android.elvtmtn.util.MyApplication"
@@ -70,20 +122,8 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        
-        <!-- 百度地图配置开始 -->
-        <meta-data 
-            android:name="com.baidu.lbsapi.API_KEY"
-            android:value="SDMjoVaqLsZCqaT1lv8WY8ArBxKwAzU9" />
-        
-        <!-- 如果需要利用百度提供的定位api，一定要声明该服务，否则定位功能无法实现 -->
-        <service
-            android:name="com.baidu.location.f"
-            android:enabled="true"
-            android:process=":remote" >
-        </service>
-        <!-- 百度地图配置结束 -->
-        
+  
+        <!-- 自定义activity -->
         <activity
             android:name="wzp.project.android.elvtmtn.activity.impl.WelcomeActivity"
             android:label="@string/app_name"
@@ -165,6 +205,21 @@
         <activity 
             android:name="wzp.project.android.elvtmtn.activity.impl.FaultHistoryDetailActivity">
         </activity>
+        
+        
+        <!-- 百度地图配置开始 -->
+        <meta-data 
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="SDMjoVaqLsZCqaT1lv8WY8ArBxKwAzU9" />
+        
+        <!-- 如果需要利用百度提供的定位api，一定要声明该服务，否则定位功能无法实现 -->
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote" >
+        </service>
+        <!-- 百度地图配置结束 -->
+        
         
         <!-- 个推SDK配置开始 -->
         <!-- 配置的第三方参数属性 -->

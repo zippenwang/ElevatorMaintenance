@@ -1,8 +1,8 @@
 package wzp.project.android.elvtmtn.activity;
 
-import wzp.project.android.elvtmtn.activity.base.IBaseFragmentOrActivity;
+import wzp.project.android.elvtmtn.activity.base.IBaseContainer;
 
-public interface IEmployeeSignInDetailActivity extends IBaseFragmentOrActivity {
+public interface IEmployeeSignInDetailActivity extends IBaseContainer {
 
 	void signInSuccess();
 	

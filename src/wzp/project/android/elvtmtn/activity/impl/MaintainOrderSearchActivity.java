@@ -3,15 +3,12 @@ package wzp.project.android.elvtmtn.activity.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.baidu.platform.comapi.map.m;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.SimpleOnPageChangeListener;
@@ -27,18 +24,13 @@ import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.fragment.IFinishedOrderSortFragment;
 import wzp.project.android.elvtmtn.fragment.IOverdueOrderSortFragment;
 import wzp.project.android.elvtmtn.fragment.IUnfinishedOrderSortFragment;
-import wzp.project.android.elvtmtn.fragment.IWorkOrderSearchFragment;
 import wzp.project.android.elvtmtn.fragment.impl.FinishedWorkOrderFragment;
 import wzp.project.android.elvtmtn.fragment.impl.OverdueWorkOrderFragment;
 import wzp.project.android.elvtmtn.fragment.impl.UnfinishedWorkOrderFragment;
-import wzp.project.android.elvtmtn.helper.contant.WorkOrderState;
-import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
-import wzp.project.android.elvtmtn.presenter.WorkOrderSortPresenter;
 import wzp.project.android.elvtmtn.util.ActivityCollector;
 
 /**
@@ -58,18 +50,16 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 	private TextView tvFinished;
 	private TextView tvOverdue;
 	private ViewPager vpMaintainOrder;
-	private int[] selectedStateArray;
-	private TextView[] tvHiddenArray;					// 用于标注当前所在的选项卡
-	private TextView[] tvArray;							// 用于标注当前所在的选项卡的标题
-	
-//	private TextView tvWorkOrderType;
 	private ImageButton ibtnSort;
 	private PopupMenu pmSort;
 	private Menu menu;
-	
 	private Button btnBack;
 	
-	private int currentSelectedId = 0;
+	private int[] selectedStateArray;					// 记录选项卡是否被选中的状态
+	private TextView[] tvHiddenArray;					// 用于标注当前所在的选项卡
+	private TextView[] tvArray;							// 用于标注当前所在的选项卡的标题
+	
+	private int currentSelectedId = 0;					// 0：未完成；1：已完成；2：超期
 	
 	private List<Fragment> fragmentList = new ArrayList<Fragment>();
 	
@@ -106,7 +96,6 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 		tvFinished = (TextView) findViewById(R.id.tv_finished);
 		tvOverdue = (TextView) findViewById(R.id.tv_overdue);
 		
-//		tvWorkOrderType = (TextView) findViewById(R.id.tv_workOrderType);
 		ibtnSort = (ImageButton) findViewById(R.id.ibtn_sort);
 		pmSort = new PopupMenu(this, ibtnSort);
 		getMenuInflater().inflate(R.menu.maintain_order_search_sort_menu, pmSort.getMenu());
@@ -143,6 +132,7 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 							overdueOrderSortFragment.sortMaintainOrderByFinalTimeIncrease();
 						}
 						break;
+						
 					case R.id.item_finalTimeDecrease:	
 						if (currentSelectedId == 0
 								&& unfinishedOrderSortFragment != null) {
@@ -178,12 +168,14 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 					default:
 						break;
 				}
+				
 				return false;
 			}
 		});
 	
 		vpMaintainOrder = (ViewPager) findViewById(R.id.vp_maintainOrder);
-		// 设置ViewPager的预加载值，即让ViewPager维护以当前Fragment为中心，左右各2个Fragment
+		// 设置ViewPager的预加载值，即让ViewPager维护以当前Fragment为中心，左右各2个Fragment，
+		// 该项目中，就相当于一次性将所有（3个）Fragment都加载。
 		vpMaintainOrder.setOffscreenPageLimit(2);
 		
 		btnBack = (Button) findViewById(R.id.btn_back);

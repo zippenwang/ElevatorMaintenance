@@ -1,16 +1,17 @@
 package wzp.project.android.elvtmtn.fragment.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
+import com.handmark.pulltorefresh.library.ILoadingLayout;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 
 import wzp.project.android.elvtmtn.R;
+import wzp.project.android.elvtmtn.activity.IWorkOrderSearchContainer;
 import wzp.project.android.elvtmtn.activity.impl.EmployeeLoginActivity;
 import wzp.project.android.elvtmtn.activity.impl.FaultOrderDetailActivity;
 import wzp.project.android.elvtmtn.activity.impl.FaultOrderSearchActivity;
@@ -19,25 +20,18 @@ import wzp.project.android.elvtmtn.activity.impl.MaintainOrderSearchActivity;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
 import wzp.project.android.elvtmtn.fragment.IFinishedOrderSortFragment;
-import wzp.project.android.elvtmtn.fragment.IWorkOrderSearchFragment;
 import wzp.project.android.elvtmtn.helper.adapter.FinishedMaintainOrderAdapter;
-import wzp.project.android.elvtmtn.helper.adapter.UnfinishedFaultOrderAdapter;
 import wzp.project.android.elvtmtn.helper.adapter.FinishedFaultOrderAdapter;
-import wzp.project.android.elvtmtn.helper.adapter.UnfOvdMaintainOrderAdapter;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderState;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 import wzp.project.android.elvtmtn.presenter.WorkOrderSearchPresenter;
 import wzp.project.android.elvtmtn.presenter.WorkOrderSortPresenter;
-import wzp.project.android.elvtmtn.util.MyApplication;
 import wzp.project.android.elvtmtn.util.MyProgressDialog;
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -57,9 +51,10 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class FinishedWorkOrderFragment extends Fragment 
-		implements IWorkOrderSearchFragment, IFinishedOrderSortFragment {
+		implements IWorkOrderSearchContainer, IFinishedOrderSortFragment {
 	
 	private PullToRefreshListView ptrlvFinished;			// 提供下拉刷新功能的ListView
+	private ILoadingLayout operateTip;						// 对PullToRefreshListView控件的操作提示
 	private LinearLayout linearTipInfo;						// 提示网络异常、或当前工单不存在的LinearLayout控件
 	private TextView tvTipInfo;								// 当ListView中传入的List为空，该控件用于提示数据为空
 	private Button btnRefreshAgain;							// 重试按钮
@@ -78,19 +73,19 @@ public class FinishedWorkOrderFragment extends Fragment
 	private WorkOrderSortPresenter workOrderSortPresenter = new WorkOrderSortPresenter(this);
 	private Activity workOrderSearchActivity;
 	
-	private volatile int curPage = 1;				// 当前需要访问的页码
+	private int curPage = 1;				// 当前需要访问的页码
 	
-	private boolean isFirstAccessServer = true;
-	private int listIndex;
+	private boolean isFirstAccessServer = true;		// 是否第一次访问服务器
+	private int listIndex;							// item的序号对应的List集合序号
 	
-	private SharedPreferences preferences 
-		= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
-	private long groupId;
+	private SharedPreferences preferences = ProjectContants.preferences;
+	private long groupId;					// 小组id
 	
 	// 记录当前PullToRefreshListView控件显示的是否是下拉刷新的提示消息
 	private boolean isShowPullDownInfo = true;
 	
 	private static final String tag = "FinishedWorkOrderFragment";
+	
 	
 	// 该方法只会被回调一次
 	@Override
@@ -117,9 +112,10 @@ public class FinishedWorkOrderFragment extends Fragment
 		
 		// 初始化ProgressDialog，必须在此处进行初始化，因为访问服务器时，需要调用ProgressDialog
 		myProgressDialog = new MyProgressDialog(workOrderSearchActivity);
-				
-		groupId = preferences.getLong("groupId", -1);
+		myProgressDialog.setMessage("正在获取数据，请稍后...");
+		myProgressDialog.setCancelable(true);
 		
+		groupId = preferences.getLong("groupId", -1);
 		if (groupId == -1) {
 			Log.e(tag, "缺失groupId");
 			showToast("缺失重要数据，请重新登录");
@@ -127,7 +123,6 @@ public class FinishedWorkOrderFragment extends Fragment
 			return;
 		}
 	}
-	
 
 	@Override
 	public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -136,17 +131,18 @@ public class FinishedWorkOrderFragment extends Fragment
 			if (WorkOrderType.MAINTAIN_ORDER == workOrderType) {
 				mAdapter = new FinishedMaintainOrderAdapter(workOrderSearchActivity, 
 						R.layout.listitem_finished_maintain_order, maintainOrderList);
-				workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.FINISHED, curPage++, 
+				workOrderSearchPresenter.searchMaintainOrders(groupId, WorkOrderState.FINISHED, curPage++, 
 						ProjectContants.PAGE_SIZE, maintainOrderList);
 			} else if (WorkOrderType.FAULT_ORDER == workOrderType) {
 				mAdapter = new FinishedFaultOrderAdapter(workOrderSearchActivity, 
 						R.layout.listitem_finished_fault_order, faultOrderList);
-				workOrderSearchPresenter.searchFaultOrder(groupId, WorkOrderState.FINISHED, 
+				workOrderSearchPresenter.searchFaultOrders(groupId, WorkOrderState.FINISHED, 
 						curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
 			}
 			isFirstAccessServer = false;
 			
-			ptrlvFinished.setAdapter(mAdapter);		// 该方法一定要在mAdapter创建成功后再调用，否则无效
+			// 该方法一定要在mAdapter创建成功后再调用，否则无效
+			ptrlvFinished.setAdapter(mAdapter);
 		}
 		
 		super.setUserVisibleHint(isVisibleToUser);
@@ -168,9 +164,10 @@ public class FinishedWorkOrderFragment extends Fragment
 				
 		ptrlvFinished.getRefreshableView().setSelector(R.drawable.listview_bg);
 		
-		ptrlvFinished.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
-		ptrlvFinished.getLoadingLayoutProxy().setPullLabel("下拉刷新...");
-		ptrlvFinished.getLoadingLayoutProxy().setReleaseLabel("释放开始刷新...");
+		operateTip = ptrlvFinished.getLoadingLayoutProxy();
+		operateTip.setRefreshingLabel("正在刷新");
+		operateTip.setPullLabel("下拉刷新...");
+		operateTip.setReleaseLabel("释放开始刷新...");
 		
 		ptrlvFinished.setOnRefreshListener(new OnRefreshListener2<ListView>() {
 			@Override
@@ -198,15 +195,15 @@ public class FinishedWorkOrderFragment extends Fragment
 					int visibleItemCount, int totalItemCount) {
 				if (0 == firstVisibleItem
 						&& !isShowPullDownInfo) {
-					ptrlvFinished.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
-					ptrlvFinished.getLoadingLayoutProxy().setPullLabel("下拉刷新...");
-					ptrlvFinished.getLoadingLayoutProxy().setReleaseLabel("释放开始刷新...");
+					operateTip.setRefreshingLabel("正在刷新");
+					operateTip.setPullLabel("下拉刷新...");
+					operateTip.setReleaseLabel("释放开始刷新...");
 					isShowPullDownInfo = true;
 				} else if ((totalItemCount - visibleItemCount) == firstVisibleItem
 						&& isShowPullDownInfo) {
-					ptrlvFinished.getLoadingLayoutProxy().setRefreshingLabel("正在加载");
-					ptrlvFinished.getLoadingLayoutProxy().setPullLabel("上拉加载更多...");
-					ptrlvFinished.getLoadingLayoutProxy().setReleaseLabel("释放开始加载...");
+					operateTip.setRefreshingLabel("正在加载");
+					operateTip.setPullLabel("上拉加载更多...");
+					operateTip.setReleaseLabel("释放开始加载...");
 					isShowPullDownInfo = false;
 				}
 			}
@@ -236,9 +233,9 @@ public class FinishedWorkOrderFragment extends Fragment
 			curPage = 1;
 			
         	if (WorkOrderType.MAINTAIN_ORDER == workOrderType) {
-        		workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.FINISHED, curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
+        		workOrderSearchPresenter.searchMaintainOrders(groupId, WorkOrderState.FINISHED, curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
 			} else if (WorkOrderType.FAULT_ORDER == workOrderType) {
-				workOrderSearchPresenter.searchFaultOrder(groupId, WorkOrderState.FINISHED, curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
+				workOrderSearchPresenter.searchFaultOrders(groupId, WorkOrderState.FINISHED, curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
 			}
         	
             // 返回执行的结果
@@ -256,9 +253,9 @@ public class FinishedWorkOrderFragment extends Fragment
         @Override  
         protected Void doInBackground(Void... params) {
         	if (WorkOrderType.MAINTAIN_ORDER == workOrderType) {
-        		workOrderSearchPresenter.searchMaintainOrder(groupId, WorkOrderState.FINISHED, curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
+        		workOrderSearchPresenter.searchMaintainOrders(groupId, WorkOrderState.FINISHED, curPage++, ProjectContants.PAGE_SIZE, maintainOrderList);
 			} else if (WorkOrderType.FAULT_ORDER == workOrderType) {
-				workOrderSearchPresenter.searchFaultOrder(groupId, WorkOrderState.FINISHED, curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
+				workOrderSearchPresenter.searchFaultOrders(groupId, WorkOrderState.FINISHED, curPage++, ProjectContants.PAGE_SIZE, faultOrderList);
 			}
             return null;    
         }  
@@ -276,9 +273,6 @@ public class FinishedWorkOrderFragment extends Fragment
 		workOrderSearchActivity.runOnUiThread(new Runnable() {		
 			@Override
 			public void run() {
-				myProgressDialog.setMessage("正在获取数据，请稍后...");
-				myProgressDialog.setCancelable(true);
-				
 				myProgressDialog.show();
 			}
 		});	

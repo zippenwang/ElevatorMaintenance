@@ -10,13 +10,18 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ImageButton;
 
+/**
+ * 自定义的ImageButton控件
+ * @author Zippen
+ *
+ */
 public class MyImageButton extends ImageButton {
 	
 	private String text = "";
     private String color = "#000000";
     private float textsize = 0f;
     
-    private static float density = 0f;
+    private static float density = 0f;			// 当前屏幕的像素密度
     
     
     public MyImageButton(Context context, AttributeSet attrs) {
@@ -24,22 +29,30 @@ public class MyImageButton extends ImageButton {
         
         density = context.getResources().getDisplayMetrics().density;
         
+        /*
+         * 从配置文件中获取android:text的值
+         */
         String text = attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "text");
         if (!TextUtils.isEmpty(text)) {
 			this.text = text;
 		}
 
+        /*
+         * 从配置文件中获取android:textSize的值
+         */
         String strTextSize = attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "textSize");
         if (!TextUtils.isEmpty(strTextSize)) {
 			strTextSize = strTextSize.substring(0, strTextSize.length() - 2);
 			textsize = Float.parseFloat(strTextSize);
 		}
          
+        /*
+         * 从配置文件中获取android:color的值
+         */
         String color = attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "color");
         if (!TextUtils.isEmpty(color)) {
 			this.color = color; 
 		}
-        
     }
     
     public void setText(String text){
@@ -63,7 +76,6 @@ public class MyImageButton extends ImageButton {
         paint.setColor(Color.parseColor(color));
         paint.setTextSize(textsize * density);        
         
-        // 文字的坐标还未搞懂什么意思
-        canvas.drawText(text, canvas.getWidth()/2, canvas.getHeight() - 5, paint);
+        canvas.drawText(text, canvas.getWidth() / 2, canvas.getHeight() - 5, paint);
     }
 }

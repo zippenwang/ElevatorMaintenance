@@ -2,9 +2,9 @@ package wzp.project.android.elvtmtn.activity;
 
 import java.util.Date;
 
-import wzp.project.android.elvtmtn.activity.base.IBaseFragmentOrActivity;
+import wzp.project.android.elvtmtn.activity.base.IBaseContainer;
 
-public interface IWorkOrderDetailActivity extends IBaseFragmentOrActivity {
+public interface IWorkOrderDetailActivity extends IBaseContainer {
 	
 	void receiveSuccess(Date receivingTime);
 	
