@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.view.ViewPager.SimpleOnPageChangeListener;
 import android.util.Log;
 import android.view.Menu;
@@ -24,17 +23,12 @@ import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.fragment.IFinishedOrderSortFragment;
-import wzp.project.android.elvtmtn.fragment.IOverdueOrderSortFragment;
 import wzp.project.android.elvtmtn.fragment.IUnfinishedOrderSortFragment;
 import wzp.project.android.elvtmtn.fragment.impl.FinishedWorkOrderFragment;
-import wzp.project.android.elvtmtn.fragment.impl.OverdueWorkOrderFragment;
 import wzp.project.android.elvtmtn.fragment.impl.UnfinishedWorkOrderFragment;
-import wzp.project.android.elvtmtn.helper.contant.WorkOrderState;
-import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 import wzp.project.android.elvtmtn.util.ActivityCollector;
 
 /**
@@ -51,19 +45,21 @@ public class FaultOrderSearchActivity extends FragmentActivity {
 	private TextView tvUnfinished;
 	private TextView tvFinished;
 	private ViewPager vpFaultOrder;
-	private int[] selectedStateArray;
-	private TextView[] tvHiddenArray;					// 用于标注当前所在的选项卡
-	private TextView[] tvArray;							// 用于标注当前所在的选项卡的标题
-	
 	private Button btnBack;
-	
-//	private TextView tvWorkOrderType;
 	private ImageButton ibtnSort;
 	private PopupMenu pmSort;
 	private Menu menu;
 	
-	private int currentSelectedId = 0;
+	private int[] selectedStateArray;					// 记录选项卡是否被选中的状态
+	private TextView[] tvHiddenArray;					// 用于标注当前所在的选项卡
+	private TextView[] tvArray;							// 用于标注当前所在的选项卡的标题
+	
+	private int currentSelectedId = UNFINISHED;			// 0：未完成；1：已完成；
+	private static final int UNFINISHED = 0x00;			// 未完成
+	private static final int FINISHED = 0x01;			// 已完成
+	
 	private List<Fragment> fragmentList = new ArrayList<Fragment>();
+	
 	private static final String tag = "WorkOrderSearchActivity";
 	
 	
@@ -106,7 +102,6 @@ public class FaultOrderSearchActivity extends FragmentActivity {
 			}
 		});
 		
-//		tvWorkOrderType = (TextView) findViewById(R.id.tv_workOrderType);
 		ibtnSort = (ImageButton) findViewById(R.id.ibtn_sort);
 		pmSort = new PopupMenu(this, ibtnSort);
 		getMenuInflater().inflate(R.menu.fault_order_search_sort_menu, pmSort.getMenu());
@@ -115,15 +110,14 @@ public class FaultOrderSearchActivity extends FragmentActivity {
 		pmSort.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			@Override
 			public boolean onMenuItemClick(MenuItem mi) {
-//				IUnfOvdOrderSortFragment unfOvdOrderFragment = null;
 				IUnfinishedOrderSortFragment unfinishedOrderSortFragment = null;
 				IFinishedOrderSortFragment finishedOrderFragment = null;
 				
 				switch (currentSelectedId) {
-					case 0:
+					case UNFINISHED:
 						unfinishedOrderSortFragment = (UnfinishedWorkOrderFragment) fragmentList.get(0);
 						break;
-					case 1:
+					case FINISHED:
 						finishedOrderFragment = (FinishedWorkOrderFragment) fragmentList.get(1);
 						break;
 					default:
@@ -170,24 +164,19 @@ public class FaultOrderSearchActivity extends FragmentActivity {
 			public void onClick(View view) {
 				pmSort.show();
 				switch (currentSelectedId) {
-				case 0:
-					menu.findItem(R.id.item_sortByFaultOccuredTime).setVisible(true);
-					menu.findItem(R.id.item_sortByReceiveTime).setVisible(true);
-					menu.findItem(R.id.item_sortByFixedTime).setVisible(false);
-					break;
-				case 1:
-					menu.findItem(R.id.item_sortByFaultOccuredTime).setVisible(false);
-					menu.findItem(R.id.item_sortByReceiveTime).setVisible(false);
-					menu.findItem(R.id.item_sortByFixedTime).setVisible(true);
-					break;
-				case 2:
-					menu.findItem(R.id.item_sortByFaultOccuredTime).setVisible(true);
-					menu.findItem(R.id.item_sortByReceiveTime).setVisible(true);
-					menu.findItem(R.id.item_sortByFixedTime).setVisible(false);
-					break;
-				default:
-					break;
-			}
+					case UNFINISHED:
+						menu.findItem(R.id.item_sortByFaultOccuredTime).setVisible(true);
+						menu.findItem(R.id.item_sortByReceiveTime).setVisible(true);
+						menu.findItem(R.id.item_sortByFixedTime).setVisible(false);
+						break;
+					case FINISHED:
+						menu.findItem(R.id.item_sortByFaultOccuredTime).setVisible(false);
+						menu.findItem(R.id.item_sortByReceiveTime).setVisible(false);
+						menu.findItem(R.id.item_sortByFixedTime).setVisible(true);
+						break;
+					default:
+						break;
+				}
 			}
 		});
 	}
@@ -211,12 +200,12 @@ public class FaultOrderSearchActivity extends FragmentActivity {
 			public Fragment getItem(int position) {
 				Fragment fragment = null;
 				switch (position) {
-					case 0:
+					case UNFINISHED:
 						Log.d(tag, "case 0");
 						fragment = new UnfinishedWorkOrderFragment();
 						fragmentList.add(0, fragment);
 						break;
-					case 1:
+					case FINISHED:
 						Log.d(tag, "case 1");
 						fragment = new FinishedWorkOrderFragment();
 						fragmentList.add(1, fragment);
@@ -259,19 +248,19 @@ public class FaultOrderSearchActivity extends FragmentActivity {
 		public void onClick(View v) {
 			switch (v.getId()) {
 				case R.id.relative_unfinished:
-					if (currentSelectedId == 0) {
+					if (currentSelectedId == UNFINISHED) {
 						return;
 					} else {
-						setSelectedTitle(0);
-						vpFaultOrder.setCurrentItem(0);
+						setSelectedTitle(UNFINISHED);
+						vpFaultOrder.setCurrentItem(UNFINISHED);
 					}
 					break;
 				case R.id.relative_finished:
-					if (currentSelectedId == 1) {
+					if (currentSelectedId == FINISHED) {
 						return;
 					} else {
-						setSelectedTitle(1);
-						vpFaultOrder.setCurrentItem(1);
+						setSelectedTitle(FINISHED);
+						vpFaultOrder.setCurrentItem(FINISHED);
 					}
 					break;
 				default:

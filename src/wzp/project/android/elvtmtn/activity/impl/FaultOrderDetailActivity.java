@@ -1,6 +1,5 @@
 package wzp.project.android.elvtmtn.activity.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.alibaba.fastjson.JSON;
@@ -20,18 +19,14 @@ import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -44,17 +39,14 @@ import android.widget.Toast;
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.activity.IWorkOrderDetailActivity;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
-import wzp.project.android.elvtmtn.biz.IWorkOrderBiz;
 import wzp.project.android.elvtmtn.entity.ElevatorRecord;
 import wzp.project.android.elvtmtn.entity.Employee;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.Group;
-import wzp.project.android.elvtmtn.entity.MaintainOrder;
-import wzp.project.android.elvtmtn.fragment.impl.UnfinishedWorkOrderFragment;
+import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderState;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 import wzp.project.android.elvtmtn.presenter.WorkOrderReceivePresenter;
-import wzp.project.android.elvtmtn.util.MyApplication;
 import wzp.project.android.elvtmtn.util.MyProgressDialog;
 
 public class FaultOrderDetailActivity extends BaseActivity 
@@ -84,35 +76,32 @@ public class FaultOrderDetailActivity extends BaseActivity
 	private TextView tvIsFixed;
 	private TextView tvRemark;
 	
-	private ProgressDialog progressDialog;	
-	private MyProgressDialog myProgressDialog;	
+	private MyProgressDialog myProgressDialog;
+	private AlertDialog alertDialog;
 	
 	private WorkOrderReceivePresenter workOrderReceivePresenter 
 		= new WorkOrderReceivePresenter(this);
 	
 	private SharedPreferences preferences 
-		= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
+		= ProjectContants.preferences;
 	private Long employeeId;
 	
 	private int workOrderState;
 	private FaultOrder faultOrder;
 	
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
-	private static final SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	
-	private boolean isReceiveOrCancelOrder = false;
+	private boolean isReceiveOrCancelOrder = false;			// 记录是否执行接单或取消接单操作
 	
 	private GeoCoder mSearch;
 	private LocationClient locationClient;
 	private MyLocationListener locationListener = new MyLocationListener();
 	
-	private LatLng elvtAddressLatLng;
-	private LatLng curAddressLatLng;
+	private LatLng elvtAddressLatLng;			// 电梯所在地址的经纬度
+	private LatLng curAddressLatLng;			// 当前地址的经纬度
 	
 	private ConnectivityManager mConnectivityManager;
 	private boolean isNetworkActive = true;
 	
-	private static final String LOG_TAG = "WorkOrderDetailActivity";
+	private static final String LOG_TAG = "FaultOrderDetailActivity";
 	
 	
 	@Override
@@ -144,11 +133,9 @@ public class FaultOrderDetailActivity extends BaseActivity
 	protected void onStart() {
 		Log.d(LOG_TAG, "开启定位功能");
 		if (locationClient != null
-				&& !locationClient.isStarted())
-		{
+				&& !locationClient.isStarted()) {
 			locationClient.start();
 		}
-		
 		super.onStart();
 	}
 
@@ -164,8 +151,8 @@ public class FaultOrderDetailActivity extends BaseActivity
 	
 	private void initData() {
 		Intent intent = getIntent();
-		workOrderState = intent.getIntExtra("workOrderState", -1);		
 		
+		workOrderState = intent.getIntExtra("workOrderState", -1);
 		if (-1 == workOrderState) {
 			throw new IllegalArgumentException("没有接收到工单状态的参数");
 		}
@@ -214,8 +201,15 @@ public class FaultOrderDetailActivity extends BaseActivity
 		btnCancelReceiveOrder = (Button) findViewById(R.id.btn_cancelReceiveOrder);
 		btnDestNavi = (Button) findViewById(R.id.btn_destNavi);
 		
-		progressDialog = new ProgressDialog(this);
 		myProgressDialog = new MyProgressDialog(this);
+		myProgressDialog.setCancelable(true);
+		
+		alertDialog = new AlertDialog.Builder(FaultOrderDetailActivity.this)
+			.setMessage("您尚未安装百度地图app或app版本过低，请安装或更新app后重试 ！")
+			.setTitle("提示消息")
+			.setCancelable(true)
+			.setPositiveButton("确定", null)
+			.create();
 		
 		// btnDestNavi按钮需要等待获取了电梯对应的经纬度之后，才能起作用
 		btnDestNavi.setEnabled(false);		
@@ -249,7 +243,7 @@ public class FaultOrderDetailActivity extends BaseActivity
 		
 		Date occuredTime = faultOrder.getOccuredTime();
 		if (occuredTime != null) {
-			tvFaultOccuredTime.setText(sdf.format(occuredTime));
+			tvFaultOccuredTime.setText(ProjectContants.sdf2.format(occuredTime));
 		} else {
 			tvFaultOccuredTime.setText("暂无该信息");
 		}
@@ -267,7 +261,7 @@ public class FaultOrderDetailActivity extends BaseActivity
 			tvReceiveState.setText("已接单");
 			tvReceiveState.setTextColor(Color.BLACK);
 			linearReceiveTime.setVisibility(View.VISIBLE);
-			tvReceiveTime.setText(sdf2.format(receivingTime));
+			tvReceiveTime.setText(ProjectContants.sdf1.format(receivingTime));
 			// 正常情况下，receivingTime为null，employee也一定为空
 			employee = faultOrder.getEmployee();
 			if (employee != null) {
@@ -334,7 +328,7 @@ public class FaultOrderDetailActivity extends BaseActivity
 			
 			Date signInTime = faultOrder.getSignInTime();
 			if (signInTime != null) {
-				tvSignInTime.setText(sdf2.format(signInTime));
+				tvSignInTime.setText(ProjectContants.sdf1.format(signInTime));
 			} else {
 				tvSignInTime.setText("暂无该信息");
 			}
@@ -348,7 +342,7 @@ public class FaultOrderDetailActivity extends BaseActivity
 			
 			Date signOutTime = faultOrder.getSignOutTime();
 			if (signOutTime != null) {
-				tvSignOutTime.setText(sdf2.format(signOutTime));
+				tvSignOutTime.setText(ProjectContants.sdf1.format(signOutTime));
 			} else {
 				tvSignOutTime.setText("暂无该信息");
 			}
@@ -422,24 +416,20 @@ public class FaultOrderDetailActivity extends BaseActivity
 			@Override
 			public void onClick(View v) {
 				NetworkInfo networkInfo = mConnectivityManager.getActiveNetworkInfo(); 
-				if (networkInfo == null) { 
-					Toast.makeText(FaultOrderDetailActivity.this, 
-							"网络异常，检查网络后重试", Toast.LENGTH_SHORT).show();
+				if (networkInfo == null) {
+					showToast("网络异常，检查网络后重试");
 					return;
 				} 
 				
 				if (curAddressLatLng == null) {
-					Toast.makeText(FaultOrderDetailActivity.this, 
-							"百度地图定位失败，无法进行\n" +
-							"签到操作，检查网络后重试", 
-							Toast.LENGTH_SHORT).show();
+					showToast("百度地图定位失败，无法进行\n" +
+							"签到操作，检查网络后重试");
 					Log.e(LOG_TAG, "curAddressLatLng is null");
 					return;
 				}
 				
 				if (elvtAddressLatLng == null) {
-					Toast.makeText(FaultOrderDetailActivity.this, 
-							"解析电梯地址失败，刷新网络后重试", Toast.LENGTH_SHORT).show();
+					showToast("解析电梯地址失败，刷新网络后重试");
 					Log.e(LOG_TAG, "elvtAddressLatLng is null");
 					return;
 				}
@@ -458,12 +448,7 @@ public class FaultOrderDetailActivity extends BaseActivity
 				} catch (BaiduMapAppNotSupportNaviException e) {
 					closeProgressDialog();
 					Log.e(LOG_TAG, Log.getStackTraceString(e));
-					AlertDialog.Builder builder = new AlertDialog.Builder(FaultOrderDetailActivity.this);
-					builder.setMessage("您尚未安装百度地图app或app版本过低，请安装或更新app后重试 ！");
-					builder.setTitle("提示消息");
-					builder.setCancelable(true);
-					builder.setPositiveButton("确定", null);
-					builder.create().show();
+					alertDialog.show();
 					return;
 				}
 
@@ -503,7 +488,7 @@ public class FaultOrderDetailActivity extends BaseActivity
 				tvReceiveState.setText("已接单");
 				tvReceiveState.setTextColor(Color.BLACK);
 				linearReceiveTime.setVisibility(View.VISIBLE);
-				tvReceiveTime.setText(sdf2.format(receivingTime));
+				tvReceiveTime.setText(ProjectContants.sdf1.format(receivingTime));
 			}
 		});
 	}
@@ -532,6 +517,7 @@ public class FaultOrderDetailActivity extends BaseActivity
 			if (location == null)
 				return;
 			
+			curAddressLatLng = null;
 			curAddressLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 			Log.i(LOG_TAG, "当前位置，纬度：" + curAddressLatLng.latitude 
 					+ ",经度：" + curAddressLatLng.longitude);
@@ -575,15 +561,13 @@ public class FaultOrderDetailActivity extends BaseActivity
 	@Override
 	public void showProgressDialog(String tipInfo) {
 		myProgressDialog.setMessage(tipInfo);
-		myProgressDialog.setCancelable(true);
-		
 		myProgressDialog.show();
 	}
 	
 	public void closeProgressDialog() {
-		if (progressDialog != null
-				&& progressDialog.isShowing()) {
-			progressDialog.dismiss();
+		if (myProgressDialog != null
+				&& myProgressDialog.isShowing()) {
+			myProgressDialog.dismiss();
 		}
 	}
 
@@ -601,7 +585,6 @@ public class FaultOrderDetailActivity extends BaseActivity
 		elvtAddressLatLng = result.getLocation();
 		
 		Log.i(LOG_TAG, "电梯地址,纬度：" + elvtAddressLatLng.latitude + ",经度：" + elvtAddressLatLng.longitude);
-		
 		
 		btnDestNavi.setEnabled(true);
 	}

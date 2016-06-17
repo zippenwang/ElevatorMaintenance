@@ -6,6 +6,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
 
+/**
+ * Activity基类，供各个Activity继承
+ * @author Zippen
+ *
+ */
 public class BaseActivity extends Activity {
 
 	private static final String tag = "BaseActivity";

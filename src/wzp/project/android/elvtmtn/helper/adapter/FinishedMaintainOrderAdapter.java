@@ -8,6 +8,7 @@ import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.entity.ElevatorRecord;
 import wzp.project.android.elvtmtn.entity.Employee;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
+import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.TextUtils;
@@ -17,13 +18,15 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+/**
+ * 已完成的保养工单Adapter
+ * @author Zippen
+ *
+ */
 public class FinishedMaintainOrderAdapter extends ArrayAdapter<MaintainOrder> {
 
 	private int resourceId;
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	private static final SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH时");
 	
-	private static final String tag = "FinishedMaintainOrderAdapter";
 	
 	public FinishedMaintainOrderAdapter(Context context, int textViewResourceId,
 			List<MaintainOrder> objects) {
@@ -76,7 +79,7 @@ public class FinishedMaintainOrderAdapter extends ArrayAdapter<MaintainOrder> {
 		
 		Date signOutTime = maintainOrder.getSignOutTime();
 		if (signOutTime != null) {
-			subViewHolder.tvFinishedTime.setText(sdf2.format(signOutTime));
+			subViewHolder.tvFinishedTime.setText(ProjectContants.sdf3.format(signOutTime));
 			subViewHolder.tvFinishedTime.setTextColor(Color.BLACK);
 		} else {
 			subViewHolder.tvFinishedTime.setText("暂无");

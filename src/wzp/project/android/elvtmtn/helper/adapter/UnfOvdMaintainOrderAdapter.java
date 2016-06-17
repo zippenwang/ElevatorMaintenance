@@ -1,12 +1,12 @@
 package wzp.project.android.elvtmtn.helper.adapter;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.entity.ElevatorRecord;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
+import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.TextUtils;
@@ -16,10 +16,14 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+/**
+ * 未完成、超期的保养工单Adapter
+ * @author Zippen
+ *
+ */
 public class UnfOvdMaintainOrderAdapter extends ArrayAdapter<MaintainOrder> {
 
 	private int resourceId;
-	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	public UnfOvdMaintainOrderAdapter(Context context, int textViewResourceId,
 			List<MaintainOrder> objects) {
@@ -69,7 +73,7 @@ public class UnfOvdMaintainOrderAdapter extends ArrayAdapter<MaintainOrder> {
 		
 		Date finalTime = maintainOrder.getFinalTime();
 		if (finalTime != null) {
-			subViewHolder.tvFinalTime.setText(sdf.format(finalTime));
+			subViewHolder.tvFinalTime.setText(ProjectContants.sdf4.format(finalTime));
 		} else {
 			subViewHolder.tvFinalTime.setText("暂无该信息");
 		}

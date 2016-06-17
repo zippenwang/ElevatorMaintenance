@@ -1,6 +1,5 @@
 package wzp.project.android.elvtmtn.activity.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -19,21 +18,16 @@ import com.baidu.mapapi.search.geocode.GeoCodeOption;
 import com.baidu.mapapi.search.geocode.GeoCodeResult;
 import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
-import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -46,24 +40,24 @@ import android.widget.Toast;
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.activity.IWorkOrderDetailActivity;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
-import wzp.project.android.elvtmtn.biz.IWorkOrderBiz;
 import wzp.project.android.elvtmtn.entity.ElevatorRecord;
 import wzp.project.android.elvtmtn.entity.Employee;
-import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.Group;
 import wzp.project.android.elvtmtn.entity.MaintainItem;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
 import wzp.project.android.elvtmtn.entity.MaintainType;
-import wzp.project.android.elvtmtn.fragment.impl.UnfinishedWorkOrderFragment;
+import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderState;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 import wzp.project.android.elvtmtn.presenter.WorkOrderReceivePresenter;
-import wzp.project.android.elvtmtn.util.MyApplication;
 import wzp.project.android.elvtmtn.util.MyProgressDialog;
 
 public class MaintainOrderDetailActivity extends BaseActivity 
 	implements IWorkOrderDetailActivity, OnGetGeoCoderResultListener {
 
+	/*
+	 * 控件定义
+	 */
 	private Button btnBack;
 	private Button btnQueryElevatorRecord;
 	private Button btnReceiveOrder;
@@ -88,28 +82,25 @@ public class MaintainOrderDetailActivity extends BaseActivity
 	private TextView tvRemark;
 	
 	private MyProgressDialog myProgressDialog;
+	private AlertDialog alertDialog;
 	
 	private WorkOrderReceivePresenter workOrderReceivePresenter 
 		= new WorkOrderReceivePresenter(this);
 	
-	private SharedPreferences preferences 
-		= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
-	private Long employeeId;
+	private SharedPreferences preferences = ProjectContants.preferences;
+	private Long employeeId;					// 员工id
 	
-	private int workOrderState;
-	private MaintainOrder maintainOrder;
+	private int workOrderState;					// 工单状态
+	private MaintainOrder maintainOrder;		// 保养工单
 	
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
-	private static final SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	
-	private boolean isReceiveOrCancelOrder = false;
+	private boolean isReceiveOrCancelOrder = false;			// 是否进行了接单或取消接单操作
 	
 	private GeoCoder mSearch;
 	private LocationClient locationClient;
 	private MyLocationListener locationListener = new MyLocationListener();
 	
-	private LatLng elvtAddressLatLng;
-	private LatLng curAddressLatLng;
+	private LatLng elvtAddressLatLng;			// 电梯所在地的经纬度
+	private LatLng curAddressLatLng;			// 当前的经纬度
 	
 	private ConnectivityManager mConnectivityManager;
 	private boolean isNetworkActive = true;
@@ -146,8 +137,7 @@ public class MaintainOrderDetailActivity extends BaseActivity
 	protected void onStart() {
 		Log.d(LOG_TAG, "开启定位功能");
 		if (locationClient != null
-				&& !locationClient.isStarted())
-		{
+				&& !locationClient.isStarted()) {
 			locationClient.start();
 		}
 		
@@ -218,6 +208,14 @@ public class MaintainOrderDetailActivity extends BaseActivity
 		btnDestNavi = (Button) findViewById(R.id.btn_destNavi);
 		
 		myProgressDialog = new MyProgressDialog(this);
+		myProgressDialog.setCancelable(true);
+		
+		alertDialog = new AlertDialog.Builder(this)
+			.setMessage("您尚未安装百度地图app或app版本过低，请安装或更新app后重试 ！")
+			.setTitle("提示消息")
+			.setCancelable(true)
+			.setPositiveButton("确定", null)
+			.create();
 		
 		// btnDestNavi按钮需要等待获取了电梯对应的经纬度之后，才能起作用
 		btnDestNavi.setEnabled(false);
@@ -291,7 +289,7 @@ public class MaintainOrderDetailActivity extends BaseActivity
 		 */
 		Date finalTime = maintainOrder.getFinalTime();
 		if (finalTime != null) {
-			tvFinalTime.setText(sdf.format(finalTime));
+			tvFinalTime.setText(ProjectContants.sdf2.format(finalTime));
 		} else {
 			tvFinalTime.setText("暂无该信息");
 		}
@@ -305,7 +303,7 @@ public class MaintainOrderDetailActivity extends BaseActivity
 			tvReceiveState.setText("已接单");
 			tvReceiveState.setTextColor(Color.BLACK);
 			linearReceiveTime.setVisibility(View.VISIBLE);
-			tvReceiveTime.setText(sdf2.format(receivingTime));		
+			tvReceiveTime.setText(ProjectContants.sdf1.format(receivingTime));		
 			
 			employee = maintainOrder.getEmployee();
 			if (employee != null) {
@@ -376,7 +374,7 @@ public class MaintainOrderDetailActivity extends BaseActivity
 			 */
 			Date signInTime = maintainOrder.getSignInTime();
 			if (signInTime != null) {
-				tvSignInTime.setText(sdf2.format(signInTime));
+				tvSignInTime.setText(ProjectContants.sdf1.format(signInTime));
 			} else {
 				tvSignInTime.setText("暂无该信息");
 			}
@@ -386,7 +384,7 @@ public class MaintainOrderDetailActivity extends BaseActivity
 			 */
 			Date signOutTime = maintainOrder.getSignOutTime();
 			if (signOutTime != null) {
-				tvSignOutTime.setText(sdf2.format(signOutTime));
+				tvSignOutTime.setText(ProjectContants.sdf1.format(signOutTime));
 			} else {
 				tvSignOutTime.setText("暂无该信息");
 			}
@@ -432,6 +430,7 @@ public class MaintainOrderDetailActivity extends BaseActivity
 			@Override
 			public void onClick(View v) {
 				isReceiveOrCancelOrder = true;
+				
 				workOrderReceivePresenter.receiveOrder(WorkOrderType.MAINTAIN_ORDER, 
 						maintainOrder.getId(), employeeId);
 			}
@@ -487,12 +486,7 @@ public class MaintainOrderDetailActivity extends BaseActivity
 				} catch (BaiduMapAppNotSupportNaviException e) {
 					closeProgressDialog();
 					Log.e(LOG_TAG, Log.getStackTraceString(e));
-					AlertDialog.Builder builder = new AlertDialog.Builder(MaintainOrderDetailActivity.this);
-					builder.setMessage("您尚未安装百度地图app或app版本过低，请安装或更新app后重试 ！");
-					builder.setTitle("提示消息");
-					builder.setCancelable(true);
-					builder.setPositiveButton("确定", null);
-					builder.create().show();
+					alertDialog.show();
 					return;
 				}
 
@@ -532,7 +526,7 @@ public class MaintainOrderDetailActivity extends BaseActivity
 				tvReceiveState.setText("已接单");
 				tvReceiveState.setTextColor(Color.BLACK);
 				linearReceiveTime.setVisibility(View.VISIBLE);
-				tvReceiveTime.setText(sdf2.format(receivingTime));
+				tvReceiveTime.setText(ProjectContants.sdf1.format(receivingTime));
 			}
 		});
 	}
@@ -561,6 +555,7 @@ public class MaintainOrderDetailActivity extends BaseActivity
 			if (location == null)
 				return;
 			
+			curAddressLatLng = null;
 			curAddressLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 			Log.i(LOG_TAG, "当前位置，纬度：" + curAddressLatLng.latitude 
 					+ ",经度：" + curAddressLatLng.longitude);
@@ -610,8 +605,7 @@ public class MaintainOrderDetailActivity extends BaseActivity
 		elvtAddressLatLng = null;
 		elvtAddressLatLng = result.getLocation();
 		
-		Log.i(LOG_TAG, "电梯地址,纬度：" + elvtAddressLatLng.latitude + ",经度：" + elvtAddressLatLng.longitude);
-		
+		Log.i(LOG_TAG, "电梯地址,纬度：" + elvtAddressLatLng.latitude + ",经度：" + elvtAddressLatLng.longitude);		
 		
 		btnDestNavi.setEnabled(true);
 	}
@@ -628,7 +622,6 @@ public class MaintainOrderDetailActivity extends BaseActivity
 	@Override
 	public void showProgressDialog(String tipInfo) {
 		myProgressDialog.setMessage(tipInfo);
-		myProgressDialog.setCancelable(true);
 		
 		myProgressDialog.show();
 	}

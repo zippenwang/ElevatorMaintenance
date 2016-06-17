@@ -2,6 +2,11 @@ package wzp.project.android.elvtmtn.entity;
 
 import java.util.Date;
 
+/**
+ * 故障工单
+ * @author Zippen
+ *
+ */
 public class FaultOrder {
 
 	private long id;						// 工单id

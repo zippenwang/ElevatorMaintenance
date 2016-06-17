@@ -2,6 +2,11 @@ package wzp.project.android.elvtmtn.entity;
 
 import java.util.List;
 
+/**
+ * 小组
+ * @author Zippen
+ *
+ */
 public class Group {
 
 	private long id;								// 小组id

@@ -1,5 +1,10 @@
 package wzp.project.android.elvtmtn.entity;
 
+/**
+ * 保养类型所包含的保养项目
+ * @author Zippen
+ *
+ */
 public class MaintainItem {
 
 	private long id;						// 维保项目id

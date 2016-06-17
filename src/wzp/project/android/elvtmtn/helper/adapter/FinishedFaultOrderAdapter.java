@@ -8,24 +8,25 @@ import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.entity.ElevatorRecord;
 import wzp.project.android.elvtmtn.entity.Employee;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
-import wzp.project.android.elvtmtn.entity.MaintainOrder;
+import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+/**
+ * 已完成的故障工单Adapter
+ * @author Zippen
+ *
+ */
 public class FinishedFaultOrderAdapter extends ArrayAdapter<FaultOrder> {
 
 	private int resourceId;
-	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	private static final SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH时");
 	
-	private static final String tag = "FinishedFaultOrderAdapter";
 	
 	public FinishedFaultOrderAdapter(Context context, int textViewResourceId,
 			List<FaultOrder> objects) {
@@ -53,7 +54,7 @@ public class FinishedFaultOrderAdapter extends ArrayAdapter<FaultOrder> {
 			subViewHolder = (SubViewHolder) view.getTag();
 		}
 		
-//		subViewHolder.tvWorkOrderId.setText(faultOrder.getId() + "");
+
 		String no = faultOrder.getNo();
 		if (!TextUtils.isEmpty(no)) {
 			subViewHolder.tvWorkOrderId.setText(no);
@@ -80,7 +81,7 @@ public class FinishedFaultOrderAdapter extends ArrayAdapter<FaultOrder> {
 		
 		Date signOutTime = faultOrder.getSignOutTime();
 		if (signOutTime != null) {
-			subViewHolder.tvFixedTime.setText(sdf2.format(signOutTime));
+			subViewHolder.tvFixedTime.setText(ProjectContants.sdf3.format(signOutTime));
 			subViewHolder.tvFixedTime.setTextColor(Color.BLACK);
 		} else {
 			subViewHolder.tvFixedTime.setText("暂无");

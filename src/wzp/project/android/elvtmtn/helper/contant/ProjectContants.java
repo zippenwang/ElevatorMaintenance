@@ -2,12 +2,14 @@ package wzp.project.android.elvtmtn.helper.contant;
 
 import java.text.SimpleDateFormat;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import wzp.project.android.elvtmtn.util.DESUtil;
 import wzp.project.android.elvtmtn.util.MyApplication;
 
+@SuppressLint("SimpleDateFormat")
 public interface ProjectContants {
 
 //	String basePath = "http://192.168.1.103:8080/ElevatorMaintainSystem/api";		// Web服务器的域名
@@ -26,6 +28,8 @@ public interface ProjectContants {
 	 */
 	SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy年MM月dd日");
+	SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy年MM月dd日 HH时");
+	SimpleDateFormat sdf4 = new SimpleDateFormat("yyyy-MM-dd");
 	
 	SharedPreferences preferences 
 		= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());

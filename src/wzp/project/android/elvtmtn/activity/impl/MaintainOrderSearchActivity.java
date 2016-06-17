@@ -59,7 +59,10 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 	private TextView[] tvHiddenArray;					// 用于标注当前所在的选项卡
 	private TextView[] tvArray;							// 用于标注当前所在的选项卡的标题
 	
-	private int currentSelectedId = 0;					// 0：未完成；1：已完成；2：超期
+	private int currentSelectedId = UNFINISHED;			// 0：未完成；1：已完成；2：超期
+	private static final int UNFINISHED = 0x00;			// 未完成
+	private static final int FINISHED = 0x01;			// 已完成
+	private static final int OVERDUE = 0x02;			// 超期
 	
 	private List<Fragment> fragmentList = new ArrayList<Fragment>();
 	
@@ -109,13 +112,13 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 				IOverdueOrderSortFragment overdueOrderSortFragment = null;
 				
 				switch (currentSelectedId) {
-					case 0:
+					case UNFINISHED:
 						unfinishedOrderSortFragment = (UnfinishedWorkOrderFragment) fragmentList.get(0);
 						break;
-					case 1:
+					case FINISHED:
 						finishedOrderFragment = (FinishedWorkOrderFragment) fragmentList.get(1);
 						break;
-					case 2:
+					case OVERDUE:
 						overdueOrderSortFragment = (OverdueWorkOrderFragment) fragmentList.get(2);
 						break;
 					default:
@@ -124,30 +127,30 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 				
 				switch (mi.getItemId()) {
 					case R.id.item_finalTimeIncrease:		
-						if (currentSelectedId == 0
+						if (currentSelectedId == UNFINISHED
 								&& unfinishedOrderSortFragment != null) {
 							unfinishedOrderSortFragment.sortMaintainOrderByFinalTimeIncrease();
-						} else if (currentSelectedId == 2
+						} else if (currentSelectedId == OVERDUE
 								&& overdueOrderSortFragment != null) {
 							overdueOrderSortFragment.sortMaintainOrderByFinalTimeIncrease();
 						}
 						break;
 						
 					case R.id.item_finalTimeDecrease:	
-						if (currentSelectedId == 0
+						if (currentSelectedId == UNFINISHED
 								&& unfinishedOrderSortFragment != null) {
 							unfinishedOrderSortFragment.sortMaintainOrderByFinalTimeDecrease();
-						} else if (currentSelectedId == 2
+						} else if (currentSelectedId == OVERDUE
 								&& overdueOrderSortFragment != null) {
 							overdueOrderSortFragment.sortMaintainOrderByFinalTimeDecrease();
 						}
 						break;
 						
 					case R.id.item_sortByReceiveTime:	
-						if (currentSelectedId == 0
+						if (currentSelectedId == UNFINISHED
 								&& unfinishedOrderSortFragment != null) {
 							unfinishedOrderSortFragment.sortMaintainOrderByReceivingTime();
-						} else if (currentSelectedId == 2
+						} else if (currentSelectedId == OVERDUE
 								&& overdueOrderSortFragment != null) {
 							overdueOrderSortFragment.sortMaintainOrderByReceivingTime();
 						}
@@ -191,17 +194,17 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 			public void onClick(View v) {
 				pmSort.show();
 				switch (currentSelectedId) {
-					case 0:
+					case UNFINISHED:
 						menu.findItem(R.id.item_sortByFinalTime).setVisible(true);
 						menu.findItem(R.id.item_sortByReceiveTime).setVisible(true);
 						menu.findItem(R.id.item_sortByFinishTime).setVisible(false);
 						break;
-					case 1:
+					case FINISHED:
 						menu.findItem(R.id.item_sortByFinalTime).setVisible(false);
 						menu.findItem(R.id.item_sortByReceiveTime).setVisible(false);
 						menu.findItem(R.id.item_sortByFinishTime).setVisible(true);
 						break;
-					case 2:
+					case OVERDUE:
 						menu.findItem(R.id.item_sortByFinalTime).setVisible(true);
 						menu.findItem(R.id.item_sortByReceiveTime).setVisible(true);
 						menu.findItem(R.id.item_sortByFinishTime).setVisible(false);
@@ -233,17 +236,17 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 			public Fragment getItem(int position) {
 				Fragment fragment = null;
 				switch (position) {
-					case 0:
+					case UNFINISHED:
 						Log.d(tag, "case 0");
 						fragment = new UnfinishedWorkOrderFragment();
 						fragmentList.add(0, fragment);
 						break;
-					case 1:
+					case FINISHED:
 						Log.d(tag, "case 1");
 						fragment = new FinishedWorkOrderFragment();
 						fragmentList.add(1, fragment);
 						break;
-					case 2:
+					case OVERDUE:
 						Log.d(tag, "case 2");
 						fragment = new OverdueWorkOrderFragment();
 						fragmentList.add(2, fragment);
@@ -286,27 +289,27 @@ public class MaintainOrderSearchActivity extends FragmentActivity {
 		public void onClick(View v) {
 			switch (v.getId()) {
 				case R.id.relative_unfinished:
-					if (currentSelectedId == 0) {
+					if (currentSelectedId == UNFINISHED) {
 						return;
 					} else {
-						setSelectedTitle(0);
-						vpMaintainOrder.setCurrentItem(0);
+						setSelectedTitle(UNFINISHED);
+						vpMaintainOrder.setCurrentItem(UNFINISHED);
 					}
 					break;
 				case R.id.relative_finished:
-					if (currentSelectedId == 1) {
+					if (currentSelectedId == FINISHED) {
 						return;
 					} else {
-						setSelectedTitle(1);
-						vpMaintainOrder.setCurrentItem(1);
+						setSelectedTitle(FINISHED);
+						vpMaintainOrder.setCurrentItem(FINISHED);
 					}
 					break;
 				case R.id.relative_overdue:
-					if (currentSelectedId == 2) {
+					if (currentSelectedId == OVERDUE) {
 						return;
 					} else {
-						setSelectedTitle(2);
-						vpMaintainOrder.setCurrentItem(2);
+						setSelectedTitle(OVERDUE);
+						vpMaintainOrder.setCurrentItem(OVERDUE);
 					}
 					break;
 			}

@@ -2,6 +2,11 @@ package wzp.project.android.elvtmtn.entity;
 
 import java.util.Date;
 
+/**
+ * 保养工单
+ * @author Zippen
+ *
+ */
 public class MaintainOrder {
 	
 	private long id;							// 工单id

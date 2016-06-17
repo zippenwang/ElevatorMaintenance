@@ -20,6 +20,12 @@
 	<!-- 功能按钮 -->
 	<string name="back">返回</string>
 	<string name="tryAgain">重试</string>
+	<string name="receiveOrder">接单</string>
+	<string name="cancelOrder">取消接单</string>
+	<string name="searchElevatorRecord">查询电梯档案</string>
+	<string name="navigation">目的地导航</string>
+	
+	<string name="workOrderDetail">工单详情</string>
 	
 	<!-- 工单类型 -->
 	<string name="maintainOrder">保养工单</string>

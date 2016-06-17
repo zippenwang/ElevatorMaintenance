@@ -1,8 +1,12 @@
 package wzp.project.android.elvtmtn.entity;
 
-import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 电梯档案
+ * @author Zippen
+ *
+ */
 public class ElevatorRecord {
 	
 	private long id;						// 电梯id

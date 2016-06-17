@@ -1,7 +1,10 @@
 package wzp.project.android.elvtmtn.entity;
 
-import java.io.Serializable;
-
+/**
+ * 员工
+ * @author Zippen
+ *
+ */
 public class Employee {
 	
 	private Long id;				// 员工id

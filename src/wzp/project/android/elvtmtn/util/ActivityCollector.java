@@ -6,6 +6,11 @@ import java.util.List;
 import android.app.Activity;
 import android.util.Log;
 
+/**
+ * Activity管理类，用于统一管理Activity
+ * @author Zippen
+ *
+ */
 public class ActivityCollector {
 
 	private static List<Activity> activityList = new ArrayList<Activity>();
