@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:background="@drawable/back_btn_bg"
-            android:text="返回"
+            android:text="@string/back"
             android:textSize="14sp"
             android:textColor="@android:color/white"
             android:layout_marginLeft="5dp"
@@ -24,8 +24,8 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:textSize="24sp"
-	        android:textColor="#FFFFFF"
-	        android:text="电梯档案"
+	        android:textColor="@color/whiteColor"
+	        android:text="@string/elevatorRecord"
 	        android:gravity="center"
 	        android:layout_alignParentRight="true"
 	        android:layout_centerVertical="true"
@@ -66,7 +66,6 @@
 		            android:layout_weight="3"
 		            android:layout_height="wrap_content"
 		            android:gravity="left"
-		            android:text="001"
 		            android:textSize="@dimen/work_order_detail" />        
 		    </LinearLayout>
 		    
@@ -96,7 +95,6 @@
 		            android:layout_weight="3"
 		            android:layout_height="wrap_content"
 		            android:gravity="left"
-		            android:text="001"
 		            android:textSize="@dimen/work_order_detail" />        
 		    </LinearLayout>
 		    
@@ -126,7 +124,6 @@
 		            android:layout_weight="3"
 		            android:layout_height="wrap_content"
 		            android:gravity="left"
-		            android:text="001"
 		            android:textSize="@dimen/work_order_detail" />        
 		    </LinearLayout>
 		    
@@ -156,7 +153,6 @@
 		            android:layout_weight="3"
 		            android:layout_height="wrap_content"
 		            android:gravity="left"
-		            android:text="厦大学生公寓2号楼4号梯"
 		            android:textSize="@dimen/work_order_detail" />        
 		    </LinearLayout>
 		
@@ -186,7 +182,6 @@
 		            android:layout_weight="3"
 		            android:layout_height="wrap_content"
 		            android:gravity="left"
-		            android:text="001"
 		            android:textSize="@dimen/work_order_detail" />        
 		    </LinearLayout>
 		    
@@ -216,7 +211,6 @@
 		            android:layout_weight="3"
 		            android:layout_height="wrap_content"
 		            android:gravity="left"
-		            android:text="001"
 		            android:textSize="@dimen/work_order_detail" />        
 		    </LinearLayout>
 		    
@@ -246,7 +240,6 @@
 		            android:layout_weight="3"
 		            android:layout_height="wrap_content"
 		            android:gravity="left"
-		            android:text="001"
 		            android:textSize="@dimen/work_order_detail" />        
 		    </LinearLayout>
 		    
@@ -276,7 +269,6 @@
 		            android:layout_weight="3"
 		            android:layout_height="wrap_content"
 		            android:gravity="left"
-		            android:text="001"
 		            android:textSize="@dimen/work_order_detail" />        
 		    </LinearLayout>
 		    
@@ -306,7 +298,6 @@
 		            android:layout_weight="3"
 		            android:layout_height="wrap_content"
 		            android:gravity="left"
-		            android:text="001"
 		            android:textSize="@dimen/work_order_detail" />        
 		    </LinearLayout>
 		    
@@ -336,7 +327,6 @@
 		            android:layout_weight="3"
 		            android:layout_height="wrap_content"
 		            android:gravity="left"
-		            android:text="001"
 		            android:textSize="@dimen/work_order_detail" />        
 		    </LinearLayout>
 		    
@@ -366,7 +356,6 @@
 		            android:layout_weight="3"
 		            android:layout_height="wrap_content"
 		            android:gravity="left"
-		            android:text="001"
 		            android:textSize="@dimen/work_order_detail" />        
 		    </LinearLayout>
 		    
@@ -396,7 +385,6 @@
 		            android:layout_weight="3"
 		            android:layout_height="wrap_content"
 		            android:gravity="left"
-		            android:text="001"
 		            android:textSize="@dimen/work_order_detail" />        
 		    </LinearLayout>
 		    
@@ -414,7 +402,7 @@
 		            android:layout_width="match_parent"
 		            android:layout_height="wrap_content"
 		            android:background="@drawable/check_elevator_record_btn_bg"
-		            android:text="查询故障历史" />
+		            android:text="@string/searchFaultHistory" />
 		    </LinearLayout>
     	</LinearLayout>
     </ScrollView>

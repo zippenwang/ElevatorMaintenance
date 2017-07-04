@@ -53,8 +53,24 @@ public interface IWorkOrderBiz {
 	void getFaultOrdersByElevatorId(long elevatorRecordId, int pageNumber, 
 			int pageSize, List<FaultOrder> faultOrderList, IWorkOrderSearchListener listener);
 	
+	/**
+	 * 接单
+	 * 
+	 * @param workOrderType 工单类型
+	 * @param workOrderId 工单id
+	 * @param employeeId 员工id
+	 * @param listener
+	 */
 	void receiveOrder(int workOrderType, Long workOrderId, Long employeeId, IWorkOrderReceiveListener listener);
 
+	/**
+	 * 取消接单
+	 * 
+	 * @param workOrderType 工单类型
+	 * @param workOrderId 工单id
+	 * @param employeeId 员工id
+	 * @param listener
+	 */
 	void cancelReceiveOrder(int workOrderType, Long workOrderId, Long employeeId, IWorkOrderCancelListener listener);
 
 	/**
@@ -92,23 +108,73 @@ public interface IWorkOrderBiz {
 	 */
 	void sortMaintainOrderByFinalTimeDecrease(List<MaintainOrder> maintainOrderList);
 	
+	/**
+	 * 对故障工单，按故障发生日期的顺序排列
+	 * 
+	 * @param faultOrderList 故障工单集合
+	 */
 	void sortFaultOrderByOccurredTimeIncrease(List<FaultOrder> faultOrderList);
 	
+	/**
+	 * 对故障工单，按故障发生日期的逆序排列
+	 * 
+	 * @param faultOrderList 故障工单集合
+	 */
 	void sortFaultOrderByOccurredTimeDecrease(List<FaultOrder> faultOrderList);
 	
+	/**
+	 * 对保养工单，按接单日期的逆序排列
+	 * 
+	 * @param maintainOrderList 保养工单集合
+	 */
 	void sortMaintainOrderByReceivingTime(List<MaintainOrder> maintainOrderList);
 	
+	/**
+	 * 对故障工单，按接单日期的逆序排列
+	 * 
+	 * @param faultOrderList 故障工单集合
+	 */
 	void sortFaultOrderByReceivingTime(List<FaultOrder> faultOrderList);
 	
+	/**
+	 * 对保养工单，按完成日期的顺序排列
+	 * 
+	 * @param maintainOrderList 保养工单集合
+	 */
 	void sortMaintainOrderByFinishedTimeIncrease(List<MaintainOrder> maintainOrderList);
 	
+	/**
+	 * 对保养工单，按完成日期的逆序排列
+	 * 
+	 * @param maintainOrderList 保养工单集合
+	 */
 	void sortMaintainOrderByFinishedTimeDecrease(List<MaintainOrder> maintainOrderList);
 	
+	/**
+	 * 对故障工单，按完成日期的顺序排列
+	 * 
+	 * @param faultOrderList 故障工单集合
+	 */
 	void sortFaultOrderByFinishedTimeIncrease(List<FaultOrder> faultOrderList);
 	
+	/**
+	 * 对故障工单，按完成日期的逆序排列
+	 * 
+	 * @param faultOrderList 故障工单集合
+	 */
 	void sortFaultOrderByFinishedTimeDecrease(List<FaultOrder> faultOrderList);
 	
+	/**
+	 * 对保养工单，按签到日期的逆序排列
+	 * 
+	 * @param maintainOrderList 保养工单集合
+	 */
 	void sortMaintainOrderBySignInTime(List<MaintainOrder> maintainOrderList);
 	
+	/**
+	 * 对故障工单，按签到日期的逆序排列
+	 * 
+	 * @param faultOrderList 故障工单集合
+	 */
 	void sortFaultOrderBySignInTime(List<FaultOrder> faultOrderList);
 }

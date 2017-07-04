@@ -1,54 +1,38 @@
 package wzp.project.android.elvtmtn.biz.impl;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import okhttp3.Call;
-import okhttp3.Request;
-import okhttp3.Response;
 
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
-import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.builder.PostFormBuilder;
-import com.zhy.http.okhttp.callback.StringCallback;
 
-import wzp.project.android.elvtmtn.activity.impl.FaultOrderDetailActivity;
 import wzp.project.android.elvtmtn.biz.IWorkOrderBiz;
 import wzp.project.android.elvtmtn.biz.listener.ISignleOrderSearchListener;
 import wzp.project.android.elvtmtn.biz.listener.IWorkOrderCancelListener;
 import wzp.project.android.elvtmtn.biz.listener.IWorkOrderFeedbackListener;
 import wzp.project.android.elvtmtn.biz.listener.IWorkOrderReceiveListener;
 import wzp.project.android.elvtmtn.biz.listener.IWorkOrderSearchListener;
-import wzp.project.android.elvtmtn.entity.Employee;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
 import wzp.project.android.elvtmtn.helper.contant.FailureTipMethod;
 import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
-import wzp.project.android.elvtmtn.helper.contant.WorkOrderState;
 import wzp.project.android.elvtmtn.helper.contant.WorkOrderType;
 import wzp.project.android.elvtmtn.util.MyApplication;
 import wzp.project.android.elvtmtn.util.myokhttp.MyOkHttpUtils;
-import wzp.project.android.elvtmtn.util.myokhttp.MyPostFormBuilder;
 import wzp.project.android.elvtmtn.util.myokhttp.MyStringCallback;
 
 public class WorkOrderBizImpl implements IWorkOrderBiz {
 	
 	private static final String tag = "WorkOrderBizImpl";
-	
 
-	/**
-	 * 按条件查询保养工单
-	 */
+
 	@Override
 	public void getMaintainOrdersByCondition(long groupId, int workOrderState, final int pageNumber, int pageSize,
 			final List<MaintainOrder> dataList, final IWorkOrderSearchListener listener) {
@@ -116,9 +100,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 			});		
 	}
 
-	/**
-	 * 按条件查询错误工单
-	 */
+
 	@Override
 	public void getFaultOrdersByCondition(long groupId, int workOrderState, final int pageNumber, int pageSize,
 			final List<FaultOrder> dataList, final IWorkOrderSearchListener listener) {
@@ -197,12 +179,10 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 			.execute(new MyStringCallback() {
 				@Override
 				public void onResponse(String response) {
-					Log.i(tag, response);
-					
 					if (!TextUtils.isEmpty(response)) {
 						listener.onSearchSuccess(response);
 					} else {
-						listener.onSearchFailure("服务器故障，响应数据有误！");
+						listener.onSearchFailure("服务器故障，请联系管理员");
 					}
 				}
 				
@@ -214,7 +194,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 
 				@Override
 				public void onError(Call call, Exception e, int respCode) {
-					Log.e(tag, "响应码为：" + respCode);
 					Log.e(tag, Log.getStackTraceString(e));
 					if (respCode == 401) {
 						listener.onSearchFailure("您的账号无效或已\n过期，请重新登录");
@@ -247,21 +226,10 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				@Override
 				public void onResponse(String response) {
-					Log.i(tag, response);
-					
 					if (!TextUtils.isEmpty(response)) {
 						List<MaintainOrder> respDataList = JSON.parseObject(response, 
 								new TypeReference<List<MaintainOrder>>() {});
-						if (respDataList != null && respDataList.size() > 0) {							
-							/*if (1 == pageNumber) {
-								dataList.clear();
-								for (int i=0; i<respDataList.size(); i++) {
-									Log.d(tag, respDataList.get(i).getClass().getSimpleName());
-									dataList.add(respDataList.get(i));
-								}
-							} else if (pageNumber > 1) {
-								dataList.addAll(respDataList);
-							}*/
+						if (respDataList != null && respDataList.size() > 0) {
 							if (1 == pageNumber) {
 								dataList.clear();
 							}
@@ -273,17 +241,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 								listener.onSearchSuccess(ProjectContants.ORDER_SHOW_COMPLETE);
 							}
 						} else {
-							/*
-							 * 响应数据为空，表示当前请求的数据不存在，有两种可能的情况
-							 * 1、压根就没有数据；
-							 * 2、表示当前pageNumber下，没有数据，即1~pageNumber-1之间的页面，就已经把数据完全显示出来了；
-							 * 
-							 * 解决方案：
-							 * 1、如果pageNumber等于1，属于上述第一种情况，此时应该提示“当前没有符合要求的工单”；
-							 * 2、如果pageNumber大于1，属于上述第二种情况，此时应该利用Toast提示已经显示出所有工单，并关闭上拉加载的功能；
-							 * 
-							 * 提供一个标志位，根据不同的情况，执行不同的操作；
-							 */
 							if (1 == pageNumber) {
 								listener.onSearchSuccess(ProjectContants.ORDER_IS_NULL);
 							} else if (pageNumber > 1) {
@@ -303,7 +260,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				@Override
 				public void onError(Call call, Exception e, int respCode) {
-					Log.e(tag, "响应码为：" + respCode);
 					Log.e(tag, Log.getStackTraceString(e));
 					if (respCode == 401) {
 						listener.onSearchFailure("您的账号无效或已\n过期，请重新登录", FailureTipMethod.TOAST);
@@ -313,7 +269,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 					}
 				}
 			});
-		
 	}
 	
 	@Override
@@ -341,16 +296,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 					if (!TextUtils.isEmpty(response)) {
 						List<FaultOrder> respDataList = JSON.parseObject(response, 
 								new TypeReference<List<FaultOrder>>() {});
-						if (respDataList != null && respDataList.size() > 0) {							
-							/*if (1 == pageNumber) {
-								dataList.clear();
-								for (int i=0; i<respDataList.size(); i++) {
-									Log.d(tag, respDataList.get(i).getClass().getSimpleName());
-									dataList.add(respDataList.get(i));
-								}
-							} else if (pageNumber > 1) {
-								dataList.addAll(respDataList);
-							}*/
+						if (respDataList != null && respDataList.size() > 0) {
 							if (1 == pageNumber) {
 								dataList.clear();
 							}
@@ -362,17 +308,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 								listener.onSearchSuccess(ProjectContants.ORDER_SHOW_COMPLETE);
 							}
 						} else {
-							/*
-							 * 响应数据为空，表示当前请求的数据不存在，有两种可能的情况
-							 * 1、压根就没有数据；
-							 * 2、表示当前pageNumber下，没有数据，即1~pageNumber-1之间的页面，就已经把数据完全显示出来了；
-							 * 
-							 * 解决方案：
-							 * 1、如果pageNumber等于1，属于上述第一种情况，此时应该提示“当前没有符合要求的工单”；
-							 * 2、如果pageNumber大于1，属于上述第二种情况，此时应该利用Toast提示已经显示出所有工单，并关闭上拉加载的功能；
-							 * 
-							 * 提供一个标志位，根据不同的情况，执行不同的操作；
-							 */
 							if (1 == pageNumber) {
 								listener.onSearchSuccess(ProjectContants.ORDER_IS_NULL);
 							} else if (pageNumber > 1) {
@@ -392,7 +327,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				@Override
 				public void onError(Call call, Exception e, int respCode) {
-					Log.e(tag, "响应码为：" + respCode);
 					Log.e(tag, Log.getStackTraceString(e));
 					if (respCode == 401) {
 						listener.onSearchFailure("您的账号无效或已\n过期，请重新登录", FailureTipMethod.TOAST);
@@ -424,8 +358,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				@Override
 				public void onResponse(String response) {
-					Log.i(tag, response);
-					
 					if (!TextUtils.isEmpty(response)) {
 						List<FaultOrder> respDataList = JSON.parseObject(response, 
 								new TypeReference<List<FaultOrder>>() {});
@@ -441,17 +373,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 								listener.onSearchSuccess(ProjectContants.ORDER_SHOW_COMPLETE);
 							}
 						} else {
-							/*
-							 * 响应数据为空，表示当前请求的数据不存在，有两种可能的情况
-							 * 1、压根就没有数据；
-							 * 2、表示当前pageNumber下，没有数据，即1~pageNumber-1之间的页面，就已经把数据完全显示出来了；
-							 * 
-							 * 解决方案：
-							 * 1、如果pageNumber等于1，属于上述第一种情况，此时应该提示“当前没有符合要求的工单”；
-							 * 2、如果pageNumber大于1，属于上述第二种情况，此时应该利用Toast提示已经显示出所有工单，并关闭上拉加载的功能；
-							 * 
-							 * 提供一个标志位，根据不同的情况，执行不同的操作；
-							 */
 							if (1 == pageNumber) {
 								listener.onSearchSuccess(ProjectContants.ORDER_IS_NULL);
 							} else if (pageNumber > 1) {
@@ -471,7 +392,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				@Override
 				public void onError(Call call, Exception e, int respCode) {
-					Log.e(tag, "响应码为：" + respCode);
 					Log.e(tag, Log.getStackTraceString(e));
 					if (respCode == 401) {
 						listener.onSearchFailure("您的账号无效或已\n过期，请重新登录", FailureTipMethod.TOAST);
@@ -504,8 +424,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				@Override
 				public void onResponse(String response) {
-					Log.i(tag, response);
-					
 					if (!TextUtils.isEmpty(response)) {
 						List<MaintainOrder> respDataList = JSON.parseObject(response, 
 								new TypeReference<List<MaintainOrder>>() {});
@@ -521,17 +439,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 								listener.onSearchSuccess(ProjectContants.ORDER_SHOW_COMPLETE);
 							}
 						} else {
-							/*
-							 * 响应数据为空，表示当前请求的数据不存在，有两种可能的情况
-							 * 1、压根就没有数据；
-							 * 2、表示当前pageNumber下，没有数据，即1~pageNumber-1之间的页面，就已经把数据完全显示出来了；
-							 * 
-							 * 解决方案：
-							 * 1、如果pageNumber等于1，属于上述第一种情况，此时应该提示“当前没有符合要求的工单”；
-							 * 2、如果pageNumber大于1，属于上述第二种情况，此时应该利用Toast提示已经显示出所有工单，并关闭上拉加载的功能；
-							 * 
-							 * 提供一个标志位，根据不同的情况，执行不同的操作；
-							 */
 							if (1 == pageNumber) {
 								listener.onSearchSuccess(ProjectContants.ORDER_IS_NULL);
 							} else if (pageNumber > 1) {
@@ -551,7 +458,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				@Override
 				public void onError(Call call, Exception e, int respCode) {
-					Log.e(tag, "响应码为：" + respCode);
 					Log.e(tag, Log.getStackTraceString(e));
 					if (respCode == 401) {
 						listener.onSearchFailure("您的账号无效或已\n过期，请重新登录", FailureTipMethod.TOAST);
@@ -582,8 +488,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				@Override
 				public void onResponse(String response) {
-					Log.i(tag, response);
-					
 					if (!TextUtils.isEmpty(response)) {
 						List<FaultOrder> respDataList = JSON.parseObject(response, 
 								new TypeReference<List<FaultOrder>>() {});
@@ -618,7 +522,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				@Override
 				public void onError(Call call, Exception e, int respCode) {
-					Log.e(tag, "响应码为：" + respCode);
 					Log.e(tag, Log.getStackTraceString(e));
 					if (respCode == 401) {
 						listener.onSearchFailure("您的账号无效或已\n过期，请重新登录", FailureTipMethod.TOAST);
@@ -633,16 +536,16 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 	@Override
 	public void receiveOrder(int workOrderType, Long workOrderId, Long employeeId, 
 			final IWorkOrderReceiveListener listener) {
-		String url = null;
+		StringBuilder url = new StringBuilder(ProjectContants.basePath);
 		if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
-			url = ProjectContants.basePath + "/maintainOrder/accept";
+			url.append("/maintainOrder/accept");
 		} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
-			url = ProjectContants.basePath + "/faultOrder/accept";
+			url.append("/faultOrder/accept");
 		} else {
 			throw new IllegalArgumentException("工单类型有误");
 		}
 		
-		MyOkHttpUtils.post().url(url)
+		MyOkHttpUtils.post().url(url.toString())
 			.addHeader("token", MyApplication.token)
 			.addParams("id", String.valueOf(workOrderId))
 			.addParams("employeeId", String.valueOf(employeeId))
@@ -650,7 +553,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 			.execute(new MyStringCallback() {		
 				@Override
 				public void onResponse(String response) {
-					Log.i(response, response);
 					JSONObject jo = JSON.parseObject(response);
 					String result = jo.getString("result");
 					
@@ -667,7 +569,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 							listener.onReceiveFailure("工单不存在，接单失败！");
 						}
 					} else {
-						listener.onReceiveFailure("服务器故障，响应数据有误！");
+						listener.onReceiveFailure("服务器故障，请联系管理员");
 					}
 				}
 				
@@ -679,7 +581,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				@Override
 				public void onError(Call call, Exception e, int respCode) {
-					Log.e(tag, "响应码为：" + respCode);
 					Log.e(tag, Log.getStackTraceString(e));
 					if (respCode == 401) {
 						listener.onReceiveFailure("您的账号无效或已过期，请重新登录");
@@ -694,16 +595,16 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 	@Override
 	public void cancelReceiveOrder(int workOrderType, Long workOrderId,
 			Long employeeId, final IWorkOrderCancelListener listener) {
-		String url = null;
+		StringBuilder url = new StringBuilder(ProjectContants.basePath);
 		if (workOrderType == WorkOrderType.MAINTAIN_ORDER) {
-			url = ProjectContants.basePath + "/maintainOrder/cancel";
+			url.append("/maintainOrder/cancel");
 		} else if (workOrderType == WorkOrderType.FAULT_ORDER) {
-			url = ProjectContants.basePath + "/faultOrder/cancel";
+			url.append("/faultOrder/cancel");
 		} else {
 			throw new IllegalArgumentException("工单类型有误");
 		}
 		
-		MyOkHttpUtils.post().url(url)
+		MyOkHttpUtils.post().url(url.toString())
 			.addHeader("token", MyApplication.token)
 			.addParams("id", String.valueOf(workOrderId))
 			.addParams("employeeId", String.valueOf(employeeId))
@@ -730,7 +631,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 							listener.onCancelFailure("工单不存在，取消接单失败！");
 						}
 					} else {
-						listener.onCancelFailure("服务器故障，响应数据有误！");		
+						listener.onCancelFailure("服务器故障，请联系管理员");		
 					}
 				}
 				
@@ -742,7 +643,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				@Override
 				public void onError(Call call, Exception e, int respCode) {
-					Log.e(tag, "响应码为：" + respCode);
 					Log.e(tag, Log.getStackTraceString(e));
 					if (respCode == 401) {
 						listener.onCancelFailure("您的账号无效或已过期，请重新登录");
@@ -848,33 +748,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 		int minElementIndex;
 		
 		/*
-		 * 冒泡排序
-		 */
-		/*for (int i=0; i<length; i++) {			
-			for (int j=length-1; j>i; j--) {
-				maintainOrderI = maintainOrderList.get(i);
-				idI =  maintainOrderI.getId();
-				
-				maintainOrderJ = maintainOrderList.get(j);
-				idJ = maintainOrderJ.getId();
-				
-				if (idI < idJ) {
-					temp = maintainOrderI;
-					maintainOrderI = maintainOrderJ;
-					maintainOrderJ = temp;
-					
-					maintainOrderList.remove(i);
-					maintainOrderList.add(i, maintainOrderI);
-					maintainOrderList.remove(j);
-					maintainOrderList.add(j, maintainOrderJ);
-				}
-				
-				maintainOrderJ = null;
-				maintainOrderI = null;
-			}
-		}*/
-		
-		/*
 		 * 选择排序
 		 */
 		for (int i=0; i<length; i++) {
@@ -885,7 +758,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				if (idA > idB) {
 					minElementIndex = j;
-//					idA =  maintainOrderList.get(minElementIndex).getId();
 					idA = idB;
 				}
 			}
@@ -929,7 +801,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				if (idA < idB) {
 					maxElementIndex = j;
-//					idA =  maintainOrderList.get(maxElementIndex).getId();
 					idA =  idB;
 				}
 			}
@@ -977,7 +848,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				if (idA > idB) {
 					minElementIndex = j;
-//					idA =  faultOrderList.get(minElementIndex).getId();
 					idA =  idB;
 				}
 			}
@@ -1025,7 +895,6 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				if (idA < idB) {
 					minElementIndex = j;
-//					idA =  faultOrderList.get(minElementIndex).getId();
 					idA =  idB;
 				}
 			}
@@ -1079,13 +948,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				if (receivingTimeA < receivingTimeB) {
 					maxElementIndex = j;
-					tempDate = maintainOrderList.get(maxElementIndex).getReceivingTime();
-					if (tempDate != null) {
-						receivingTimeA = tempDate.getTime();
-					} else {
-						receivingTimeA = 0;
-					}
-					tempDate = null;
+					receivingTimeA = receivingTimeB;
 				}
 			}
 			
@@ -1138,13 +1001,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				if (receivingTimeA < receivingTimeB) {
 					maxElementIndex = j;
-					tempDate = faultOrderList.get(maxElementIndex).getReceivingTime();
-					if (tempDate != null) {
-						receivingTimeA = tempDate.getTime();
-					} else {
-						receivingTimeA = 0;
-					}
-					tempDate = null;
+					receivingTimeA = receivingTimeB;
 				}
 			}
 			
@@ -1197,13 +1054,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				if (finishedTimeA > finishedTimeB) {
 					minElementIndex = j;
-					tempDate = maintainOrderList.get(minElementIndex).getSignOutTime();
-					if (tempDate != null) {
-						finishedTimeA = tempDate.getTime();
-					} else {
-						finishedTimeA = 0;
-					}
-					tempDate = null;
+					finishedTimeA = finishedTimeB;
 				}
 			}
 			
@@ -1256,13 +1107,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				if (finishedTimeA < finishedTimeB) {
 					maxElementIndex = j;
-					tempDate = maintainOrderList.get(maxElementIndex).getSignOutTime();
-					if (tempDate != null) {
-						finishedTimeA = tempDate.getTime();
-					} else {
-						finishedTimeA = 0;
-					}
-					tempDate = null;
+					finishedTimeA = finishedTimeB;
 				}
 			}
 			
@@ -1315,13 +1160,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				if (finishedTimeA > finishedTimeB) {
 					minElementIndex = j;
-					tempDate = faultOrderList.get(minElementIndex).getSignOutTime();
-					if (tempDate != null) {
-						finishedTimeA = tempDate.getTime();
-					} else {
-						finishedTimeA = 0;
-					}
-					tempDate = null;
+					finishedTimeA = finishedTimeB;
 				}
 			}
 			
@@ -1375,13 +1214,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				if (finishedTimeA < finishedTimeB) {
 					maxElementIndex = j;
-					tempDate = faultOrderList.get(maxElementIndex).getSignOutTime();
-					if (tempDate != null) {
-						finishedTimeA = tempDate.getTime();
-					} else {
-						finishedTimeA = 0;
-					}
-					tempDate = null;
+					finishedTimeA = finishedTimeB;
 				}
 			}
 			
@@ -1434,13 +1267,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				if (signInTimeA < signInTimeB) {
 					maxElementIndex = j;
-					tempDate = maintainOrderList.get(maxElementIndex).getSignInTime();
-					if (tempDate != null) {
-						signInTimeA = tempDate.getTime();
-					} else {
-						signInTimeA = 0;
-					}
-					tempDate = null;
+					signInTimeA = signInTimeB;
 				}
 			}
 			
@@ -1492,13 +1319,7 @@ public class WorkOrderBizImpl implements IWorkOrderBiz {
 				
 				if (signInTimeA < signInTimeB) {
 					maxElementIndex = j;
-					tempDate = faultOrderList.get(maxElementIndex).getSignInTime();
-					if (tempDate != null) {
-						signInTimeA = tempDate.getTime();
-					} else {
-						signInTimeA = 0;
-					}
-					tempDate = null;
+					signInTimeA = signInTimeB;
 				}
 			}
 			

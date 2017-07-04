@@ -1,6 +1,5 @@
 package wzp.project.android.elvtmtn.activity.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.alibaba.fastjson.JSON;
@@ -19,7 +18,7 @@ import android.widget.Toast;
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.activity.base.BaseActivity;
 import wzp.project.android.elvtmtn.entity.ElevatorRecord;
-import wzp.project.android.elvtmtn.helper.adapter.UnfinishedFaultOrderAdapter;
+import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 
 public class ElevatorRecordDetailActivity extends BaseActivity {
 
@@ -39,8 +38,6 @@ public class ElevatorRecordDetailActivity extends BaseActivity {
 	private Button btnQueryFaultHistory;
 	
 	private ElevatorRecord elevatorRecord;
-	
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
 	
 	private static String LOG_TAG = "ElevatorRecordDetailActivity";
 	
@@ -153,7 +150,7 @@ public class ElevatorRecordDetailActivity extends BaseActivity {
 		
 		Date manufacturingDate = elevatorRecord.getManufacturingDate();
 		if (manufacturingDate != null) {
-			tvManufacturingDate.setText(sdf.format(manufacturingDate));
+			tvManufacturingDate.setText(ProjectContants.sdf2.format(manufacturingDate));
 		} else {
 			tvManufacturingDate.setText("暂无该信息");
 			tvManufacturingDate.setTextColor(Color.RED);
@@ -161,7 +158,7 @@ public class ElevatorRecordDetailActivity extends BaseActivity {
 		
 		Date lastMaintainTime = elevatorRecord.getLastMaintainTime();
 		if (lastMaintainTime != null) {
-			tvLastMaintainTime.setText(sdf.format(lastMaintainTime));
+			tvLastMaintainTime.setText(ProjectContants.sdf2.format(lastMaintainTime));
 		} else {
 			tvLastMaintainTime.setText("暂无该信息");
 			tvLastMaintainTime.setTextColor(Color.RED);

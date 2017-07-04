@@ -16,6 +16,12 @@ public class EmployeeLoginPresenter {
 		this.employeeLoginActivity = employeeLoginActivity;
 	}
 	
+	/**
+	 * 员工登录
+	 * 
+	 * @param username 用户名
+	 * @param password 密码
+	 */
 	public void login(String username, String password) {
 		Employee employee = new Employee(username, password);
 

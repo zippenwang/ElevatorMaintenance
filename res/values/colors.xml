@@ -17,5 +17,6 @@
 	
 	<color name="backgroundColor">#AFEEEE</color>
 	
+	<!-- 自定义ActionBar背景色 -->
 	<color name="myActionBarBgColor">#484E61</color>
 </resources>

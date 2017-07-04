@@ -1,13 +1,11 @@
 package wzp.project.android.elvtmtn.activity.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.alibaba.fastjson.JSON;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -21,6 +19,7 @@ import wzp.project.android.elvtmtn.activity.base.BaseActivity;
 import wzp.project.android.elvtmtn.entity.Employee;
 import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.Group;
+import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 
 public class FaultHistoryDetailActivity extends BaseActivity {
 	
@@ -36,8 +35,6 @@ public class FaultHistoryDetailActivity extends BaseActivity {
 	private TextView tvRemark;
 	
 	private FaultOrder faultOrder;
-	
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	private static String LOG_TAG = "FaultHistoryDetailActivity";
 	
@@ -102,7 +99,7 @@ public class FaultHistoryDetailActivity extends BaseActivity {
 		
 		Date faultOccuredTime = faultOrder.getOccuredTime();
 		if (faultOccuredTime != null) {
-			tvFaultOccuredTime.setText(sdf.format(faultOccuredTime));
+			tvFaultOccuredTime.setText(ProjectContants.sdf1.format(faultOccuredTime));
 		} else {
 			tvFaultOccuredTime.setText("暂无发生日期");
 		}
@@ -141,7 +138,7 @@ public class FaultHistoryDetailActivity extends BaseActivity {
 		
 		Date signOutTime = faultOrder.getSignOutTime();
 		if (signOutTime != null) {
-			tvSignOutTime.setText(sdf.format(signOutTime));
+			tvSignOutTime.setText(ProjectContants.sdf1.format(signOutTime));
 		} else {
 			tvSignOutTime.setText("暂无该时间");
 		}

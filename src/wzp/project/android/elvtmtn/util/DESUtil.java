@@ -23,7 +23,7 @@ import javax.crypto.spec.DESKeySpec;
  */
 public class DESUtil {
  
-    /** 安全密钥 */
+    /** 默认安全密钥 */
     private String keyData = "ABCDEFGHIJKLMNOPQRSTWXYZabcdefghijklmnopqrstwxyz0123456789-_.";
  
     /**

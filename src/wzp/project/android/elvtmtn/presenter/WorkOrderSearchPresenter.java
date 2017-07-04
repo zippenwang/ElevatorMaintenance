@@ -93,6 +93,14 @@ public class WorkOrderSearchPresenter implements IWorkOrderSearchListener {
 		});
 	}
 	
+	/**
+	 * 按照电梯档案id查询故障工单
+	 * 
+	 * @param elevatorRecordId 电梯档案id
+	 * @param pageNumber 第几页
+	 * @param pageSize 分页中包含记录的数量
+	 * @param faultOrderList 故障工单集合
+	 */
 	public void searchFaultOrdersByElevatorRecordId(long elevatorRecordId, int pageNumber, 
 			int pageSize, List<FaultOrder> faultOrderList) {
 		workOrderSearchContainer.showProgressDialog();
@@ -101,8 +109,7 @@ public class WorkOrderSearchPresenter implements IWorkOrderSearchListener {
 			@Override
 			public void onSearchSuccess(int successType) {				
 				if (successType == ProjectContants.ORDER_SHOW_COMPLETE) {
-//					workOrderSearchContainer.showToast("已显示出所有记录");
-					workOrderSearchContainer.closePullUpToRefresh();		// 关闭上拉加载功能，只提供下拉刷新功能
+					workOrderSearchContainer.closePullUpToRefresh();	// 关闭上拉加载功能，只提供下拉刷新功能
 				} else if (successType == ProjectContants.ORDER_SHOW_UNCOMPLETE) {
 					workOrderSearchContainer.openPullUpToRefresh();		// 打开上拉加载功能，此时包含上拉和下拉两种功能
 				} else if (successType == ProjectContants.ORDER_IS_NULL) {
@@ -116,10 +123,6 @@ public class WorkOrderSearchPresenter implements IWorkOrderSearchListener {
 
 			@Override
 			public void onSearchFailure(String tipInfo, int tipMethod) {
-//				workOrderSearchContainer.showToast(tipInfo);
-//				workOrderSearchContainer.hidePtrlvAndShowLinearLayout("服务器正在打盹，" +
-//						"请检查网络后重试...");
-				
 				switch (tipMethod) {
 					case FailureTipMethod.TOAST:
 						workOrderSearchContainer.showToast(tipInfo);

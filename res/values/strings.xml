@@ -24,8 +24,12 @@
 	<string name="cancelOrder">取消接单</string>
 	<string name="searchElevatorRecord">查询电梯档案</string>
 	<string name="navigation">目的地导航</string>
+	<string name="searchFaultHistory">查询故障历史</string>
 	
+	<!-- 专有名词 -->
 	<string name="workOrderDetail">工单详情</string>
+	<string name="faultHistory">故障历史</string>
+	<string name="faultDetail">故障详情</string>
 	
 	<!-- 工单类型 -->
 	<string name="maintainOrder">保养工单</string>
@@ -73,7 +77,7 @@
 	<string name="feedbackState">反馈状态</string>
 	
 	
-	<!-- 电梯数据库 -->
+	<!-- 电梯档案详情 -->
 	<string name="elevatorNumber">电梯编码</string>
 	<string name="modelNumber">电梯型号</string>
 	<string name="elevatorType">电梯类型</string>

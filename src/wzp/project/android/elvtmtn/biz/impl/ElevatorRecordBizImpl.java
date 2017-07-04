@@ -3,16 +3,6 @@ package wzp.project.android.elvtmtn.biz.impl;
 import java.util.List;
 
 import okhttp3.Call;
-
-import android.text.TextUtils;
-import android.util.Log;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
-
-import wzp.project.android.elvtmtn.activity.impl.EmployeeLoginActivity;
 import wzp.project.android.elvtmtn.biz.IElevatorRecordBiz;
 import wzp.project.android.elvtmtn.biz.listener.IElevatorRecordSearchListener;
 import wzp.project.android.elvtmtn.entity.ElevatorRecord;
@@ -21,6 +11,11 @@ import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import wzp.project.android.elvtmtn.util.MyApplication;
 import wzp.project.android.elvtmtn.util.myokhttp.MyOkHttpUtils;
 import wzp.project.android.elvtmtn.util.myokhttp.MyStringCallback;
+import android.text.TextUtils;
+import android.util.Log;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 
 public class ElevatorRecordBizImpl implements IElevatorRecordBiz {
 

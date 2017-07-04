@@ -1,6 +1,5 @@
 package wzp.project.android.elvtmtn.helper.adapter;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 

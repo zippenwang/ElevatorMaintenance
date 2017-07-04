@@ -1,29 +1,30 @@
 package wzp.project.android.elvtmtn.helper.adapter;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import wzp.project.android.elvtmtn.R;
 import wzp.project.android.elvtmtn.entity.ElevatorRecord;
-import wzp.project.android.elvtmtn.entity.FaultOrder;
 import wzp.project.android.elvtmtn.entity.MaintainOrder;
+import wzp.project.android.elvtmtn.helper.contant.ProjectContants;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+/**
+ * 签到操作所列出的已经接单的保养工单Adapter
+ * @author Zippen
+ *
+ */
 public class MaintainOrderSignInAdapter extends ArrayAdapter<MaintainOrder> {
 
 	private int resourceId;
-	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
-	private static final String tag = "FaultOrderSignInAdapter";
 	
 	public MaintainOrderSignInAdapter(Context context, int textViewResourceId,
 			List<MaintainOrder> objects) {
@@ -74,7 +75,7 @@ public class MaintainOrderSignInAdapter extends ArrayAdapter<MaintainOrder> {
 		
 		Date receivingTime = maintainOrder.getReceivingTime();
 		if (receivingTime != null) {
-			subViewHolder.tvReceivingTime.setText(sdf.format(receivingTime));
+			subViewHolder.tvReceivingTime.setText(ProjectContants.sdf1.format(receivingTime));
 		} else {
 			subViewHolder.tvReceivingTime.setText("无");
 		}

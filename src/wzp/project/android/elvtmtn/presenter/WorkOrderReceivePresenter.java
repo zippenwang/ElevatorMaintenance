@@ -18,6 +18,13 @@ public class WorkOrderReceivePresenter {
 		this.workOrderDetailActivity = workOrderDetailActivity;
 	}
 	
+	/**
+	 * 接单
+	 * 
+	 * @param workOrderType 工单类型
+	 * @param workOrderId 工单id
+	 * @param employeeId 员工id
+	 */
 	public void receiveOrder(int workOrderType, Long workOrderId, Long employeeId) {
 		workOrderBiz.receiveOrder(workOrderType, workOrderId, employeeId, 
 				new IWorkOrderReceiveListener() {	
@@ -38,6 +45,13 @@ public class WorkOrderReceivePresenter {
 		});
 	}
 	
+	/**
+	 * 取消接单
+	 * 
+	 * @param workOrderType 工单类型
+	 * @param workOrderId 工单id
+	 * @param employeeId 员工id
+	 */
 	public void cancelReceiveOrder(int workOrderType, Long workOrderId, Long employeeId) {
 		workOrderBiz.cancelReceiveOrder(workOrderType, workOrderId, 
 				employeeId, new IWorkOrderCancelListener() {

@@ -8,7 +8,7 @@
     <RelativeLayout 
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="#484E61">
+        android:background="@color/myActionBarBgColor">
         <Button 
             android:id="@+id/btn_back"
             android:layout_width="60dp"
@@ -26,7 +26,7 @@
 	        android:layout_height="wrap_content"
 	        android:textSize="24sp"
 	        android:textColor="@color/whiteColor"
-	        android:text="故障详情"
+	        android:text="@string/faultDetail"
 	        android:gravity="center"
 	        android:layout_alignParentRight="true"
 	        android:layout_centerVertical="true"
@@ -66,7 +66,6 @@
 		            android:layout_weight="3"
 		            android:layout_height="wrap_content"
 		            android:gravity="left"
-		            android:text="001"
 		            android:textSize="16sp" />        
 		    </LinearLayout>
 		    
@@ -96,7 +95,6 @@
 		            android:layout_weight="3"
 		            android:layout_height="wrap_content"
 		            android:gravity="left"
-		            android:text="xxx"
 		            android:textSize="@dimen/work_order_detail" />
 		    </LinearLayout>
 		    
@@ -126,7 +124,6 @@
 		            android:id="@+id/tv_faultDescription"
 		            android:layout_height="wrap_content"
 		            android:gravity="left"
-		            android:text="xxx"
 		            android:textSize="@dimen/work_order_detail" />
 		    </LinearLayout>
 		    
@@ -156,7 +153,6 @@
 		            android:layout_weight="3"
 		            android:layout_height="wrap_content"
 		            android:gravity="left"
-		            android:text="未接单"
 		            android:textSize="@dimen/work_order_detail" />
 		    </LinearLayout>
 		        
@@ -186,7 +182,6 @@
 		            android:layout_weight="3"
 		            android:layout_height="wrap_content"
 		            android:gravity="left"
-		            android:text="未接单"
 		            android:textSize="@dimen/work_order_detail" />
 		    </LinearLayout>
 		          
@@ -216,7 +211,6 @@
 		            android:layout_weight="3"
 		            android:layout_height="wrap_content"
 		            android:gravity="left"
-		            android:text="未接单"
 		            android:textSize="@dimen/work_order_detail" />
 		    </LinearLayout>
 	    
@@ -246,7 +240,6 @@
 		            android:layout_weight="3"
 		            android:layout_height="wrap_content"
 		            android:gravity="left"
-		            android:text="未接单"
 		            android:textSize="@dimen/work_order_detail" />
 		    </LinearLayout>
 			    
@@ -276,7 +269,6 @@
 		            android:layout_weight="3"
 		            android:layout_height="wrap_content"
 		            android:gravity="left"
-		            android:text="未接单"
 		            android:textSize="@dimen/work_order_detail" />
 		    </LinearLayout>
 			    
@@ -306,7 +298,6 @@
 		            android:layout_weight="3"
 		            android:layout_height="wrap_content"
 		            android:gravity="left"
-		            android:text="未接单"
 		            android:textSize="@dimen/work_order_detail" />
 		    </LinearLayout>
         </LinearLayout>

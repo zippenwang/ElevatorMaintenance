@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
+import com.handmark.pulltorefresh.library.ILoadingLayout;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -47,6 +48,7 @@ public class FaultHistorySearchActivity extends BaseActivity
 	private Button btnBack;
 	private ImageButton ibtnSort;
 	private PullToRefreshListView ptrlvFaultHistory;
+	private ILoadingLayout operateTip;
 	private LinearLayout linearTipInfo;						// 提示网络异常、或当前工单不存在的LinearLayout控件
 	private TextView tvTipInfo;								// 当ListView中传入的List为空，该控件用于提示数据为空
 	private Button btnRefreshAgain;							// 重试按钮
@@ -92,13 +94,15 @@ public class FaultHistorySearchActivity extends BaseActivity
 	
 	private void initData() {
 		Intent intent = getIntent();
-		elevatorRecordId = intent.getLongExtra("elevatorRecordId", -1);
 		
+		elevatorRecordId = intent.getLongExtra("elevatorRecordId", -1);
 		if (elevatorRecordId == -1) {
 			throw new IllegalArgumentException("未传入电梯档案id号elevatorRecordId");
 		}
 		
-		myProgressDialog = new MyProgressDialog(this);
+		myProgressDialog = new MyProgressDialog(this);	
+		myProgressDialog.setMessage("正在获取数据，请稍后...");
+		myProgressDialog.setCancelable(true);
 		
 		adapter = new FaultHistoryAdapter(this, R.layout.listitem_fault_history, faultOrderList);
 		workOrderSearchPresenter.searchFaultOrdersByElevatorRecordId(elevatorRecordId, curPage++, 
@@ -129,10 +133,11 @@ public class FaultHistorySearchActivity extends BaseActivity
 		});
 		
 		ptrlvFaultHistory.setAdapter(adapter);
+		operateTip = ptrlvFaultHistory.getLoadingLayoutProxy();
 				
-		ptrlvFaultHistory.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
-		ptrlvFaultHistory.getLoadingLayoutProxy().setPullLabel("下拉刷新...");
-		ptrlvFaultHistory.getLoadingLayoutProxy().setReleaseLabel("释放开始刷新...");
+		operateTip.setRefreshingLabel("正在刷新");
+		operateTip.setPullLabel("下拉刷新...");
+		operateTip.setReleaseLabel("释放开始刷新...");
 		
 		ptrlvFaultHistory.setOnRefreshListener(new OnRefreshListener2<ListView>() {
 			@Override
@@ -160,15 +165,15 @@ public class FaultHistorySearchActivity extends BaseActivity
 					int visibleItemCount, int totalItemCount) {
 				if (0 == firstVisibleItem
 						&& !isShowPullDownInfo) {
-					ptrlvFaultHistory.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
-					ptrlvFaultHistory.getLoadingLayoutProxy().setPullLabel("下拉刷新...");
-					ptrlvFaultHistory.getLoadingLayoutProxy().setReleaseLabel("释放开始刷新...");
+					operateTip.setRefreshingLabel("正在刷新");
+					operateTip.setPullLabel("下拉刷新...");
+					operateTip.setReleaseLabel("释放开始刷新...");
 					isShowPullDownInfo = true;
 				} else if ((totalItemCount - visibleItemCount) == firstVisibleItem
 						&& isShowPullDownInfo) {
-					ptrlvFaultHistory.getLoadingLayoutProxy().setRefreshingLabel("正在加载");
-					ptrlvFaultHistory.getLoadingLayoutProxy().setPullLabel("上拉加载更多...");
-					ptrlvFaultHistory.getLoadingLayoutProxy().setReleaseLabel("释放开始加载...");
+					operateTip.setRefreshingLabel("正在加载");
+					operateTip.setPullLabel("上拉加载更多...");
+					operateTip.setReleaseLabel("释放开始加载...");
 					isShowPullDownInfo = false;
 				}
 			}			
@@ -261,10 +266,7 @@ public class FaultHistorySearchActivity extends BaseActivity
 	public void showProgressDialog() {
 		runOnUiThread(new Runnable() {		
 			@Override
-			public void run() {	
-				myProgressDialog.setMessage("正在获取数据，请稍后...");
-				myProgressDialog.setCancelable(true);
-				
+			public void run() {
 				myProgressDialog.show();
 			}
 		});

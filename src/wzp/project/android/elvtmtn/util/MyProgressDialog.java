@@ -11,6 +11,11 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * 自定义进度对话框
+ * @author Zippen
+ *
+ */
 public class MyProgressDialog extends Dialog {
 	
 	private Context context;
